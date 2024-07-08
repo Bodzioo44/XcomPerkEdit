@@ -12,10 +12,10 @@ using namespace json11;
 
 int main(int argc, char *argv[])
 {
-    // QApplication a(argc, argv);
-    // MainWindow w;
-    // w.show();
-    // return a.exec();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 
     //reading json
     Json json = load_json_file("../Testing/save475.json");
@@ -59,12 +59,18 @@ int main(int argc, char *argv[])
 
     int selected_soldier = 281;
 
-
-    std::vector<Perk> perks = load_perks("sniper");
-    for(const Perk& perk : perks)
+    for(int i : Get_Soldiers::upgrades(json, selected_soldier))
     {
-        std::cout << perk;
+        cout << i << ", ";
     }
+    cout << endl;
+
+
+    // std::vector<Perk> perks = load_perks("sniper");
+    // for(const Perk& perk : perks)
+    // {
+    //     std::cout << perk;
+    // }
 
 
 

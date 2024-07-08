@@ -9,8 +9,6 @@
 #include <sstream>
 #include "utils.h"
 
-
-
 json11::Json load_json_file(const std::string& file_path) {
 
     std::ifstream file(file_path);
@@ -48,8 +46,14 @@ json11::Json load_json_file(const std::string& file_path) {
 
 
 
-std::vector<Perk> load_perks(std::string soldier_class)
+std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string soldier_class)
 {
+    //holy spaghetti
+    //checkpoints[0].checkpoint_table[284].properties[1].properties[11].properties[0].value.str
+    //std::string soldier_class = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][11]["properties"][0]["value"]["str"].string_value();
+    //std::cout << soldier_class << std::endl;
+
+
     std::vector<Perk> perks;
     std::string path = "../assets/" + soldier_class + ".txt";
     std::ifstream file(path);
@@ -103,3 +107,43 @@ std::vector<Perk> load_perks(std::string soldier_class)
 //         }
 //     }
 // };
+
+
+//soldier_index is the index of the soldier in the checkpoint_table (NOT the XGStrategySoldier index)
+//json is the whole save file
+namespace Get_Soldiers
+{
+    std::string firstname(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][1]["value"]["str"].string_value();
+    }
+    std::string nickname(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][2]["value"]["str"].string_value();
+    }
+    std::string lastname(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][3]["value"]["str"].string_value();
+    }
+    std::string class_type(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][11]["properties"][0]["value"]["str"].string_value();
+    }
+    int rank(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][4]["value"].int_value();
+    }
+    std::string eStatus(const json11::Json& json, int soldier_index)
+    {
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][3]["value"].string_value();
+    }
+    std::vector<int> upgrades(const json11::Json& json, int soldier_index)
+    {
+        std::vector<int> upgrades;
+        for (const json11::Json& i : json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][3]["int_values"].array_items())
+        {
+            upgrades.push_back(i.int_value());
+        }
+        return upgrades;
+    }
+}
