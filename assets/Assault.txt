@@ -1,0 +1,18 @@
+154,Steadfast,0,0,5
+40,Close Combat Specialist,0,0,0
+37,Flush,0,0,0
+17,Will to Survive,0,0,3
+32,Aggression,0,0,0
+94,Ranger,0,0,0
+34,Close Encounters,0,0,3
+36,Rapid Fire,0,0,0
+167,Hit and Run,0,0,0
+43,Resilience,0,0,0
+41,Killer Instinct,0,0,0
+11,Executioner,0,2,2
+33,Tactical Sense,0,0,0
+39,Bring 'Em On,0,0,0
+31,Sprinter,0,0,0
+27,Extra Conditioning,1,4,4
+135,Vital Point Targeting,0,0,0
+35,Lightning Reflexes,0,0,0

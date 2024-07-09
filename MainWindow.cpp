@@ -1,11 +1,39 @@
 #include "MainWindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
     ui.setupUi(this);
+    this->setCentralWidget(ui.centralwidget);
+    ui.centralwidget->setLayout(ui.gridLayout);
+    // ui.PerkPageVerticalLayout->addLayout(ui.LabelLayout);
+    // ui.PerkPageVerticalLayout->addLayout(ui.PerkGridLayout);
+
+    
+
+    //ui.stackedWidget->setCurrentWidget(ui.page_2);
 
     connect(ui.SoldierList, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
+    connect(ui.PerkEditButton, &QPushButton::clicked, this, &MainWindow::PerkEditButtonClicked);
+    
+    // QLabel* will_label = new QLabel("Will: 0/0", this);
+    // QLabel* aim_label = new QLabel("Aim: 0/0", this);
+    // QLabel* mobility_label = new QLabel("Mobility: 0/0", this);
+    // ui.PerkGridLayout->addWidget(will_label, 0, 0);
+    // ui.PerkGridLayout->addWidget(aim_label, 0, 1);
+    // ui.PerkGridLayout->addWidget(mobility_label, 0, 2);    
+    
+    for (int i = 0; i < 18; i++)
+    {
+        QToolButton* button = new QToolButton(this);
+        ui.PerkGridLayout->addWidget(button, (i / 3), i % 3);
+        connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
+    }
+
+    // ui.PerkPageVerticalLayout->addLayout(ui.LabelLayout);
+    // ui.PerkPageVerticalLayout->addLayout(ui.PerkGridLayout);
+    // ui.PerkPageVerticalLayout->setStretch(0, 2); // For LabelLayout
+    // ui.PerkPageVerticalLayout->setStretch(1, 10); // For PerkGridLayout
+    
 
     //move this out of the constructor
     try
@@ -17,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
             //Checks if entry is a soldier
             if (entry["name"].string_value().find("XGStrategySoldier") != std::string::npos)
             {
-                //Checks if soldier is alive and has rank above squaddie
+                //Checks if soldier is alive and has rank above specialist
                 if (Get_Soldiers::eStatus(json, i) != "eStatus_Dead" && Get_Soldiers::rank(json, i) > 1)
                 {
                     string soldier_fullname = Get_Soldiers::firstname(json, i) + " '" + Get_Soldiers::nickname(json, i) + "' " + Get_Soldiers::lastname(json, i);
@@ -28,9 +56,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
                     ui.SoldierList->addItem(item);
 
                     index_translation[ui.SoldierList->count() - 1] = i; 
-
-                    //cout << Get_Soldiers::class_type(json, i) << endl;
-                    //cout << "ui.SoldierList->count() - 1: " << ui.SoldierList->count() - 1 << " i: " << i << endl;
                 }
             }
             i++;
@@ -40,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     {
         std::cerr << e.what() << std::endl;
     }
-
 }
 
 void MainWindow::onSoldierSelected()
@@ -54,4 +78,15 @@ void MainWindow::onSoldierSelected()
     {
         cout << perk << endl;
     }
+}
+
+
+void MainWindow::onPerkSelected(int i)
+{
+    cout << i << endl;
+}
+
+void MainWindow::PerkEditButtonClicked()
+{
+    ui.stackedWidget->setCurrentWidget(ui.PerkPage);
 }

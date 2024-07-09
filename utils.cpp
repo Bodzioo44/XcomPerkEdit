@@ -53,6 +53,7 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string 
     //std::string soldier_class = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][11]["properties"][0]["value"]["str"].string_value();
     //std::cout << soldier_class << std::endl;
 
+    std::vector<int> upgrades = Get_Soldiers::upgrades(json, soldier_index);
 
     std::vector<Perk> perks;
     std::string path = "../assets/" + soldier_class + ".txt";
@@ -71,7 +72,7 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string 
         {
             row.push_back(value);
         }
-        perks.push_back(Perk(std::stoi(row[0]), row[1]));
+        perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], row[1], std::stoi(row[2]), std::stoi(row[3]), std::stoi(row[4])));
     }
     return perks;
 }
@@ -119,11 +120,11 @@ namespace Get_Soldiers
     }
     std::string nickname(const json11::Json& json, int soldier_index)
     {
-        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][2]["value"]["str"].string_value();
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][3]["value"]["str"].string_value();
     }
     std::string lastname(const json11::Json& json, int soldier_index)
     {
-        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][3]["value"]["str"].string_value();
+        return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][2]["value"]["str"].string_value();
     }
     std::string class_type(const json11::Json& json, int soldier_index)
     {

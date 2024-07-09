@@ -3,6 +3,9 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtGui/QIcon>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QLabel>
+
 #include <map>
 #include <vector>
 #include <iostream>
@@ -26,6 +29,8 @@ public:
 
 public slots:
     void onSoldierSelected();
+    void onPerkSelected(int i);
+    void PerkEditButtonClicked();
 
 
 

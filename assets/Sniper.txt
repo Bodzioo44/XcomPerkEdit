@@ -1,18 +1,18 @@
-5,Low Profile
-116,Deadeye
-159,Lone Wolf
-9,Disabling Shot
-2,Precision Shot
-16,Snap Shot
-15,Damn Good Ground
-94,Ranger
-153,Sharpshooter
-11,Executioner
-135,Vital Point Targeting
-141,Platform Stability
-33,Tactical Sense
-39,Bring 'Em On
-58,Lock N’ Load
-14,In The Zone
-93,Mayhem
-13,Double Tap
+5,Low Profile,0,0,0
+116,Deadeye,0,0,0
+159,Lone Wolf,0,0,0
+9,Disabling Shot,0,0,0
+2,Precision Shot,0,0,0
+16,Snap Shot,0,0,0
+15,Damn Good Ground,0,0,2
+94,Ranger,0,0,0
+153,Sharpshooter,0,0,0
+11,Executioner,0,0,0
+135,Vital Point Targeting,0,0,0
+141,Platform Stability,0,0,0
+33,Tactical Sense,0,0,0
+39,Bring 'Em On,0,0,0
+58,Lock N’ Load,0,0,0
+14,In The Zone,0,0,0
+93,Mayhem,0,2,0
+13,Double Tap,0,0,0
