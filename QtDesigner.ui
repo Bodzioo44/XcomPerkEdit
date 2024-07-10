@@ -33,52 +33,63 @@
         <number>0</number>
        </property>
        <widget class="QWidget" name="PerkPage">
-        <widget class="QWidget" name="verticalLayoutWidget_3">
+        <widget class="QWidget" name="gridLayoutWidget_2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>9</y>
-           <width>411</width>
-           <height>561</height>
+           <y>30</y>
+           <width>391</width>
+           <height>601</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="PerkPageVerticalLayout" stretch="2,10">
-          <item>
-           <layout class="QHBoxLayout" name="LabelLayout">
-            <item>
-             <widget class="QLabel" name="MobilityLabel">
-              <property name="text">
-               <string>Mobility: 0</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="AimLabel">
-              <property name="text">
-               <string>Aim: 0</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="WillLabel">
-              <property name="text">
-               <string>Will: 0</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
+         <layout class="QGridLayout" name="PerkGridLayout" rowstretch="0,0">
+          <item row="1" column="2">
+           <widget class="QLabel" name="WillLabel">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Will: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
-          <item>
-           <layout class="QGridLayout" name="PerkGridLayout" rowstretch="0"/>
+          <item row="1" column="1">
+           <widget class="QLabel" name="AimLabel">
+            <property name="maximumSize">
+             <size>
+              <width>10000000</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Aim: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="MobilityLabel">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Mobility: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

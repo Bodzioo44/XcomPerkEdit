@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     ui.setupUi(this);
     this->setCentralWidget(ui.centralwidget);
     ui.centralwidget->setLayout(ui.gridLayout);
+    ui.PerkPage->setLayout(ui.PerkGridLayout);
     // ui.PerkPageVerticalLayout->addLayout(ui.LabelLayout);
     // ui.PerkPageVerticalLayout->addLayout(ui.PerkGridLayout);
 
@@ -15,25 +16,19 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     connect(ui.SoldierList, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.PerkEditButton, &QPushButton::clicked, this, &MainWindow::PerkEditButtonClicked);
     
-    // QLabel* will_label = new QLabel("Will: 0/0", this);
-    // QLabel* aim_label = new QLabel("Aim: 0/0", this);
-    // QLabel* mobility_label = new QLabel("Mobility: 0/0", this);
-    // ui.PerkGridLayout->addWidget(will_label, 0, 0);
-    // ui.PerkGridLayout->addWidget(aim_label, 0, 1);
-    // ui.PerkGridLayout->addWidget(mobility_label, 0, 2);    
-    
     for (int i = 0; i < 18; i++)
     {
-        QToolButton* button = new QToolButton(this);
-        ui.PerkGridLayout->addWidget(button, (i / 3), i % 3);
+        PerkButton* button = new PerkButton(this, i);
+        //button->setStyleSheet("QToolButton {border: none;}");
+        //button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        
+        
+        ui.PerkGridLayout->addWidget(button, (i / 3) + 2, i % 3);
+        perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
-
-    // ui.PerkPageVerticalLayout->addLayout(ui.LabelLayout);
-    // ui.PerkPageVerticalLayout->addLayout(ui.PerkGridLayout);
-    // ui.PerkPageVerticalLayout->setStretch(0, 2); // For LabelLayout
-    // ui.PerkPageVerticalLayout->setStretch(1, 10); // For PerkGridLayout
-    
+    // QIcon icon("../assets/icons/Valkyrie_icon.png");
+    // //perk_buttons[0]->iconSize(50, 50);
 
     //move this out of the constructor
     try
@@ -84,6 +79,7 @@ void MainWindow::onSoldierSelected()
 void MainWindow::onPerkSelected(int i)
 {
     cout << i << endl;
+    perk_buttons[i]->ChangeIcon("../assets/icons/Test.png");
 }
 
 void MainWindow::PerkEditButtonClicked()

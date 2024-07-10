@@ -5,6 +5,7 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QSpacerItem>
 
 #include <map>
 #include <vector>
@@ -12,6 +13,7 @@
 
 
 #include "build/ui_QtDesigner.h"
+#include "Qt/PerkButton.h"
 #include "json11/json11.hpp"
 #include "utils.h"
 
@@ -38,7 +40,7 @@ private:
     Ui::MainWindow ui;
     Json json;
     map<int, int> index_translation;
-
+    vector<PerkButton*> perk_buttons;
 };
 
 

@@ -14,6 +14,6 @@ QT += widgets gui
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += MainWindow.h utils.h build/ui_QtDesigner.h json11/json11.hpp
+HEADERS += MainWindow.h utils.h build/ui_QtDesigner.h json11/json11.hpp Qt/PerkButton.h
 FORMS += QtDesigner.ui
-SOURCES += main.cpp MainWindow.cpp utils.cpp json11/json11.cpp
+SOURCES += main.cpp MainWindow.cpp utils.cpp json11/json11.cpp Qt/PerkButton.cpp
