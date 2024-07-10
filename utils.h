@@ -6,6 +6,7 @@
 
 #include <map>
 #include <iostream>
+#include <fstream>
 
 struct Perk;
 
@@ -24,6 +25,13 @@ struct Perk
 
     Perk(int index, int value, std::string name, int mobility, int aim, int will)
         : index(index), value(value), name(name), mobility(mobility), aim(aim), will(will){
+            if (value > 1)
+            {
+                std::fstream file;
+                file.open("../Logs/logs.txt", std::ios::app);
+                file << "value greater than 1: " << value << " for index: " << index << " with name: " << name << std::endl;
+                file.close();
+            }
     }
     //are getters really needed?
     std::string GetName() { return name; }
