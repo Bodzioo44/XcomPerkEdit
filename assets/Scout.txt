@@ -1,0 +1,18 @@
+19,Holo-Targeting,0,0,0
+15,Damn Good Ground,0,0,0
+159,Lone Wolf,0,0,0
+5,Low Profile,0,0,0
+94,Ranger,0,1,0
+116,Deadeye,0,1,0
+37,Flush,0,0,0
+32,Aggression,0,0,0
+8,Battlescanner,0,0,0
+95,Concealment,0,0,0
+14,In the Zone,0,0,0
+167,Hit and Run,0,0,0
+33,Tactical Sense,0,0,0
+39,Bring 'Em On,0,0,0
+31,Sprinter,0,0,0
+27,Extra Conditioning,1,4,4
+135,Vital Point Targeting,0,0,0
+91, Smoke & Mirrors,0,0,0

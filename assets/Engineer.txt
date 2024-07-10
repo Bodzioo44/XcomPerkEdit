@@ -1,0 +1,18 @@
+19,Holo-Targeting,0,1,0
+44,Smoke Grenade,0,0,0
+59,Sapper,0,0,0
+94,Ranger,0,2,0
+91,Smoke & Mirrors,0,0,0
+64,HEAT Warheads,0,0,0
+17,Will to Survive,0,0,3
+102,Repair,0,0,0
+21,Suppression,0,0,0
+8,Battlescanner,0,0,0
+52,Dense Smoke,0,0,0
+93,Mayhem,0,0,0
+27,Extra Conditioning,1,3,3
+53,Packmaster,0,0,0
+90,HEAT Ammo,0,0,0
+112,Tandem Warheads,0,0,0
+18,Fire Rocket,0,0,0
+81,Bombard,0,0,0
