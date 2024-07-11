@@ -2,9 +2,12 @@
 #define PERKBUTTON_H
 
 #include <QtWidgets/QToolButton>
+#include <QtCore/QString>
 
 #include <iostream>
 
+#include "utils.h"
+using perk_data = std::array<std::string, 3>;
 
 class PerkButton : public QToolButton
 {
@@ -14,8 +17,8 @@ class PerkButton : public QToolButton
 public:
     PerkButton(QWidget* parent = nullptr, int number = 0);
     ~PerkButton() {};
-    void ChangeIcon(QString icon_path);
-    
+    void LoadPerk(const perk_data data);
+
 
 
 

@@ -2,17 +2,22 @@
 #define UTILS_H
 
 #include "json11/json11.hpp"
-
+#include "Qt/PerkButton.h"
 
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <algorithm>
+
+using perk_data = std::array<std::string, 3>;
+using perk_map = std::map<int, perk_data>;
 
 struct Perk;
-
 json11::Json load_json_file(const std::string& file_path);
 //void change_soldier_skill(json11::Json& json, int soldier_index, int skill_id);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string soldier_class);
+perk_map load_perk_info(std::vector<Perk> perks);
 
 struct Perk
 {
@@ -38,7 +43,7 @@ struct Perk
     int GetMobility() { return mobility; }
     int GetWill() { return will; }
     //TODO: fix this
-    //some of the values are diffrent number that 1 for some reason
+    //some of the values are greater that 1 for some reason
     void SwitchValue() 
     {
         if (value == 0)

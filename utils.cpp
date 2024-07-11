@@ -26,7 +26,6 @@ json11::Json load_json_file(const std::string& file_path) {
     if (!err.empty()) {
         throw std::runtime_error("Failed to parse JSON: " + err);
     }
-
     return json;
 }
 
@@ -75,6 +74,58 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string 
         perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], std::stoi(row[1]), std::stoi(row[2]), std::stoi(row[3])));
     }
     return perks;
+}
+
+perk_map load_perk_info(std::vector<Perk> perks)
+{
+    std::vector<int> perks_indexes;
+    for (const Perk& p: perks)
+    {
+        perks_indexes.push_back(p.index);
+    }
+    std::sort(perks_indexes.begin(), perks_indexes.end());
+
+    perk_map all_perks;
+    std::string path = "../assets/All_Perk_Data.txt";
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file " + path);
+    }
+    std::string line;
+    int i = 1;
+    int current_perk = 0;
+    bool is_correct = false;
+    perk_data data;
+
+    //fuck me, the perk vector is not sorted...
+    while (std::getline(file,line))
+    {
+        if (i % 4 == 1 && std::stoi(line) == perks_indexes[current_perk])
+        {
+            is_correct = true;
+            //std::cout << "Perk found: " << line << std::endl;
+        }
+        else if (is_correct && i % 4 == 2)
+        {
+            data[0] = line;
+            //std::cout << "Second line: " << line << std::endl;
+        }
+        else if (is_correct && i % 4 == 3)
+        {
+            data[1] = line;
+            //std::cout << "Third line: " << line << std::endl;
+        }
+        else if (is_correct && i % 4 == 0)
+        {
+            data[2] = line;
+            //std::cout << "Fourth line: " << line << std::endl;
+            all_perks[perks_indexes[current_perk]] = data;
+            current_perk++;
+            is_correct = false;
+        }
+        i++;
+    }
+    return all_perks;
 }
 
 

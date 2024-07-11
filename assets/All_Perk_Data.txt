@@ -1,384 +1,308 @@
-142
-Absorption Fields
-Reduces most incoming damage to this unit, scaling up as damage increases. Specifically: reduces 40% of any damage taken after 2; after all other damage reduction has been applied.
-MEC_ABSORTION_FIELDS.png
-
-133
-Advanced Fire Control
-Shots from Overwatch no longer suffer any Aim penalty.
-MEC_ADVANCED_FIRE_CONTROL.png
-
-32
-Aggression
-Confers +10% critical chance per enemy in sight (max +30%). Aliens visible via squadsight are not counted for bonus.
-ASSAULT_AGGRESSION.png
-
-132
-Automated Threat Assessment
-Confers 0.5 DR (50% chance to absorb one point of damage) at all times, and confers +15 defense when in overwatch until the unit takes an overwatch shot.
-MEC_AUTOMATED_THREAT_ASSESSMENT.png
-
-8
-Battle Scanner
-Scanning device that, when thrown, creates a new source of vision for 2 turns. Grants 2 uses. Increases throw range for battle scanners by 70% (does not stack with other perks).
-SNIPER_BATTLESCANNER.png
-
-145
-Body Shield
-The nearest visible enemy suffers -20 aim and cannot critically hit this unit
-MEC_BODY_SHIELD.png
-
-81
-Bombard
-Throw or launch grenades over exceptionally long distances (+50%).
-ALIEN_BOMBARD.png
-
-39
-Bring 'Em On
-Confers 1-4 bonus damage during critical hits (which is then multiplied by 50% due to the critical hit). The damage is higher when more enemies are in view (including squad sight vision). This results in +1.5 dmg for 1-2 enemies, +3 dmg for 3-4 enemies, +4.5 dmg for 5-6 enemies, +6 dmg for 7 or more enemies.
-ASSAULT_BRINGTHEMON.png
-
-40
-Close Combat Specialist
-Confers a reaction shot against any enemy who closes to within 4 tiles. Does not require Overwatch. Warning: Will activate even if unit is concealed.
-ASSAULT_CLOSECOMBAT.png
-
-34
-Close Encounters
-The first standard shot made within 4 tiles of the target does not cost an action. Cannot combine with Run And Gun.
-ASSAULT_CLOSEPERSONAL.png
-
-131
-Collateral Damage
-Area of effect attack that destroys most cover and hits all eligible targets for 1/3rd damage. Unlike most abilities, damage increasing items and perks also only apply 1/3rd damage (note: HEAT and flak cannot be reduced below +2 damage though). This attack cannot critically hit. Shredder ammo and holo-targeting are NOT applied.
-MEC_COLLATERAL_DAMAGE.png
-
-51
-Combat Drugs
-Smoke grenades confer +20 Will and +20% critical chance in addition to the original 20 defense. The area of effect is also increased by 25%.
-SUPPORT_COMBATDRUGS.png
-
-95
-Concealment
-When the soldier moves to high cover, enemies without special capabilities will not target the soldier (but CAN sense him/her). Does not work if any enemies have line of sight to the soldier's starting position. Leaving cover, being flanked, firing, hacking arrays, and capturing meld will break this concealment. Low Profile units will not gain this bonus by occupying low cover. Firing from concealment grants +30% crit.
-Mimetic_Skin_Gene_Mod_(EU2012).png
-
-47
-Covering Fire
-Allows certain reaction shots to trigger on many enemy actions, not just movement (excludes reload, overwatch, and hunker down actions).
-SUPPORT_COVERINGFIRE.png
-
-134
-Damage Control
-When this unit takes damage, all further damage will be reduced by 1 or 2 points (1.5 DR) for the next 2 turns.
-MEC_DAMAGE_CONTROL.png
-
-15
-Damn Good Ground
-Confers +10 Aim and +10 Defense against enemies at lower elevation, in addition to the usual elevation bonuses.
-SNIPER_DGG.png
-
-25
-Danger Zone
-Increases area of effect of Suppression, rockets, grenade launchers and proximity mine launchers.
-HEAVY_DANGERZONE.png
-
-116
-Deadeye
-Confers +15 aim against flying targets.
-SENTINEL_MODULE_ICON.png
-
-52
-Dense Smoke
-Increases the defense bonus from smoke grenade from 20 to 40.
-SUPPORT_DENSESMOKE.png
-
-9
-Disabling Shot
-Allows sniper rifles to fire a shot that causes the target's main weapon to malfunction. The target may use Reload to fix the weapon. 2 turn cooldown. Cannot cause critical hits.
-SNIPER_DISABLINGSHOT.png
-
-13
-Double Tap
-Allows a second action restricted to Standard Shot, Precision Shot, or Disabling Shot as long as the first action was a Standard Shot, Precision Shot, Disabling Shot, or Flush provided no costly actions were taken. 1 turn cooldown. (Note: Double Tap is cancelled in the following cases: (1) the first shot results in a kill, and no more enemies are visible to the unit, or (2) for gunners only, the first shot depletes the ammo.)
-SNIPER_DOUBLETAP.png
-
-11
-Executioner
-Confers +10 aim and +10 critical chance against targets at or below 50% health.
-SNIPER_EXECUTIONER.png
-
-27
-Extra Conditioning
-Confers 1-4 bonus health based on which type of armor is equipped. Heavier armor increases the bonus.
-ASSAULT_EXTRACONDITIONING.png
-
-48
-Field Medic
-For soldiers, grants one free use of a medikit per mission and allows additional medikit items to be used two times per battle instead of one. Also allows Restorative Mist items to be used three times per battle instead of once.
-SUPPORT_FIELDMEDIC.png
-
-150
-Field Surgeon
-Reduces (or, for 1 HP flesh wounds, eliminates) Wounded timer on soldiers who sustained HP damage but were not Critically Wounded. Does not affect wound sustained by sending fatigued soldier on a mission.
-Adaptive_Bone_Marrow_Gene_Mod_(EU2012).png
-
-114 
-Fire in the Hole
-Grants +10 aim for purposes of reducing scatter if the soldier has not moved this turn. Increases range of Blaster Launcher (which does not scatter).
-ALIEN_CLUSTERBOMB.png
-
-18
-Fire Rocket
-Fire a high explosive rocket using an equipped launcher.
-HEAVY_FIREROCKET.png
-
-37
-Flush
-Fire a shot that may cause non-flying enemies to run to new cover. The shot is easy to hit with (+30 aim), but does reduced damage (-50% base weapon damage), and consumes extra ammo (2 ammo). Hunkered units will not relocate.
-ASSAULT_FLUSH.png
-
-24
-Grenadier
-Allows 2 destructive grenades in a single inventory slot, and the soldier may throw grenades 20 percent further.
-HEAVY_GRENADIER.png
-
-90
-HEAT Ammo
-Your primary weapon, not including shotguns, does an additional 50% of its base weapon damage to robotic enemies after any damage reduction is assessed.
-HEAVY_HEAT_AMMO.png
-
-64
-HEAT Warheads
-Your rockets and grenades do an additional 50% damage to robotic enemies after damage reduction is assessed.
-HEAVY_HEAT_AMMO.png
-
-167
-Hit and Run
-Your first standard shot of each turn against an uncovered or flanked target does not cost an action. Does not work against flying units, and cannot be used if Run N' Gun activated.
-ALIEN_LEAP.png
-
-19
-Holo-Targeting
-Shooting at or suppressing enemies confers +10 Aim to allies' attacks on those enemies until end of turn.
-HEAVY_HOLO.png
-
-14
-In the Zone
-Killing a flanked or uncovered target does not cost an action. Confers a -1 base damage and -10% critical hit chance penalty for each successive In The Zone kill.
-SNIPER_ITZ.png
-
-66
-Javelin Rockets
-Your rockets now travel much further(+33%) and can hit targets beyond your visual range.
-ALIEN_DEATHBLOSSOM.png
-
-137
-Jetboot Module
-When activated, confers the ability to jump to normally inaccessible heights for the rest of the turn.
-MEC_JET_BOOT_MODULE.png
-
-41
-Killer Instinct
-Activating Run and Gun grants +50% critical damage for the rest of the turn.
-ASSAULT_KILLERINSTINCT.png
-
-126
-Light 'Em Up
-Standard shots no longer end the turn, if taken as the first action.
-HEAVY_BULLETSWARM.png
-
-35
-Lightning Reflexes
-The hit chance of reaction fire against this unit is reduced by 90 percent for the first shot, and by 70 percent for additional shots.
-ASSAULT_LIGHTNINGREFLEXES.png
-
-58
-Lock N' Load
-Primary weapons receive one additional shot or burst before a reload is required, and you may reload your primary weapon as the first action of your turn without ending the turn.
-SUPPORT_DEEPPOCKETS.png
-
-159
-Lone Wolf
-+10 Aim and Critical Chance if not within 7 tiles of an allied unit.
-120px-Council_Medal_of_Honor_2_(EU2012).png
-
-5
-Low Profile
-Makes partial cover grant the defense bonus of full cover.
-SNIPER_LOWPROFILE.png
-
-93
-Mayhem
-Confers +2 damage for suppression, SAWs, LMGs, explosive grenades, proximity mines and rocket launchers. Confers +4 damage for sniper and long rifles, marksman's, strike and reflex rifles using Standard Shot or Precision Shot.
-HEAVY_MAYHEM.png
-
-136
-One for All
-When activated, the MEC becomes a high cover element and gains 1 point of damage reduction. Moving or using an arm-based weapon will return the MEC to standard posture.
-MEC_ONE_FOR_ALL.png
-
-10
-Opportunist
-Eliminates the Aim penalty on reaction shots, and allows reaction shots to cause critical hits.
-SNIPER_OPPORTUNIST.png
-
-53
-Packmaster
-Limited-use small items (including those from perks) receive 1 additional use.
-MEC_EXPANDED_STORAGE.png
-
-162
-Paramedic
-Once per turn, this unit may use a medikit without spending an action.
-120px-Defenders_Medal_2_(EU2012).png
-
-141
-Platform Stability
-Shots taken before any costly actions have +10 Aim and +10% critical chance. Also grants +10 aim for purposes of reducing scatter if the soldier has not moved this turn, and increases range of Blaster Launcher (which does not scatter).
-MEC_PLATFORM_STABILITY.png
-
 2
 Precision Shot
 With sniper/long rifles, fire a shot that ignores squadsight critical penalties, has an additional +30% critical chance, and provides extra damage on critical hits based on the soldier's weapon tech level (+2 for ballistic/laser/gauss, +3 for pulse, +4 for plasma). With marksman's and strike rifles, allows an unlimited range shot with no other bonuses. 2 turn cooldown.
 SNIPER_HEADSHOT.png
-
-94
-Ranger
-Confers +1 damage with primary weapons, rocket launchers, MEC secondary weapons and sidearms. Negates the long-range accuracy penalty with sidearms when shooting beyond 14 meters.
-SNIPER_GUNSLINGER.png
-
-36
-Rapid Fire
-Take two shots against a single target in quick succession. Each shot carries a -15 penalty to Aim.
-ASSAULT_RAPIDFIRE.png
-
-24
-Rapid Reaction
-If on Overwatch, confers a bonus reaction shot (to a maximum three shots total) for every reaction shot that is a hit.
-HEAVY_RAPIDREACTION.png
-
-144
-Reactive Targeting Sensors
-Unit gets a free shot back at the first enemy who attacks the MEC each turn, provided there's enough ammo to do so.
-MEC_REACTIVE_TARGETING_SENSORS.png
-
-26
-Ready for Anything
-If the unit fires without taking any other costly action, it automatically enters overwatch at the end of its turn.
-MEC_ADVANCED_FIRE_CONTROL.png
-
-102
-Repair
-For X-Com, grants +2 Arc Thrower charges. On drones, allows repair of robotic units.
-ALIEN_REPAIR.png
-
-139
-Repair Servos
-Repairs up to 50% of damage taken (max 2 per turn). Value on icon represents repairs remaining at 2 points per hp. Additional damage taken before repairs are complete reduces how much can be repaired from prior hits by 50%.
-MEC_REPAIR_SERVOS.png
-
-43
-Resilience
-Confers immunity to critical hits.
-ASSAULT_RESILLIENCE.png
-
-56
-Revive
-Allows Medikits to revive critically wounded Soldiers at 33% of maximum health instead of just stabilizing them.
-SUPPORT_REVIVE.png
-
-6
-Run & Gun
-Allows firing or Overwatch after Dashing on the turn Run and Gun is activated. 2 turn cooldown.
-ASSAULT_RUNGUN.png
-
-59
-Sapper
-Increases grenade and proximity mine damage by +1. Also triples damage to the environment.
-Ace_hole.png
-
-55
-Savior
-Provides 2 item-free medikit charges and +4 healing bonus to medikits. Restorative Mist units restore three more health per use.
-SUPPORT_SAVIOR.png
-
-54
-Sentinel
-Allows two reaction shots during Overwatch, instead of only one.
-SUPPORT_SENTINEL.png
-
-153
-Sharpshooter
-+10 critical chance in all situations, +10 Aim against enemies in full cover.
-120px-Urban_Combat_Badge_2_(EU2012).png
-
-143
-Shock-Absorbent Armor
-Damage received from enemies within 4 tiles is reduced by 33%.
-MEC_SHOCK_ABSORBENT_ARMOR.png
-
-92
-Shock & Awe
-Allows 1 additional standard rocket to be fired per battle.
-HEAVY_ROCKETEER.png
-
-22
-Shredder Ammo
-The Shredder debuff causes any unit hit to take 40% additional damage (after DR, rounded down) from all sources. Gunners and MECs apply the Shredder debuff for the remainder of the current turn to any target struck by their primary weapon. Rocketeers get an extra rocket that is weaker than a standard rocket (60% rounded down), cannot penetrate cover, has a +50% larger blast radius, and applies the Shredder debuff to all targets struck by the rocket for the next 3 turns.
-HEAVY_SHREDDER.png
-
-91
-Smoke & Mirrors
-Allows one additional use of all support grenades during each mission. It also increases charges from Smoke Grenade and Battlescanner perks by 1.
-SUPPORT_SMOKEMIRRORS.png
-
-44
-Smoke Grenade
-Deploy a smoke grenade once per mission. The smoke confers +20 defense and prevents flanking for all enemy and allied units. Lasts 2 turns. Taking the perk on level up also allows an additional action after deploying a smoke grenade.
-SUPPORT_SMOKEMIRRORS.png
-
-16
-Snapshot
-For snipers, removes the sniper rifle's restriction on firing and Overwatch after taking a costly action. Any shots taken after using any costly action suffer a -10 Aim penalty. For rocketeers, reduces the aim and range penalty for launching a rocket after taking a costly action to 25% (from 50%).
-SNIPER_SNAPSHOT.png
-
-31
-Sprinter
-Grants +4 mobility (roughly 3 tiles movement).
-SUPPORT_SPRINTER.png
-
 3
 Squadsight
 Allows firing at targets in any ally's sight radius within weapon range, but critical chance suffers a -20% penalty. Extended range weapons (MEC primary weapons, Marksman and Strike Rifles, and LMGs) gain roughly five extra tiles range. Sniper rifles have infinite range. Overwatch fire does not extend to squadsight ranges, except with Marksman's and Strike Rifles.
 SNIPER_SQUADSIGHT.png
-
-154
-Steadfast
-Never panic as a result of getting wounded, allies panicking, allies getting wounded or killed, or the intimidation ability.
-120px-Defenders_Medal_1_(EU2012).png
-
-21
-Suppression
-Fire a barrage that pins down a target, granting Opportunist reaction fire against it if it moves. Imposes a -30 penalty to aim and reduces range of many area-of-effect attacks, including grenades. Also negates overwatch from the target while suppression is active. Lastly, enemy AI prioritizes breaking the suppression by shooting the suppressor, so it functions as a mini-taunt. Not possible with shotguns, sniper rifles, or strike rifles.
-HEAVY_SUPPRESSION.png
-
-33
-Tactical Sense
-Confers +5 Defense per enemy in sight (max +20).
-ASSAULT_TACTICALSENSE.png
-
-112
-Tandem Warheads
-Explosives employed by this soldier do full damage to the maximum extent of their area of effect.
-ALIEN_OVERLOAD.png
-
-135
-Vital Point Targeting
-Confers 2 bonus damage with primary guns, and +1 damage with sidearms, against humans and alien targets whose species have been autopsied.
-MEC_VITAL_POINT_TARGETING.png
-
+5
+Low Profile
+Makes partial cover grant the defense bonus of full cover.
+SNIPER_LOWPROFILE.png
+6
+Run & Gun
+Allows firing or Overwatch after Dashing on the turn Run and Gun is activated. 2 turn cooldown.
+ASSAULT_RUNGUN.png
+8
+Battle Scanner
+Scanning device that, when thrown, creates a new source of vision for 2 turns. Grants 2 uses. Increases throw range for battle scanners by 70% (does not stack with other perks).
+SNIPER_BATTLESCANNER.png
+9
+Disabling Shot
+Allows sniper rifles to fire a shot that causes the target's main weapon to malfunction. The target may use Reload to fix the weapon. 2 turn cooldown. Cannot cause critical hits.
+SNIPER_DISABLINGSHOT.png
+10
+Opportunist
+Eliminates the Aim penalty on reaction shots, and allows reaction shots to cause critical hits.
+SNIPER_OPPORTUNIST.png
+11
+Executioner
+Confers +10 aim and +10 critical chance against targets at or below 50% health.
+SNIPER_EXECUTIONER.png
+13
+Double Tap
+Allows a second action restricted to Standard Shot, Precision Shot, or Disabling Shot as long as the first action was a Standard Shot, Precision Shot, Disabling Shot, or Flush provided no costly actions were taken. 1 turn cooldown. (Note: Double Tap is cancelled in the following cases: (1) the first shot results in a kill, and no more enemies are visible to the unit, or (2) for gunners only, the first shot depletes the ammo.)
+SNIPER_DOUBLETAP.png
+14
+In the Zone
+Killing a flanked or uncovered target does not cost an action. Confers a -1 base damage and -10% critical hit chance penalty for each successive In The Zone kill.
+SNIPER_ITZ.png
+15
+Damn Good Ground
+Confers +10 Aim and +10 Defense against enemies at lower elevation, in addition to the usual elevation bonuses.
+SNIPER_DGG.png
+16
+Snapshot
+For snipers, removes the sniper rifle's restriction on firing and Overwatch after taking a costly action. Any shots taken after using any costly action suffer a -10 Aim penalty. For rocketeers, reduces the aim and range penalty for launching a rocket after taking a costly action to 25% (from 50%).
+SNIPER_SNAPSHOT.png
 17
 Will to Survive
 Gain 1.5 Damage Reduction (DR) if in cover and not flanked.
 HEAVY_WILLTOSURVIVE.png
+18
+Fire Rocket
+Fire a high explosive rocket using an equipped launcher.
+HEAVY_FIREROCKET.png
+19
+Holo-Targeting
+Shooting at or suppressing enemies confers +10 Aim to allies' attacks on those enemies until end of turn.
+HEAVY_HOLO.png
+21
+Suppression
+Fire a barrage that pins down a target, granting Opportunist reaction fire against it if it moves. Imposes a -30 penalty to aim and reduces range of many area-of-effect attacks, including grenades. Also negates overwatch from the target while suppression is active. Lastly, enemy AI prioritizes breaking the suppression by shooting the suppressor, so it functions as a mini-taunt. Not possible with shotguns, sniper rifles, or strike rifles.
+HEAVY_SUPPRESSION.png
+22
+Shredder Ammo
+The Shredder debuff causes any unit hit to take 40% additional damage (after DR, rounded down) from all sources. Gunners and MECs apply the Shredder debuff for the remainder of the current turn to any target struck by their primary weapon. Rocketeers get an extra rocket that is weaker than a standard rocket (60% rounded down), cannot penetrate cover, has a +50% larger blast radius, and applies the Shredder debuff to all targets struck by the rocket for the next 3 turns.
+HEAVY_SHREDDER.png
+23
+Rapid Reaction
+If on Overwatch, confers a bonus reaction shot (to a maximum three shots total) for every reaction shot that is a hit.
+HEAVY_RAPIDREACTION.png
+24
+Grenadier
+Allows 2 destructive grenades in a single inventory slot, and the soldier may throw grenades 20 percent further.
+HEAVY_GRENADIER.png
+25
+Danger Zone
+Increases area of effect of Suppression, rockets, grenade launchers and proximity mine launchers.
+HEAVY_DANGERZONE.png
+26
+Ready for Anything
+If the unit fires without taking any other costly action, it automatically enters overwatch at the end of its turn.
+MEC_ADVANCED_FIRE_CONTROL.png
+27
+Extra Conditioning
+Confers 1-4 bonus health based on which type of armor is equipped. Heavier armor increases the bonus.
+ASSAULT_EXTRACONDITIONING.png
+31
+Sprinter
+Grants +4 mobility (roughly 3 tiles movement).
+SUPPORT_SPRINTER.png
+32
+Aggression
+Confers +10% critical chance per enemy in sight (max +30%). Aliens visible via squadsight are not counted for bonus.
+ASSAULT_AGGRESSION.png
+33
+Tactical Sense
+Confers +5 Defense per enemy in sight (max +20).
+ASSAULT_TACTICALSENSE.png
+34
+Close Encounters
+The first standard shot made within 4 tiles of the target does not cost an action. Cannot combine with Run And Gun.
+ASSAULT_CLOSEPERSONAL.png
+35
+Lightning Reflexes
+The hit chance of reaction fire against this unit is reduced by 90 percent for the first shot, and by 70 percent for additional shots.
+ASSAULT_LIGHTNINGREFLEXES.png
+36
+Rapid Fire
+Take two shots against a single target in quick succession. Each shot carries a -15 penalty to Aim.
+ASSAULT_RAPIDFIRE.png
+37
+Flush
+Fire a shot that may cause non-flying enemies to run to new cover. The shot is easy to hit with (+30 aim), but does reduced damage (-50% base weapon damage), and consumes extra ammo (2 ammo). Hunkered units will not relocate.
+ASSAULT_FLUSH.png
+39
+Bring 'Em On
+Confers 1-4 bonus damage during critical hits (which is then multiplied by 50% due to the critical hit). The damage is higher when more enemies are in view (including squad sight vision). This results in +1.5 dmg for 1-2 enemies, +3 dmg for 3-4 enemies, +4.5 dmg for 5-6 enemies, +6 dmg for 7 or more enemies.
+ASSAULT_BRINGTHEMON.png
+40
+Close Combat Specialist
+Confers a reaction shot against any enemy who closes to within 4 tiles. Does not require Overwatch. Warning: Will activate even if unit is concealed.
+ASSAULT_CLOSECOMBAT.png
+41
+Killer Instinct
+Activating Run and Gun grants +50% critical damage for the rest of the turn.
+ASSAULT_KILLERINSTINCT.png
+43
+Resilience
+Confers immunity to critical hits.
+ASSAULT_RESILLIENCE.png
+44
+Smoke Grenade
+Deploy a smoke grenade once per mission. The smoke confers +20 defense and prevents flanking for all enemy and allied units. Lasts 2 turns. Taking the perk on level up also allows an additional action after deploying a smoke grenade.
+SUPPORT_SMOKEMIRRORS.png
+47
+Covering Fire
+Allows certain reaction shots to trigger on many enemy actions, not just movement (excludes reload, overwatch, and hunker down actions).
+SUPPORT_COVERINGFIRE.png
+48
+Field Medic
+For soldiers, grants one free use of a medikit per mission and allows additional medikit items to be used two times per battle instead of one. Also allows Restorative Mist items to be used three times per battle instead of once.
+SUPPORT_FIELDMEDIC.png
+51
+Combat Drugs
+Smoke grenades confer +20 Will and +20% critical chance in addition to the original 20 defense. The area of effect is also increased by 25%.
+SUPPORT_COMBATDRUGS.png
+52
+Dense Smoke
+Increases the defense bonus from smoke grenade from 20 to 40.
+SUPPORT_DENSESMOKE.png
+53
+Packmaster
+Limited-use small items (including those from perks) receive 1 additional use.
+MEC_EXPANDED_STORAGE.png
+54
+Sentinel
+Allows two reaction shots during Overwatch, instead of only one.
+SUPPORT_SENTINEL.png
+55
+Savior
+Provides 2 item-free medikit charges and +4 healing bonus to medikits. Restorative Mist units restore three more health per use.
+SUPPORT_SAVIOR.png
+56
+Revive
+Allows Medikits to revive critically wounded Soldiers at 33% of maximum health instead of just stabilizing them.
+SUPPORT_REVIVE.png
+58
+Lock N' Load
+Primary weapons receive one additional shot or burst before a reload is required, and you may reload your primary weapon as the first action of your turn without ending the turn.
+SUPPORT_DEEPPOCKETS.png
+59
+Sapper
+Increases grenade and proximity mine damage by +1. Also triples damage to the environment.
+Ace_hole.png
+64
+HEAT Warheads
+Your rockets and grenades do an additional 50% damage to robotic enemies after damage reduction is assessed.
+HEAVY_HEAT_AMMO.png
+66
+Javelin Rockets
+Your rockets now travel much further(+33%) and can hit targets beyond your visual range.
+ALIEN_DEATHBLOSSOM.png
+81
+Bombard
+Throw or launch grenades over exceptionally long distances (+50%).
+ALIEN_BOMBARD.png
+90
+HEAT Ammo
+Your primary weapon, not including shotguns, does an additional 50% of its base weapon damage to robotic enemies after any damage reduction is assessed.
+HEAVY_HEAT_AMMO.png
+91
+Smoke & Mirrors
+Allows one additional use of all support grenades during each mission. It also increases charges from Smoke Grenade and Battlescanner perks by 1.
+SUPPORT_SMOKEMIRRORS.png
+92
+Shock & Awe
+Allows 1 additional standard rocket to be fired per battle.
+HEAVY_ROCKETEER.png
+93
+Mayhem
+Confers +2 damage for suppression, SAWs, LMGs, explosive grenades, proximity mines and rocket launchers. Confers +4 damage for sniper and long rifles, marksman's, strike and reflex rifles using Standard Shot or Precision Shot.
+HEAVY_MAYHEM.png
+94
+Ranger
+Confers +1 damage with primary weapons, rocket launchers, MEC secondary weapons and sidearms. Negates the long-range accuracy penalty with sidearms when shooting beyond 14 meters.
+SNIPER_GUNSLINGER.png
+95
+Concealment
+When the soldier moves to high cover, enemies without special capabilities will not target the soldier (but CAN sense him/her). Does not work if any enemies have line of sight to the soldier's starting position. Leaving cover, being flanked, firing, hacking arrays, and capturing meld will break this concealment. Low Profile units will not gain this bonus by occupying low cover. Firing from concealment grants +30% crit.
+Mimetic_Skin_Gene_Mod_(EU2012).png
+102
+Repair
+For X-Com, grants +2 Arc Thrower charges. On drones, allows repair of robotic units.
+ALIEN_REPAIR.png
+112
+Tandem Warheads
+Explosives employed by this soldier do full damage to the maximum extent of their area of effect.
+ALIEN_OVERLOAD.png
+114 
+Fire in the Hole
+Grants +10 aim for purposes of reducing scatter if the soldier has not moved this turn. Increases range of Blaster Launcher (which does not scatter).
+ALIEN_CLUSTERBOMB.png
+116
+Deadeye
+Confers +15 aim against flying targets.
+SENTINEL_MODULE_ICON.png
+126
+Light 'Em Up
+Standard shots no longer end the turn, if taken as the first action.
+HEAVY_BULLETSWARM.png
+131
+Collateral Damage
+Area of effect attack that destroys most cover and hits all eligible targets for 1/3rd damage. Unlike most abilities, damage increasing items and perks also only apply 1/3rd damage (note: HEAT and flak cannot be reduced below +2 damage though). This attack cannot critically hit. Shredder ammo and holo-targeting are NOT applied.
+MEC_COLLATERAL_DAMAGE.png
+132
+Automated Threat Assessment
+Confers 0.5 DR (50% chance to absorb one point of damage) at all times, and confers +15 defense when in overwatch until the unit takes an overwatch shot.
+MEC_AUTOMATED_THREAT_ASSESSMENT.png
+133
+Advanced Fire Control
+Shots from Overwatch no longer suffer any Aim penalty.
+MEC_ADVANCED_FIRE_CONTROL.png
+134
+Damage Control
+When this unit takes damage, all further damage will be reduced by 1 or 2 points (1.5 DR) for the next 2 turns.
+MEC_DAMAGE_CONTROL.png
+135
+Vital Point Targeting
+Confers 2 bonus damage with primary guns, and +1 damage with sidearms, against humans and alien targets whose species have been autopsied.
+MEC_VITAL_POINT_TARGETING.png
+136
+One for All
+When activated, the MEC becomes a high cover element and gains 1 point of damage reduction. Moving or using an arm-based weapon will return the MEC to standard posture.
+MEC_ONE_FOR_ALL.png
+137
+Jetboot Module
+When activated, confers the ability to jump to normally inaccessible heights for the rest of the turn.
+MEC_JET_BOOT_MODULE.png
+139
+Repair Servos
+Repairs up to 50% of damage taken (max 2 per turn). Value on icon represents repairs remaining at 2 points per hp. Additional damage taken before repairs are complete reduces how much can be repaired from prior hits by 50%.
+MEC_REPAIR_SERVOS.png
+141
+Platform Stability
+Shots taken before any costly actions have +10 Aim and +10% critical chance. Also grants +10 aim for purposes of reducing scatter if the soldier has not moved this turn, and increases range of Blaster Launcher (which does not scatter).
+MEC_PLATFORM_STABILITY.png
+142
+Absorption Fields
+Reduces most incoming damage to this unit, scaling up as damage increases. Specifically: reduces 40% of any damage taken after 2; after all other damage reduction has been applied.
+MEC_ABSORTION_FIELDS.png
+143
+Shock-Absorbent Armor
+Damage received from enemies within 4 tiles is reduced by 33%.
+MEC_SHOCK_ABSORBENT_ARMOR.png
+144
+Reactive Targeting Sensors
+Unit gets a free shot back at the first enemy who attacks the MEC each turn, provided there's enough ammo to do so.
+MEC_REACTIVE_TARGETING_SENSORS.png
+145
+Body Shield
+The nearest visible enemy suffers -20 aim and cannot critically hit this unit
+MEC_BODY_SHIELD.png
+150
+Field Surgeon
+Reduces (or, for 1 HP flesh wounds, eliminates) Wounded timer on soldiers who sustained HP damage but were not Critically Wounded. Does not affect wound sustained by sending fatigued soldier on a mission.
+Adaptive_Bone_Marrow_Gene_Mod_(EU2012).png
+153
+Sharpshooter
++10 critical chance in all situations, +10 Aim against enemies in full cover.
+120px-Urban_Combat_Badge_2_(EU2012).png
+154
+Steadfast
+Never panic as a result of getting wounded, allies panicking, allies getting wounded or killed, or the intimidation ability.
+120px-Defenders_Medal_1_(EU2012).png
+159
+Lone Wolf
++10 Aim and Critical Chance if not within 7 tiles of an allied unit.
+120px-Council_Medal_of_Honor_2_(EU2012).png
+162
+Paramedic
+Once per turn, this unit may use a medikit without spending an action.
+120px-Defenders_Medal_2_(EU2012).png
+167
+Hit and Run
+Your first standard shot of each turn against an uncovered or flanked target does not cost an action. Does not work against flying units, and cannot be used if Run N' Gun activated.
+ALIEN_LEAP.png

@@ -69,9 +69,23 @@ void MainWindow::onSoldierSelected()
     // cout << Get_Soldiers::class_type(json, 273);
     // cout << Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]) << endl;
     vector<Perk> soldier_perks = load_perks(json, index_translation[ui.SoldierList->currentRow()], Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]));
-    for (const Perk& perk : soldier_perks)
+    // for (const Perk& perk : soldier_perks)
+    // {
+    //     cout << perk << endl;
+    // }
+    perk_map perk_info = load_perk_info(soldier_perks);
+
+
+    //perk_info returns map [perk_index] = [perk_name, perk_description, perk_image]
+    //bit convoluted
+
+    int i = 0;
+    for (const auto& [index, perk] : perk_info)
     {
-        cout << perk << endl;
+        //cout << index << ": " << perk[0] << " " << perk[1] << " " << perk[2] <<  endl;
+        //perk_buttons[index]->ChangeIcon("../assets/icons/" + perk + ".png");
+        perk_buttons[i]->LoadPerk(perk_info[soldier_perks[i].index]);
+        i++;
     }
 }
 
@@ -79,10 +93,11 @@ void MainWindow::onSoldierSelected()
 void MainWindow::onPerkSelected(int i)
 {
     cout << i << endl;
-    perk_buttons[i]->ChangeIcon("../assets/icons/Test.png");
+    //perk_buttons[i]->ChangeIcon("../assets/icons/Test.png");
 }
 
 void MainWindow::PerkEditButtonClicked()
 {
     ui.stackedWidget->setCurrentWidget(ui.PerkPage);
+    
 }
