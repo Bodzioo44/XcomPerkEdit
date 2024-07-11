@@ -18,23 +18,21 @@ struct Perk
 {
     int index;
     int value;
-    std::string name;
     int mobility;
     int aim;
     int will;
 
-    Perk(int index, int value, std::string name, int mobility, int aim, int will)
-        : index(index), value(value), name(name), mobility(mobility), aim(aim), will(will){
+    Perk(int index, int value, int mobility, int aim, int will)
+        : index(index), value(value), mobility(mobility), aim(aim), will(will){
             if (value > 1)
             {
                 std::fstream file;
                 file.open("../Logs/logs.txt", std::ios::app);
-                file << "value greater than 1: " << value << " for index: " << index << " with name: " << name << std::endl;
+                file << "value greater than 1: " << value << " for index: " << index << std::endl;
                 file.close();
             }
     }
     //are getters really needed?
-    std::string GetName() { return name; }
     int GetValue() { return value; }
     int GetAim() { return aim; }
     int GetMobility() { return mobility; }
@@ -54,7 +52,7 @@ struct Perk
     }
     friend std::ostream& operator<<(std::ostream& os, const Perk& perk)
     {
-        os << "Perk: " << perk.name << " (Index: " << perk.index << ", Value: " << perk.value << ", Mobility: " << perk.mobility << ", Aim: " << perk.aim << ", Will: " << perk.will << ")";
+        os << "(Index: " << perk.index << ", Value: " << perk.value << ", Mobility: " << perk.mobility << ", Aim: " << perk.aim << ", Will: " << perk.will << ")";
         return os;
     }
 

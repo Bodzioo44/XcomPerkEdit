@@ -1,18 +1,18 @@
-154,Steadfast,0,0,5
-47,Covering Fire,0,0,0
-11,Executioner,0,0,0
-17,Will to Survive,0,0,3
-10,Opportunist,0,0,0
-32,Aggression,0,0,0
-116,Deadeye,0,0,0
-21,Suppression,0,0,0
-94,Ranger,0,0,0
-33,Tactical Sense,0,0,0
-58,Lock N' Load,0,0,0
-153,Sharpshooter,0,2,0
-43,Resilience,0,0,0
-54,Sentinel,0,0,0
-39,Bring 'Em On,0,0,0
-27,Extra Conditioning,1,4,4
-135,Vital Point Targeting,0,0,0
-36,Rapid Fire,0,0,0
+154,0,0,5
+47,0,0,0
+11,0,0,0
+17,0,0,3
+10,0,0,0
+32,0,0,0
+116,0,0,0
+21,0,0,0
+94,0,0,0
+33,0,0,0
+58,0,0,0
+153,0,2,0
+43,0,0,0
+54,0,0,0
+39,0,0,0
+27,1,4,4
+135,0,0,0
+36,0,0,0

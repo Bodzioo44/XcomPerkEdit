@@ -1,18 +1,18 @@
-21,Suppression,0,0,0
-154,Steadfast,0,0,5
-150,Field Surgeon,0,0,0
-23,Rapid Reaction,0,3,0
-91,Smoke & Mirrors,0,0,0
-56,Revive,0,0,2
-26,Ready for Anything,0,0,3
-44,Smoke Grenade,0,0,0
-162,Paramedic,0,0,0
-10,Opportunist,0,0,0
-52,Dense Smoke,0,0,0
-51,Combat Drugs,0,0,0
-58,Lock N' Load,0,0,0
-81,Bombard,0,0,0
-31,Sprinter,0,0,0
-27,Extra Conditioning,1,4,4
-53,Packmaster,0,0,0
-55,Savior,0,0,0
+21,0,0,0
+154,0,0,5
+150,0,0,0
+23,0,3,0
+91,0,0,0
+56,0,0,2
+26,0,0,3
+44,0,0,0
+162,0,0,0
+10,0,0,0
+52,0,0,0
+51,0,0,0
+58,0,0,0
+81,0,0,0
+31,0,0,0
+27,1,4,4
+53,0,0,0
+55,0,0,0

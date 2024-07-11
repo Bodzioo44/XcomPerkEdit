@@ -72,7 +72,7 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string 
         {
             row.push_back(value);
         }
-        perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], row[1], std::stoi(row[2]), std::stoi(row[3]), std::stoi(row[4])));
+        perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], std::stoi(row[1]), std::stoi(row[2]), std::stoi(row[3])));
     }
     return perks;
 }
