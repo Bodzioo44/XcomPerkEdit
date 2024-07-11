@@ -98,7 +98,7 @@ For soldiers, grants one free use of a medikit per mission and allows additional
 Field Surgeon
 Reduces (or, for 1 HP flesh wounds, eliminates) Wounded timer on soldiers who sustained HP damage but were not Critically Wounded. Does not affect wound sustained by sending fatigued soldier on a mission.
 
-114
+114 
 Fire in the Hole
 Grants +10 aim for purposes of reducing scatter if the soldier has not moved this turn. Increases range of Blaster Launcher (which does not scatter).
 
@@ -266,7 +266,7 @@ The Shredder debuff causes any unit hit to take 40% additional damage (after DR,
 Smoke & Mirrors
 Allows one additional use of all support grenades during each mission. It also increases charges from Smoke Grenade and Battlescanner perks by 1.
 
-82
+44
 Smoke Grenade
 Deploy a smoke grenade once per mission. The smoke confers +20 defense and prevents flanking for all enemy and allied units. Lasts 2 turns. Taking the perk on level up also allows an additional action after deploying a smoke grenade.
 
