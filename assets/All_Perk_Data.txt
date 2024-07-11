@@ -133,7 +133,7 @@ ASSAULT_RESILLIENCE.png
 44
 Smoke Grenade
 Deploy a smoke grenade once per mission. The smoke confers +20 defense and prevents flanking for all enemy and allied units. Lasts 2 turns. Taking the perk on level up also allows an additional action after deploying a smoke grenade.
-SUPPORT_SMOKEMIRRORS.png
+SUPPORT_SMOKEGRENADE.png
 47
 Covering Fire
 Allows certain reaction shots to trigger on many enemy actions, not just movement (excludes reload, overwatch, and hunker down actions).
