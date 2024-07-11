@@ -18,6 +18,7 @@ public:
     PerkButton(QWidget* parent = nullptr, int number = 0);
     ~PerkButton() {};
     void LoadPerk(const perk_data data);
+    void GreyedOutSwitch();
 
 
 
@@ -28,6 +29,7 @@ public:
 
 private:
     int number;
+    bool is_greyed_out;
 
 
 protected:

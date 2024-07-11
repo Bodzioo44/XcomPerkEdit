@@ -69,6 +69,11 @@ void MainWindow::onSoldierSelected()
     // cout << Get_Soldiers::class_type(json, 273);
     // cout << Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]) << endl;
     vector<Perk> soldier_perks = load_perks(json, index_translation[ui.SoldierList->currentRow()], Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]));
+    soldier_stats stats = Get_Soldiers::load_stats(json, index_translation[ui.SoldierList->currentRow()]);
+    cout << stats[0] << " " << stats[1] << " " << stats[2] << endl;
+    ui.MobilityLabel->setText(QString::fromStdString("Mobility: " + to_string(stats[0])));
+    ui.AimLabel->setText(QString::fromStdString("Aim: " + to_string(stats[1])));
+    ui.WillLabel->setText(QString::fromStdString("Will: " + to_string(stats[2])));
     // for (const Perk& perk : soldier_perks)
     // {
     //     cout << perk << endl;
@@ -93,6 +98,7 @@ void MainWindow::onSoldierSelected()
 void MainWindow::onPerkSelected(int i)
 {
     cout << i << endl;
+    perk_buttons[i]->GreyedOutSwitch();
     //perk_buttons[i]->ChangeIcon("../assets/icons/Test.png");
 }
 

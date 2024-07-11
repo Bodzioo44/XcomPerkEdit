@@ -3,15 +3,17 @@ GENERAL
 ========================
 
 Add MEC's icons. DONE
-Add perks icons.
-Move all the perk buttons to single grid.
+Add perks icons. DONE
+Move all the perk buttons to single grid. DONE
+
+
+Replace all the arrays with structs?
 
 ====================
 MAINWINDOW
 ====================
 
 Move json loading and soldier list generation to separate function.
-
 replace index_translation with single int that marks beggining of the soldiers?
 soldiers SHOULD be next to each other in the save file.
 this would mess with potential sorting/search later on.
@@ -23,3 +25,13 @@ UTILS
 
 is it more efficient to pull whole upgrades array, or read single entries form json?
 yeah, thats need a change.
+
+remove std::string soldier_class from load_perks?
+merge load_perks with load_stats?
+fix load_perk_info mess
+
+=======================
+assets
+======================
+
+something is wrong with rocketeer.txt DONE

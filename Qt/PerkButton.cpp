@@ -3,10 +3,8 @@
 PerkButton::PerkButton(QWidget* parent, int number) : QToolButton(parent), number(number)
 {
     setIconSize(QSize(50, 50));
-    QString noPaddingStyleSheet = "QToolButton { padding: 0px; }";
+    QString noPaddingStyleSheet = "QToolButton { padding: 0px; border: none;}";
     this->setStyleSheet(noPaddingStyleSheet);
-    //this->setToolTip(QString::number(number));
-
 }
 
 
@@ -20,7 +18,23 @@ void PerkButton::LoadPerk(const perk_data data)
     QIcon icon(icon_path);
     QPixmap pixmap = icon.pixmap(50, 50).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     setIcon(pixmap);
-    setToolTip(name + "\n" + decsription);
+    //setToolTip(name + "\n" + decsription);
+    //setToolTip("<b>" + name + "</b>" + "\n" + decsription);
+    setToolTip("<b>" + name + "</b><br>" + decsription);
+}
+
+void PerkButton::GreyedOutSwitch()
+{
+    if (is_greyed_out)
+    {
+        setStyleSheet("QToolButton {border: none;}");
+        is_greyed_out = false;
+    }
+    else
+    {
+        setStyleSheet("QToolButton {border: none; background-color: grey;}");
+        is_greyed_out = true;
+    }
 }
 
 // void PerkButton::ChangeIcon(QString icon_path)
