@@ -12,11 +12,13 @@
 
 using perk_data = std::array<std::string, 3>;
 using perk_map = std::map<int, perk_data>;
+using soldier_stats = std::array<int, 3>;
 
 struct Perk;
 json11::Json load_json_file(const std::string& file_path);
 //void change_soldier_skill(json11::Json& json, int soldier_index, int skill_id);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string soldier_class);
+
 perk_map load_perk_info(std::vector<Perk> perks);
 
 struct Perk
@@ -74,6 +76,7 @@ namespace Get_Soldiers
     std::string eStatus(const json11::Json& entry, int soldier_index);
     //TODO: dont pass the whole array, just the ones we need (optimalization)
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
+    soldier_stats load_stats(json11::Json& json, int soldier_index);
 }
 
 
