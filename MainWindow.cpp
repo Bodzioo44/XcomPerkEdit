@@ -6,12 +6,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     this->setCentralWidget(ui.centralwidget);
     ui.centralwidget->setLayout(ui.gridLayout);
     ui.PerkPage->setLayout(ui.PerkGridLayout);
-    // ui.PerkPageVerticalLayout->addLayout(ui.LabelLayout);
-    // ui.PerkPageVerticalLayout->addLayout(ui.PerkGridLayout);
-
-    
-
-    //ui.stackedWidget->setCurrentWidget(ui.page_2);
 
     connect(ui.SoldierList, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.PerkEditButton, &QPushButton::clicked, this, &MainWindow::PerkEditButtonClicked);
@@ -19,16 +13,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     for (int i = 0; i < 18; i++)
     {
         PerkButton* button = new PerkButton(this, i);
-        //button->setStyleSheet("QToolButton {border: none;}");
-        //button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        
-        
         ui.PerkGridLayout->addWidget(button, (i / 3) + 2, i % 3);
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
-    // QIcon icon("../assets/icons/Valkyrie_icon.png");
-    // //perk_buttons[0]->iconSize(50, 50);
 
     //move this out of the constructor
     try
