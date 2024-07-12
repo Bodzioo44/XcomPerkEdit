@@ -10,13 +10,12 @@ class PerkButton : public QToolButton
     Q_OBJECT
 
 public:
-    PerkButton(QWidget* parent = nullptr, int number = 0);
+    PerkButton(QWidget* parent = nullptr);
     ~PerkButton() {};
     void LoadPerk(const perk_data data);
     void GreyedOutSwitch();
 
 private:
-    int number;
     int size;
     bool is_greyed_out;
     QIcon icon;

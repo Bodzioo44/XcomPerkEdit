@@ -1,6 +1,6 @@
 #include "PerkButton.h"
 
-PerkButton::PerkButton(QWidget* parent, int number) : QToolButton(parent), number(number)
+PerkButton::PerkButton(QWidget* parent) : QToolButton(parent)
 {
     size = 50;
     setIconSize(QSize(size, size));

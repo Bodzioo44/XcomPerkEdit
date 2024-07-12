@@ -12,13 +12,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     
     for (int i = 0; i < 18; i++)
     {
-        PerkButton* button = new PerkButton(this, i);
+        PerkButton* button = new PerkButton(this);
         ui.PerkGridLayout->addWidget(button, (i / 3) + 2, i % 3);
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
 
-    //move this out of the constructor
+    //TODO: Move this out of the constructor
     try
     {
         json = load_json_file("../Testing/save475.json");
@@ -52,36 +52,40 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
 void MainWindow::onSoldierSelected()
 {
-    //cout << ui.SoldierList->currentRow() << endl;
-    // cout << index_translation[ui.SoldierList->currentRow()] << endl;
-    // cout << Get_Soldiers::class_type(json, 273);
-    // cout << Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]) << endl;
-    vector<Perk> soldier_perks = load_perks(json, index_translation[ui.SoldierList->currentRow()], Get_Soldiers::class_type(json, index_translation[ui.SoldierList->currentRow()]));
-    soldier_stats stats = Get_Soldiers::load_stats(json, index_translation[ui.SoldierList->currentRow()]);
-    //cout << stats[0] << " " << stats[1] << " " << stats[2] << endl;
-    ui.MobilityLabel->setText(QString::fromStdString("Mobility: " + to_string(stats[0])));
-    ui.AimLabel->setText(QString::fromStdString("Aim: " + to_string(stats[1])));
-    ui.WillLabel->setText(QString::fromStdString("Will: " + to_string(stats[2])));
-    // for (const Perk& perk : soldier_perks)
-    // {
-    //     cout << perk << endl;
-    // }
-    perk_map perk_info = load_perk_info(soldier_perks);
+    int current_row = ui.SoldierList->currentRow(); //current row on the list
+    int soldier_index = index_translation[current_row]; //soldier index in the save file
+    int soldier_rank = Get_Soldiers::rank(json, soldier_index);
+
+    soldier_stats stats = Get_Soldiers::load_stats(json, soldier_index);
+    ui.MobilityLabel->setText(QString::fromStdString("<b>Mobility: " + to_string(stats[0]) + "</b>"));
+    ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats[1]) + "</b>"));
+    ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats[2]) + "</b>"));
 
 
-    //perk_info returns map [perk_index] = [perk_name, perk_description, perk_image]
-    //bit convoluted
+    vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
+    perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
 
-    int i = 0;
-    for (const auto& [index, perk] : perk_info)
+    for (const Perk& perky : soldier_perks)
+    { cout << perky << endl;}
+
+    for (int i = 0; i < 18; i++)
     {
-        //cout << index << ": " << perk[0] << " " << perk[1] << " " << perk[2] <<  endl;
-        //perk_buttons[index]->ChangeIcon("../assets/icons/" + perk + ".png");
-        perk_buttons[i]->LoadPerk(perk_info[soldier_perks[i].index]);
-        i++;
+        const Perk& current_perk = soldier_perks[i];
+        perk_buttons[i]->LoadPerk(perk_info[current_perk.index]);
+        if (current_perk.value == 0)
+        {
+            perk_buttons[i]->GreyedOutSwitch();
+        }
+        if ((i+1) > (soldier_rank-1)*3)
+        {
+            perk_buttons[i]->setDisabled(true);
+        }
+        else
+        {
+            perk_buttons[i]->setDisabled(false);
+        }
     }
 }
-
 
 void MainWindow::onPerkSelected(int i)
 {

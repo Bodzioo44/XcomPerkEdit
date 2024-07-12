@@ -16,8 +16,7 @@ using soldier_stats = std::array<int, 3>;
 
 struct Perk;
 json11::Json load_json_file(const std::string& file_path);
-//void change_soldier_skill(json11::Json& json, int soldier_index, int skill_id);
-std::vector<Perk> load_perks(json11::Json& json, int soldier_index, std::string soldier_class);
+std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
 
 perk_map load_perk_info(std::vector<Perk> perks);
 
@@ -39,13 +38,7 @@ struct Perk
                 file.close();
             }
     }
-    //are getters really needed?
-    int GetValue() { return value; }
-    int GetAim() { return aim; }
-    int GetMobility() { return mobility; }
-    int GetWill() { return will; }
-    //TODO: fix this
-    //some of the values are greater that 1 for some reason
+    //TODO: figure out when the value is bigger than 1
     void SwitchValue() 
     {
         if (value == 0)
@@ -78,20 +71,6 @@ namespace Get_Soldiers
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
     soldier_stats load_stats(json11::Json& json, int soldier_index);
 }
-
-
-// enum Class
-// {
-//     Sniper,
-//     Assault,
-//     Scout,
-//     Gunner,
-//     Rocketeer,
-//     Infantry,
-//     Medic,
-//     Engineer,
-// };
-
 
 
 
