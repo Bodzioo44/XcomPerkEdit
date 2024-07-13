@@ -2,8 +2,7 @@
 #define PERKBUTTON_H
 
 #include <QtWidgets/QToolButton>
-
-using perk_data = std::array<std::string, 3>;
+#include "utils.h"
 
 class PerkButton : public QToolButton
 {
@@ -12,7 +11,7 @@ class PerkButton : public QToolButton
 public:
     PerkButton(QWidget* parent = nullptr);
     ~PerkButton() {};
-    void LoadPerk(const perk_data data);
+    void LoadPerk(const PerkAssets data);
     void GreyedOutSwitch();
 
 private:

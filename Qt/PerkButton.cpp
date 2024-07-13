@@ -8,12 +8,11 @@ PerkButton::PerkButton(QWidget* parent) : QToolButton(parent)
     this->setStyleSheet(StyleSheet);
 }
 
-void PerkButton::LoadPerk(const perk_data data)
+void PerkButton::LoadPerk(const PerkAssets icon_assets)
 {
-    QString image_name = data[2].c_str();
-    QString icon_path = "../assets/icons/" + image_name;
-    QString description = data[1].c_str();
-    QString name = data[0].c_str();
+    QString icon_path =  QString::fromStdString("../assets/icons/" + icon_assets.icon_path);
+    QString description = icon_assets.description.c_str();
+    QString name = icon_assets.name.c_str();
     setToolTip("<b>" + name + "</b><br>" + description);
 
     QIcon unscaled_icon(icon_path);

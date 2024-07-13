@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include "json11/json11.hpp"
-#include "Qt/PerkButton.h"
 
 #include <map>
 #include <iostream>
@@ -10,15 +9,25 @@
 #include <vector>
 #include <algorithm>
 
-using perk_data = std::array<std::string, 3>;
-using perk_map = std::map<int, perk_data>;
+
 using soldier_stats = std::array<int, 3>;
 
 struct Perk;
 json11::Json load_json_file(const std::string& file_path);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
 
+
+struct PerkAssets
+{
+    std::string name;
+    std::string description;
+    std::string icon_path;
+};
+
+
+using perk_map = std::map<int, PerkAssets>;
 perk_map load_perk_info(std::vector<Perk> perks);
+
 
 struct Perk
 {

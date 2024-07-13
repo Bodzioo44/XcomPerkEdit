@@ -75,7 +75,7 @@ perk_map load_perk_info(std::vector<Perk> perks)
     int i = 1;
     unsigned int current_perk = 0; //compiler was complaining about comparing signed and unsigned
     bool is_correct = false;
-    perk_data data;
+    PerkAssets icon_assets;
 
     while (std::getline(file,line))
     {
@@ -85,16 +85,16 @@ perk_map load_perk_info(std::vector<Perk> perks)
         }
         else if (is_correct && i % 4 == 2)
         {
-            data[0] = line;
+            icon_assets.name = line;
         }
         else if (is_correct && i % 4 == 3)
         {
-            data[1] = line;
+            icon_assets.description = line;
         }
         else if (is_correct && i % 4 == 0)
         {
-            data[2] = line;
-            all_perks[perks_indexes[current_perk]] = data;
+            icon_assets.icon_path = line;
+            all_perks[perks_indexes[current_perk]] = icon_assets;
             current_perk++;
             is_correct = false;
             if (current_perk == perks_indexes.size())
