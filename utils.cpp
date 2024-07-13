@@ -144,12 +144,12 @@ namespace Get_Soldiers
         }
         return upgrades;
     }
-    soldier_stats load_stats(json11::Json& json, int soldier_index)
+    SoldierStats load_stats(json11::Json& json, int soldier_index)
     {
-        soldier_stats stats;
-        stats[0] = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][3].int_value();
-        stats[1] = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][1].int_value();
-        stats[2] = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][7].int_value();
+        SoldierStats stats;
+        stats.mobility = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][3].int_value();
+        stats.aim = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][1].int_value();
+        stats.will = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][7].int_value();
         return stats;
     }
 }

@@ -56,16 +56,13 @@ void MainWindow::onSoldierSelected()
     int soldier_index = index_translation[current_row]; //soldier index in the save file
     int soldier_rank = Get_Soldiers::rank(json, soldier_index);
 
-    soldier_stats stats = Get_Soldiers::load_stats(json, soldier_index);
-    ui.MobilityLabel->setText(QString::fromStdString("<b>Mobility: " + to_string(stats[0]) + "</b>"));
-    ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats[1]) + "</b>"));
-    ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats[2]) + "</b>"));
+    SoldierStats stats = Get_Soldiers::load_stats(json, soldier_index);
+    ui.MobilityLabel->setText(QString::fromStdString("<b>Mobility: " + to_string(stats.mobility) + "</b>"));
+    ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats.aim) + "</b>"));
+    ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats.will) + "</b>"));
 
     vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
     perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
-
-    // for (const Perk& perky : soldier_perks)
-    // { cout << perky << endl;}
 
     for (int i = 0; i < 18; i++)
     {

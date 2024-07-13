@@ -9,14 +9,6 @@
 #include <vector>
 #include <algorithm>
 
-
-using soldier_stats = std::array<int, 3>;
-
-struct Perk;
-json11::Json load_json_file(const std::string& file_path);
-std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
-
-
 struct PerkAssets
 {
     std::string name;
@@ -24,10 +16,12 @@ struct PerkAssets
     std::string icon_path;
 };
 
-
-using perk_map = std::map<int, PerkAssets>;
-perk_map load_perk_info(std::vector<Perk> perks);
-
+struct SoldierStats
+{
+    int mobility;
+    int aim;
+    int will;
+};
 
 struct Perk
 {
@@ -66,6 +60,11 @@ struct Perk
     }
 };
 
+using perk_map = std::map<int, PerkAssets>;
+perk_map load_perk_info(std::vector<Perk> perks);
+json11::Json load_json_file(const std::string& file_path);
+std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
+
 
 namespace Get_Soldiers
 {
@@ -77,7 +76,7 @@ namespace Get_Soldiers
     std::string eStatus(const json11::Json& entry, int soldier_index);
     //TODO: dont pass the whole array, just the ones we need (optimalization)
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
-    soldier_stats load_stats(json11::Json& json, int soldier_index);
+    SoldierStats load_stats(json11::Json& json, int soldier_index);
 }
 
 
