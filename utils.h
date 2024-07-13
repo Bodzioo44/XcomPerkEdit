@@ -39,11 +39,11 @@ struct Perk
             }
     }
     //TODO: figure out when the value is bigger than 1
-    void SwitchValue() 
+    void SwitchValue(int new_value = 1) 
     {
         if (value == 0)
         {
-            value = 1;
+            value = new_value;
         }
         else
         {
@@ -55,7 +55,6 @@ struct Perk
         os << "(Index: " << perk.index << ", Value: " << perk.value << ", Mobility: " << perk.mobility << ", Aim: " << perk.aim << ", Will: " << perk.will << ")";
         return os;
     }
-
 };
 
 

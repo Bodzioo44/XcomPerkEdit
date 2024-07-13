@@ -61,12 +61,11 @@ void MainWindow::onSoldierSelected()
     ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats[1]) + "</b>"));
     ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats[2]) + "</b>"));
 
-
     vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
     perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
 
-    for (const Perk& perky : soldier_perks)
-    { cout << perky << endl;}
+    // for (const Perk& perky : soldier_perks)
+    // { cout << perky << endl;}
 
     for (int i = 0; i < 18; i++)
     {
@@ -96,5 +95,4 @@ void MainWindow::onPerkSelected(int i)
 void MainWindow::PerkEditButtonClicked()
 {
     ui.stackedWidget->setCurrentWidget(ui.PerkPage);
-    
 }

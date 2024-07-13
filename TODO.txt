@@ -1,13 +1,22 @@
 ==================
 GENERAL
-========================
+==================
 
 Add MEC's icons. DONE
 Add perks icons. DONE
 Move all the perk buttons to single grid. DONE
+Replace all the small arrays with structs?
+replace perk vector with array since its set size?
 
+Somekind of soldier class/struct is needed?
 
-Replace all the arrays with structs?
+On click:
+-check if button is greyed out. (or not? will it work in game?)
+-greyout other buttons.
+-use the same vector perk, edit everything by reference.
+-edit the vector perk.
+-get another soldier_stats for the difference from skill change.
+-update the labels.
 
 ====================
 MAINWINDOW
@@ -16,7 +25,13 @@ MAINWINDOW
 Move json loading and soldier list generation to separate function.
 replace index_translation with single int that marks beggining of the soldiers?
 soldiers SHOULD be next to each other in the save file.
-this would mess with potential sorting/search later on.
+this would mess with potential sorting/search later on?
+
+
+=====================
+PERK BUTTON
+======================
+Add extra stats to description. pass perk itself along the data?
 
 
 =======================
@@ -26,7 +41,7 @@ UTILS
 is it more efficient to pull whole upgrades array, or read single entries form json?
 yeah, thats need a change.
 
-remove std::string soldier_class from load_perks?
+remove std::string soldier_class from load_perks? DONE
 merge load_perks with load_stats?
 fix load_perk_info mess
 

@@ -73,7 +73,7 @@ perk_map load_perk_info(std::vector<Perk> perks)
     }
     std::string line;
     int i = 1;
-    int current_perk = 0;
+    unsigned int current_perk = 0; //compiler was complaining about comparing signed and unsigned
     bool is_correct = false;
     perk_data data;
 
