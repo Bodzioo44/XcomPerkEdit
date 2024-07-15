@@ -31,7 +31,8 @@ this would mess with potential sorting/search later on?
 =====================
 PERK BUTTON
 ======================
-Add extra stats to description. pass perk itself along the data?
+Add extra stats to description. pass perk itself along the data? SOMEWHAT DONE
+fix the above formating, and pass only soldier stats instead of whole perk. (change Perk struct?)
 
 
 =======================
@@ -44,6 +45,9 @@ yeah, thats need a change.
 remove std::string soldier_class from load_perks? DONE
 merge load_perks with load_stats?
 fix load_perk_info mess
+
+Soldier struct needs current_stats and extra_stats DONE
+
 
 =======================
 assets

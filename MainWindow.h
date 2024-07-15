@@ -33,14 +33,15 @@ public slots:
     void onSoldierSelected();
     void onPerkSelected(int i);
     void PerkEditButtonClicked();
-
-
+    void SaveButtonClicked();
 
 private:
     Ui::MainWindow ui;
     Json json;
     map<int, int> index_translation;
     vector<PerkButton*> perk_buttons;
+    map<int, Soldier> soldiers_to_update;
+    Soldier current_soldier;
 };
 
 

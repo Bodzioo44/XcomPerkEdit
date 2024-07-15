@@ -8,12 +8,17 @@ PerkButton::PerkButton(QWidget* parent) : QToolButton(parent)
     this->setStyleSheet(StyleSheet);
 }
 
-void PerkButton::LoadPerk(const PerkAssets icon_assets)
+void PerkButton::LoadPerk(const PerkAssets icon_assets, Perk current_perk)
 {
     QString icon_path =  QString::fromStdString("../assets/icons/" + icon_assets.icon_path);
     QString description = icon_assets.description.c_str();
+    
+
     QString name = icon_assets.name.c_str();
-    setToolTip("<b>" + name + "</b><br>" + description);
+
+    QString extra_stats = "(Mobility:" + QString::number(current_perk.stats.mobility) + ", Aim:" + QString::number(current_perk.stats.aim) + ", Will:" + QString::number(current_perk.stats.will) + ")";
+
+    setToolTip("<b>" + name + "</b><br>" + description + "<br>" + extra_stats);
 
     QIcon unscaled_icon(icon_path);
     QPixmap pixmap = unscaled_icon.pixmap(size, size).scaled(size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -34,16 +39,20 @@ void PerkButton::LoadPerk(const PerkAssets icon_assets)
     setIcon(icon);
 }
 
-void PerkButton::GreyedOutSwitch()
+void PerkButton::GreyOut()
+{
+    if (!is_greyed_out)
+    {
+        setIcon(greyed_out_icon);
+        is_greyed_out = true;
+    }
+}
+
+void PerkButton::LightUp()
 {
     if (is_greyed_out)
     {
         setIcon(icon);
         is_greyed_out = false;
-    }
-    else
-    {
-        setIcon(greyed_out_icon);
-        is_greyed_out = true;
     }
 }

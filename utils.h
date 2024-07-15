@@ -21,18 +21,22 @@ struct SoldierStats
     int mobility;
     int aim;
     int will;
+
+    SoldierStats() 
+        : mobility(0), aim(0), will(0) {}
+    SoldierStats(int mobility, int aim, int will)
+        : mobility(mobility), aim(aim), will(will) {}
 };
+
 
 struct Perk
 {
     int index;
     int value;
-    int mobility;
-    int aim;
-    int will;
+    SoldierStats stats;
 
-    Perk(int index, int value, int mobility, int aim, int will)
-        : index(index), value(value), mobility(mobility), aim(aim), will(will){
+    Perk(int index, int value, SoldierStats stats)
+        : index(index), value(value), stats(stats){
             if (value > 1)
             {
                 std::fstream file;
@@ -55,9 +59,16 @@ struct Perk
     }
     friend std::ostream& operator<<(std::ostream& os, const Perk& perk)
     {
-        os << "(Index: " << perk.index << ", Value: " << perk.value << ", Mobility: " << perk.mobility << ", Aim: " << perk.aim << ", Will: " << perk.will << ")";
+        os << "(Index: " << perk.index << ", Value: " << perk.value << ", Mobility: " << perk.stats.mobility << ", Aim: " << perk.stats.aim << ", Will: " << perk.stats.will<< ")";
         return os;
     }
+};
+
+struct Soldier
+{
+    SoldierStats stats_diff;
+    SoldierStats current_stats;
+    std::vector<Perk> perks;
 };
 
 using perk_map = std::map<int, PerkAssets>;
@@ -76,7 +87,7 @@ namespace Get_Soldiers
     std::string eStatus(const json11::Json& entry, int soldier_index);
     //TODO: dont pass the whole array, just the ones we need (optimalization)
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
-    SoldierStats load_stats(json11::Json& json, int soldier_index);
+    SoldierStats stats(json11::Json& json, int soldier_index);
 }
 
 

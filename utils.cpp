@@ -51,7 +51,8 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index)
         {
             row.push_back(value);
         }
-        perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], std::stoi(row[1]), std::stoi(row[2]), std::stoi(row[3])));
+        
+        perks.push_back(Perk(std::stoi(row[0]), upgrades[std::stoi(row[0])], SoldierStats(std::stoi(row[1]), std::stoi(row[2]), std::stoi(row[3]))));
     }
     return perks;
 }
@@ -144,7 +145,7 @@ namespace Get_Soldiers
         }
         return upgrades;
     }
-    SoldierStats load_stats(json11::Json& json, int soldier_index)
+    SoldierStats stats(json11::Json& json, int soldier_index)
     {
         SoldierStats stats;
         stats.mobility = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][3].int_value();

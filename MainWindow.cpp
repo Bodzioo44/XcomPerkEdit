@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
     connect(ui.SoldierList, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.PerkEditButton, &QPushButton::clicked, this, &MainWindow::PerkEditButtonClicked);
+    connect(ui.SaveButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     
     for (int i = 0; i < 18; i++)
     {
@@ -56,7 +57,7 @@ void MainWindow::onSoldierSelected()
     int soldier_index = index_translation[current_row]; //soldier index in the save file
     int soldier_rank = Get_Soldiers::rank(json, soldier_index);
 
-    SoldierStats stats = Get_Soldiers::load_stats(json, soldier_index);
+    SoldierStats stats = Get_Soldiers::stats(json, soldier_index);
     ui.MobilityLabel->setText(QString::fromStdString("<b>Mobility: " + to_string(stats.mobility) + "</b>"));
     ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats.aim) + "</b>"));
     ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats.will) + "</b>"));
@@ -64,13 +65,18 @@ void MainWindow::onSoldierSelected()
     vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
     perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
 
+    //grey out all other perks in the same row
     for (int i = 0; i < 18; i++)
     {
         const Perk& current_perk = soldier_perks[i];
-        perk_buttons[i]->LoadPerk(perk_info[current_perk.index]);
+        perk_buttons[i]->LoadPerk(perk_info[current_perk.index], current_perk);
         if (current_perk.value == 0)
         {
-            perk_buttons[i]->GreyedOutSwitch();
+            perk_buttons[i]->GreyOut();
+        }
+        else
+        {
+            perk_buttons[i]->LightUp();
         }
         if ((i+1) > (soldier_rank-1)*3)
         {
@@ -81,15 +87,37 @@ void MainWindow::onSoldierSelected()
             perk_buttons[i]->setDisabled(false);
         }
     }
+
+    current_soldier.perks = soldier_perks;
+    current_soldier.current_stats = stats;
 }
 
 void MainWindow::onPerkSelected(int i)
 {
-    cout << i << endl;
-    perk_buttons[i]->GreyedOutSwitch();
+    //grey out all other perks in the same row
+    int start_index = (i / 3) * 3;
+    for (int j = start_index; j < start_index + 3; j++)
+    {
+        if (j == i)
+        {
+            continue;
+        }
+        current_soldier.perks[j].SwitchValue();
+        perk_buttons[j]->GreyOut();
+    }
+
+    current_soldier.perks[i].SwitchValue();
+    perk_buttons[i]->LightUp();
+
+    
 }
 
 void MainWindow::PerkEditButtonClicked()
 {
     ui.stackedWidget->setCurrentWidget(ui.PerkPage);
+}
+
+void MainWindow::SaveButtonClicked()
+{
+    onSoldierSelected();
 }

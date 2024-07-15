@@ -11,8 +11,9 @@ class PerkButton : public QToolButton
 public:
     PerkButton(QWidget* parent = nullptr);
     ~PerkButton() {};
-    void LoadPerk(const PerkAssets data);
-    void GreyedOutSwitch();
+    void LoadPerk(const PerkAssets data, Perk current_perk);
+    void GreyOut();
+    void LightUp();
 
 private:
     int size;
