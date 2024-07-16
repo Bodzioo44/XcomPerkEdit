@@ -9,6 +9,14 @@ Replace all the small arrays with structs?
 replace perk vector with array since its set size?
 
 Somekind of soldier class/struct is needed?
+Where to check for the weird perk values? (needs testing)
+
+
+Smokegrenade value is based on amount of smokes in eq + skill itself?
+how to tell apart if soldier has grenade equiped or the skill?
+
+Add somekind of hashing to avoid saving unedited soldiers?
+add edited bool?
 
 On click:
 -check if button is greyed out. (or not? will it work in game?)

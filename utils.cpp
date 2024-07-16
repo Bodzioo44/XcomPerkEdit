@@ -9,7 +9,6 @@
 #include <sstream>
 #include "utils.h"
 
-
 json11::Json load_json_file(const std::string& file_path) {
 
     std::ifstream file(file_path);
@@ -106,6 +105,14 @@ perk_map load_perk_info(std::vector<Perk> perks)
         i++;
     }
     return all_perks;
+}
+
+void json_update(json11::Json& json, Soldier soldier)
+{
+    std::cout << "For soldier: " << Get_Soldiers::nickname(json, soldier.json_index) << std::endl;
+    std::cout << "Stats diff: " << soldier.stats_diff << std::endl;
+
+    json11::Json new_json;
 }
 
 //soldier_index is the index of the soldier in the checkpoint_table (NOT the XGStrategySoldier index)

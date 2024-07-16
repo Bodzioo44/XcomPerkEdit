@@ -11,12 +11,10 @@
 #include <vector>
 #include <iostream>
 
-
 #include "build/ui_QtDesigner.h"
 #include "Qt/PerkButton.h"
 #include "json11/json11.hpp"
 #include "utils.h"
-
 
 using namespace json11;
 using namespace std;
@@ -40,8 +38,9 @@ private:
     Json json;
     map<int, int> index_translation;
     vector<PerkButton*> perk_buttons;
-    map<int, Soldier> soldiers_to_update;
     Soldier current_soldier;
+    //map is the best way to avoid duplicates for the same soldier?
+    map<int, Soldier> soldiers_to_save;
 };
 
 

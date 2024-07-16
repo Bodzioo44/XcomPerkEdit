@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
 
+    current_soldier.json_index = -1;
+
     //TODO: Move this out of the constructor
     try
     {
@@ -65,18 +67,23 @@ void MainWindow::onSoldierSelected()
     vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
     perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
 
+    if (current_soldier.json_index != -1)
+    { 
+        soldiers_to_save[current_soldier.json_index] = current_soldier;
+    }
+
     //grey out all other perks in the same row
     for (int i = 0; i < 18; i++)
     {
         const Perk& current_perk = soldier_perks[i];
         perk_buttons[i]->LoadPerk(perk_info[current_perk.index], current_perk);
-        if (current_perk.value == 0)
+        if (current_perk.enabled)
         {
-            perk_buttons[i]->GreyOut();
+            perk_buttons[i]->LightUp();
         }
         else
         {
-            perk_buttons[i]->LightUp();
+            perk_buttons[i]->GreyOut();
         }
         if ((i+1) > (soldier_rank-1)*3)
         {
@@ -86,15 +93,18 @@ void MainWindow::onSoldierSelected()
         {
             perk_buttons[i]->setDisabled(false);
         }
+        //cout << current_perk.enabled << endl;
     }
 
-    current_soldier.perks = soldier_perks;
     current_soldier.current_stats = stats;
+    current_soldier.perks = soldier_perks;
+    current_soldier.json_index = soldier_index;
+
 }
 
 void MainWindow::onPerkSelected(int i)
 {
-    //grey out all other perks in the same row
+
     int start_index = (i / 3) * 3;
     for (int j = start_index; j < start_index + 3; j++)
     {
@@ -102,14 +112,17 @@ void MainWindow::onPerkSelected(int i)
         {
             continue;
         }
-        current_soldier.perks[j].SwitchValue();
+
+        current_soldier.Disable_Perk(j);
         perk_buttons[j]->GreyOut();
     }
 
-    current_soldier.perks[i].SwitchValue();
+    current_soldier.Enable_Perk(i);
     perk_buttons[i]->LightUp();
 
-    
+    cout << "Current current_stats: " << current_soldier.current_stats << endl;
+    cout << "Current stats_diff: " << current_soldier.stats_diff << endl;
+
 }
 
 void MainWindow::PerkEditButtonClicked()
@@ -120,4 +133,15 @@ void MainWindow::PerkEditButtonClicked()
 void MainWindow::SaveButtonClicked()
 {
     onSoldierSelected();
+    cout << "reloaded on soldierSelected" << endl;
+
+    //iterate over soldiers_to_save map, update the json for each one, and save it.
+    if (current_soldier.json_index != -1)
+    {
+    soldiers_to_save[current_soldier.json_index] = current_soldier;
+    }
+    for (const auto& pair : soldiers_to_save)
+    {
+        json_update(json, pair.second);
+    }
 }
