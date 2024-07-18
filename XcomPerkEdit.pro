@@ -4,6 +4,7 @@
 
 TEMPLATE = app
 TARGET = XcomPerkEdit
+CONFIG += qt gui c++17
 INCLUDEPATH += .
 QT += widgets gui
 # You can make your code fail to compile if you use deprecated APIs.
@@ -14,12 +15,17 @@ QT += widgets gui
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-INCLUDEPATH += $$PWD \
-               $$PWD/xcomsave/json11 \
-               $$PWD/Qt \
-               $$PWD/build \
-               $$PWD/xcomsave/zlib \
-               $$PWD/xcomsave/minilzo-2.09
+#INCLUDEPATH += $$PWD \
+#               $$PWD/xcomsave/json11 \
+#               $$PWD/Qt \
+#               $$PWD/build \
+#               $$PWD/xcomsave/zlib \
+#               $$PWD/xcomsave/minilzo-2.09
+
+INCLUDEPATH += xcomsave/minilzo-2.09 \
+               xcomsave/json11 \
+               xcomsave/zlib \
+               Qt 
 
 HEADERS += MainWindow.h \
             utils.h \
@@ -27,8 +33,8 @@ HEADERS += MainWindow.h \
             xcomsave/json11/json11.hpp \
             Qt/PerkButton.h \
             xcomsave/xcom.h \
-            xcomsave/util.h \
-            xcomsave/xcomio.h
+            xcomsave/xcomio.h \
+            xcomsave/util.h 
 
 FORMS += QtDesigner.ui
 
@@ -46,5 +52,26 @@ SOURCES += main.cpp \
             xcomsave/xcomerror.cpp \
             xcomsave/minilzo-2.09/minilzo.c
 
+# Platform-specific configurations
+unix {
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wno-missing-field-initializers
+    DEFINES += HAVE_UNISTD_H
+}
 
+win32 {
+    QMAKE_CXXFLAGS += -EHsc -W3
+    QMAKE_CFLAGS += -W3
+    DEFINES += _CRT_SECURE_NO_WARNINGS
+    DEFINES += _CRT_NONSTDC_NO_DEPRECATE
+}
+
+# GNU C++ compiler specific settings
+QMAKE_CXXFLAGS_GNU += -lstdc++fs
+
+# macOS specific settings
+macx {
+    LIBS += -liconv
+}
+
+# Link libraries
 LIBS += -lz
