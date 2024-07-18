@@ -1,5 +1,4 @@
 #include <fstream>
-
 #include <iostream>
 #include <cassert>
 #include <cstring>
@@ -11,19 +10,10 @@
 
 json11::Json load_json_file(const std::string& file_path) {
 
-    std::ifstream file(file_path);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open file " + file_path);
-    }
-
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string json_str = buffer.str();
-
-    std::string err;
-    json11::Json json = json11::Json::parse(json_str, err);
-    if (!err.empty()) {
-        throw std::runtime_error("Failed to parse JSON: " + err);
+    json11::Json json;
+    int err = xcom2json(file_path, json);
+    if (err != 0) {
+        throw std::runtime_error("Could not load file " + file_path);
     }
     return json;
 }

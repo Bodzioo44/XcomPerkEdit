@@ -135,6 +135,8 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
 json11::Json update_json(json11::Json& json, Soldier soldier);
 void save_json_file(const std::string& file_path, json11::Json& json);
 
+int xcom2json(std::string save_path, json11::Json& to_write);
+
 namespace Get_Soldiers
 {
     std::string firstname(const json11::Json& entry, int soldier_index);

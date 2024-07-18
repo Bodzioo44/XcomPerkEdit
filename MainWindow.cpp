@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     //TODO: Move this out of the constructor
     try
     {
-        json = load_json_file("../Testing/save475.json");
+        json = load_json_file("../Testing/save475");
         int i = 0;
         for (const Json& entry : json["checkpoints"][0]["checkpoint_table"].array_items())
         {
