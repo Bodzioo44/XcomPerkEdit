@@ -17,8 +17,34 @@ QT += widgets gui
 INCLUDEPATH += $$PWD \
                $$PWD/xcomsave/json11 \
                $$PWD/Qt \
-               $$PWD/build
+               $$PWD/build \
+               $$PWD/xcomsave/zlib \
+               $$PWD/xcomsave/minilzo-2.09
 
-HEADERS += MainWindow.h utils.h build/ui_QtDesigner.h xcomsave/json11/json11.hpp Qt/PerkButton.h
+HEADERS += MainWindow.h \
+            utils.h \
+            build/ui_QtDesigner.h \
+            xcomsave/json11/json11.hpp \
+            Qt/PerkButton.h \
+            xcomsave/xcom.h \
+            xcomsave/util.h \
+            xcomsave/xcomio.h
+
 FORMS += QtDesigner.ui
-SOURCES += main.cpp MainWindow.cpp utils.cpp xcomsave/json11/json11.cpp Qt/PerkButton.cpp
+
+SOURCES += main.cpp \
+            MainWindow.cpp \
+            utils.cpp \
+            xcomsave/json11/json11.cpp \
+            Qt/PerkButton.cpp \
+            xcomsave/xcom2json.cpp \
+            xcomsave/json2xcom.cpp \
+            xcomsave/util.cpp \
+            xcomsave/xcomio.cpp \
+            xcomsave/xcomreader.cpp \
+            xcomsave/xcomwriter.cpp \
+            xcomsave/xcomerror.cpp \
+            xcomsave/minilzo-2.09/minilzo.c
+
+
+LIBS += -lz
