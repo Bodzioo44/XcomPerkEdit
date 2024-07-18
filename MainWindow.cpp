@@ -132,8 +132,8 @@ void MainWindow::PerkEditButtonClicked()
 
 void MainWindow::SaveButtonClicked()
 {
-    onSoldierSelected();
-    cout << "reloaded on soldierSelected" << endl;
+    //onSoldierSelected();
+    //cout << "reloaded on soldierSelected" << endl;
 
     //iterate over soldiers_to_save map, update the json for each one, and save it.
     if (current_soldier.json_index != -1)
@@ -142,6 +142,9 @@ void MainWindow::SaveButtonClicked()
     }
     for (const auto& pair : soldiers_to_save)
     {
-        json_update(json, pair.second);
+        Json jsonv2 = update_json(json, pair.second);
+
+        save_json_file("../Testing/save475_original.json", json);
+        save_json_file("../Testing/save475_edited.json", jsonv2);
     }
 }

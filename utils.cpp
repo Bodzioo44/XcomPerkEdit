@@ -107,12 +107,81 @@ perk_map load_perk_info(std::vector<Perk> perks)
     return all_perks;
 }
 
-void json_update(json11::Json& json, Soldier soldier)
+json11::Json update_json(json11::Json& json, Soldier soldier)
 {
-    std::cout << "For soldier: " << Get_Soldiers::nickname(json, soldier.json_index) << std::endl;
-    std::cout << "Stats diff: " << soldier.stats_diff << std::endl;
+    //ugly af
+    //this is the only way to update the json object without switching to a different library, or heavily modifying the current one?
+    //step by step turning the json into map/vector objects, updating the values, and then turning them back into json objects
+    json11::Json::object new_json = json.object_items();
+    json11::Json::array step1_checkpoints = new_json["checkpoints"].array_items();
+    json11::Json::object step2_0 = step1_checkpoints[0].object_items();
+    json11::Json::array step3_checkpoint_table = step2_0["checkpoint_table"].array_items();
+    json11::Json::object step4_soldier_index = step3_checkpoint_table[soldier.json_index].object_items();
+    json11::Json::array step5_properties = step4_soldier_index["properties"].array_items();
+    json11::Json::object step6_0 = step5_properties[0].object_items();
+    json11::Json::array step7_properties = step6_0["properties"].array_items();
 
-    json11::Json new_json;
+    //pulling the perks array from the json, and updating it
+    json11::Json::object step8_3 = step7_properties[3].object_items();
+    json11::Json::array step9_int_values_3 = step8_3["int_values"].array_items();
+    for (const Perk& p : soldier.perks)
+    {
+        step9_int_values_3[p.index] = p.value;
+    }
+
+    //pulling the stats array from the json, and updating it
+    json11::Json::object step8_6 = step7_properties[6].object_items();
+    json11::Json::array step9_int_values_6 = step8_6["int_values"].array_items();
+    step9_int_values_6[1] = soldier.current_stats.aim + soldier.stats_diff.aim;
+    step9_int_values_6[3] = soldier.current_stats.mobility + soldier.stats_diff.mobility;
+    step9_int_values_6[7] = soldier.current_stats.will + soldier.stats_diff.will;
+
+
+    //saving the updated perks
+    step8_3["int_values"] = step9_int_values_3;
+    json11::Json new_step8_3 = step8_3;
+    step7_properties[3] = new_step8_3;
+
+    //saving the updated stats
+    step8_6["int_values"] = step9_int_values_6;
+    json11::Json new_step8_6 = step8_6;
+    step7_properties[6] = new_step8_6;
+
+
+
+    json11::Json new_step7_properties = step7_properties;
+    step6_0["properties"] = new_step7_properties;
+
+    json11::Json new_step6_0 = step6_0;
+    step5_properties[0] = new_step6_0;
+
+    json11::Json new_step5_properties = step5_properties;
+    step4_soldier_index["properties"] = new_step5_properties;
+
+    json11::Json new_step4_soldier_index = step4_soldier_index;
+    step3_checkpoint_table[soldier.json_index] = new_step4_soldier_index;
+
+    json11::Json new_step3_checkpoint_table = step3_checkpoint_table;
+    step2_0["checkpoint_table"] = new_step3_checkpoint_table;
+
+    json11::Json new_step2_0 = step2_0;
+    step1_checkpoints[0] = new_step2_0;
+
+    json11::Json new_step1_checkpoints = step1_checkpoints;
+    new_json["checkpoints"] = new_step1_checkpoints;
+    json11::Json new_json_json = new_json;
+
+    return new_json_json;
+}
+
+void save_json_file(const std::string& file_path, json11::Json& json)
+{
+    std::ofstream file(file_path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file " + file_path);
+    }
+    file << json.dump();
+    file.close();
 }
 
 //soldier_index is the index of the soldier in the checkpoint_table (NOT the XGStrategySoldier index)

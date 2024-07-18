@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "json11/json11.hpp"
+#include "json11.hpp"
 
 #include <map>
 #include <iostream>
@@ -132,7 +132,8 @@ using perk_map = std::map<int, PerkAssets>;
 perk_map load_perk_info(std::vector<Perk> perks);
 json11::Json load_json_file(const std::string& file_path);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
-void json_update(json11::Json& json, Soldier soldier);
+json11::Json update_json(json11::Json& json, Soldier soldier);
+void save_json_file(const std::string& file_path, json11::Json& json);
 
 namespace Get_Soldiers
 {

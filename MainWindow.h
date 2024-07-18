@@ -13,7 +13,7 @@
 
 #include "build/ui_QtDesigner.h"
 #include "Qt/PerkButton.h"
-#include "json11/json11.hpp"
+#include "json11.hpp"
 #include "utils.h"
 
 using namespace json11;
