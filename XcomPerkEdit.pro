@@ -15,12 +15,6 @@ QT += widgets gui
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-#INCLUDEPATH += $$PWD \
-#               $$PWD/xcomsave/json11 \
-#               $$PWD/Qt \
-#               $$PWD/build \
-#               $$PWD/xcomsave/zlib \
-#               $$PWD/xcomsave/minilzo-2.09
 
 INCLUDEPATH += xcomsave/minilzo-2.09 \
                xcomsave/json11 \
