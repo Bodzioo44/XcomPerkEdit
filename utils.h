@@ -128,14 +128,16 @@ struct Soldier
     }
 };
 
+// xcomsave headers, since they were supposed to be main files and dont have own headers?
+int xcom2json(std::string save_path, json11::Json& to_write);
+int json2xcom(std::string save_path, json11::Json& to_write);
+
 using perk_map = std::map<int, PerkAssets>;
 perk_map load_perk_info(std::vector<Perk> perks);
 json11::Json load_json_file(const std::string& file_path);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
 json11::Json update_json(json11::Json& json, Soldier soldier);
 void save_json_file(const std::string& file_path, json11::Json& json);
-
-int xcom2json(std::string save_path, json11::Json& to_write);
 
 namespace Get_Soldiers
 {

@@ -166,12 +166,8 @@ json11::Json update_json(json11::Json& json, Soldier soldier)
 
 void save_json_file(const std::string& file_path, json11::Json& json)
 {
-    std::ofstream file(file_path);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open file " + file_path);
-    }
-    file << json.dump();
-    file.close();
+    int err = json2xcom(file_path, json);
+    std::cout << "json2xcom err: " << err << std::endl;
 }
 
 //soldier_index is the index of the soldier in the checkpoint_table (NOT the XGStrategySoldier index)
