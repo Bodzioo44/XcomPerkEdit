@@ -59,8 +59,8 @@ win32 {
     DEFINES += _CRT_NONSTDC_NO_DEPRECATE
 }
 
-# GNU C++ compiler specific settings
-QMAKE_CXXFLAGS_GNU += -lstdc++fs
+QMAKE_CXXFLAGS += -lstdc++fs
+QMAKE_LFLAGS += -lstdc++fs
 
 # macOS specific settings
 macx {
