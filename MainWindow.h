@@ -11,7 +11,7 @@
 #include <vector>
 #include <iostream>
 
-#include "build/ui_QtDesigner.h"
+#include "build/ui_QtDesigner_v2.h"
 #include "Qt/PerkButton.h"
 #include "json11.hpp"
 #include "utils.h"

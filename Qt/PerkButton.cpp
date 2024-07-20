@@ -2,7 +2,7 @@
 
 PerkButton::PerkButton(QWidget* parent) : QToolButton(parent)
 {
-    size = 50;
+    size = 60;
     setIconSize(QSize(size, size));
     QString StyleSheet = "QToolButton { padding: 0px; border: none;}";
     this->setStyleSheet(StyleSheet);

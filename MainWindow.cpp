@@ -5,16 +5,21 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     ui.setupUi(this);
     this->setCentralWidget(ui.centralwidget);
     ui.centralwidget->setLayout(ui.gridLayout);
-    ui.PerkPage->setLayout(ui.PerkGridLayout);
+    ui.PerkEditPage->setLayout(ui.horizontalLayout);
 
-    connect(ui.SoldierList, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
+
+
+    connect(ui.SoldierListWidget, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.PerkEditButton, &QPushButton::clicked, this, &MainWindow::PerkEditButtonClicked);
-    connect(ui.SaveButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
+    connect(ui.SavePushButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
+
+    vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     
     for (int i = 0; i < 18; i++)
     {
         PerkButton* button = new PerkButton(this);
-        ui.PerkGridLayout->addWidget(button, (i / 3) + 2, i % 3);
+        //ui.PerkGridLayout->addWidget(button, (i / 3) + 2, i % 3);
+        rows[i / 3]->addWidget(button);
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
@@ -39,9 +44,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
                     QIcon icon(QString::fromStdString(icon_path));
                     QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(soldier_fullname));
-                    ui.SoldierList->addItem(item);
+                    ui.SoldierListWidget->addItem(item);
 
-                    index_translation[ui.SoldierList->count() - 1] = i; 
+                    index_translation[ui.SoldierListWidget->count() - 1] = i; 
                 }
             }
             i++;
@@ -55,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
 void MainWindow::onSoldierSelected()
 {
-    int current_row = ui.SoldierList->currentRow(); //current row on the list
+    int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
     int soldier_index = index_translation[current_row]; //soldier index in the save file
     int soldier_rank = Get_Soldiers::rank(json, soldier_index);
 
@@ -127,7 +132,7 @@ void MainWindow::onPerkSelected(int i)
 
 void MainWindow::PerkEditButtonClicked()
 {
-    ui.stackedWidget->setCurrentWidget(ui.PerkPage);
+    ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
 }
 
 void MainWindow::SaveButtonClicked()

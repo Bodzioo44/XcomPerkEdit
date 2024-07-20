@@ -30,7 +30,7 @@ HEADERS += MainWindow.h \
             xcomsave/xcomio.h \
             xcomsave/util.h 
 
-FORMS += QtDesigner.ui
+FORMS += QtDesigner_v2.ui
 
 SOURCES += main.cpp \
             MainWindow.cpp \
