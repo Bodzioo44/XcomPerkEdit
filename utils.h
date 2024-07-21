@@ -5,9 +5,28 @@
 
 #include <map>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
+
+// std::string GetSavePath();
+
+// #ifdef _WIN32
+// std::string GetSavePath()
+// {
+//     return "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
+// }
+// #endif
+
+// #ifdef __linux__
+// std::string GetSavePath()
+// {
+//     return ".local/share/feral-interactive/XCOM/XEW/savedata/";
+// }
+// #endif
+
+std::vector<std::string> splitString(const std::string& str, char delimiter);
 
 struct PerkAssets
 {
@@ -63,21 +82,10 @@ struct Perk
                 file << "value greater than 1: " << value << " for index: " << index << std::endl;
                 file.close();
             }
+            //this also need weirdness check.
             if (value >= 1) { enabled = true;}
             else { enabled = false;}
-            //std::cout << "inside perk constructor: " << index << std::endl;
     }
-    //TODO: figure out when the value is bigger than 1
-    // void Enable(int i = 1)
-    // {
-    //     value = i;
-    //     enabled = true;
-    // }
-    // void Disable()
-    // {
-    //     value = 0;
-    //     enabled = false;
-    // }
 
     
     friend std::ostream& operator<<(std::ostream& os, const Perk& perk)
@@ -104,12 +112,7 @@ struct Soldier
             //TODO: do some skill check for potential weird values
             perks[i].enabled = true;
             perks[i].value = 1;
-
             stats_diff += perks[i].stats;
-        }
-        else
-        {
-            std::cout << "are we supposed tobe hre enabled: "<< i << std::endl;
         }
 
     }
@@ -121,10 +124,35 @@ struct Soldier
         perks[i].value = 0;
         stats_diff -= perks[i].stats;
         }
-        else
-        {
-            std::cout << "are we supposed tobe hre disabled: " << i << std::endl;
+    }
+    std::array<std::string,3> Calculate_Stats() {
+        std::string mobility_label = "<b>Mobility: "+ std::to_string(current_stats.mobility) + "</b>";
+
+        if (stats_diff.mobility > 0) {
+            mobility_label += "<b><font color='green'> +" + std::to_string(stats_diff.mobility) + "</font></b>";
         }
+        else if (stats_diff.mobility < 0) {
+            mobility_label += "<b><font color='red'> " + std::to_string(stats_diff.mobility) + "</font></b>";
+        }
+
+        std::string aim_label = "<b>Aim: " + std::to_string(current_stats.aim) + "</b>";
+
+        if (stats_diff.aim > 0) {
+            aim_label += "<b><font color='green'> +" + std::to_string(stats_diff.aim) + "</font></b>";
+        }
+        else if (stats_diff.aim < 0) {
+            aim_label += "<b><font color='red'> " + std::to_string(stats_diff.aim) + "</font></b>";
+        }
+
+        std::string will_label = "<b>Will: " + std::to_string(current_stats.will) + "</b>";
+
+        if (stats_diff.will > 0) {
+            will_label += "<b><font color='green'> +" + std::to_string(stats_diff.will) + "</font></b>";
+        }
+        else if (stats_diff.will < 0) {
+            will_label += "<b><font color='red'> " + std::to_string(stats_diff.will) + "</font></b>";
+        }
+        return {mobility_label, aim_label, will_label};   
     }
 };
 
@@ -147,7 +175,6 @@ namespace Get_Soldiers
     std::string class_type(const json11::Json& entry, int soldier_index);
     int rank(const json11::Json& entry, int soldier_index);
     std::string eStatus(const json11::Json& entry, int soldier_index);
-    //TODO: dont pass the whole array, just the ones we need (optimalization)
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
     SoldierStats stats(json11::Json& json, int soldier_index);
 }

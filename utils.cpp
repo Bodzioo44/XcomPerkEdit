@@ -1,12 +1,16 @@
-#include <fstream>
-#include <iostream>
-#include <cassert>
-#include <cstring>
-#include <string>
-#include <array>
-#include <vector>
-#include <sstream>
 #include "utils.h"
+
+std::vector<std::string> splitString(const std::string& str, char delimiter) {
+    std::vector<std::string> tokens;
+    std::istringstream strStream(str);
+    std::string token;
+
+    while (std::getline(strStream, token, delimiter)) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
 
 json11::Json load_json_file(const std::string& file_path) {
 

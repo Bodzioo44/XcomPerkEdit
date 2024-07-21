@@ -45,7 +45,9 @@ fix the above formating, and pass only soldier stats instead of whole perk. (cha
 
 =======================
 UTILS
-======================
+=======================
+
+Try to load just the header while loading saves?
 
 is it more efficient to pull whole upgrades array, or read single entries form json?
 yeah, thats need a change.

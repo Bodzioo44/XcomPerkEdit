@@ -1,21 +1,18 @@
 #include "PerkButton.h"
 
-PerkButton::PerkButton(QWidget* parent) : QToolButton(parent)
-{
+PerkButton::PerkButton(QWidget* parent) : QToolButton(parent) {
+    //TODO: try to move this inside .ui file
     size = 60;
     setIconSize(QSize(size, size));
     QString StyleSheet = "QToolButton { padding: 0px; border: none;}";
     this->setStyleSheet(StyleSheet);
 }
 
-void PerkButton::LoadPerk(const PerkAssets icon_assets, Perk current_perk)
-{
+//TODO: change Perk to soldier_stats
+void PerkButton::LoadPerk(const PerkAssets icon_assets, Perk current_perk) {
     QString icon_path =  QString::fromStdString("../assets/icons/" + icon_assets.icon_path);
     QString description = icon_assets.description.c_str();
-    
-
     QString name = icon_assets.name.c_str();
-
     QString extra_stats = "(Mobility:" + QString::number(current_perk.stats.mobility) + ", Aim:" + QString::number(current_perk.stats.aim) + ", Will:" + QString::number(current_perk.stats.will) + ")";
 
     setToolTip("<b>" + name + "</b><br>" + description + "<br>" + extra_stats);
@@ -33,16 +30,13 @@ void PerkButton::LoadPerk(const PerkAssets icon_assets, Perk current_perk)
             img.setPixelColor(x, y, color);
         }
     }
-
     greyed_out_icon = QPixmap::fromImage(img);
     is_greyed_out = false;  
     setIcon(icon);
 }
 
-void PerkButton::GreyOut()
-{
-    if (!is_greyed_out)
-    {
+void PerkButton::GreyOut() {
+    if (!is_greyed_out) {
         setIcon(greyed_out_icon);
         is_greyed_out = true;
     }
@@ -50,8 +44,7 @@ void PerkButton::GreyOut()
 
 void PerkButton::LightUp()
 {
-    if (is_greyed_out)
-    {
+    if (is_greyed_out) {
         setIcon(icon);
         is_greyed_out = false;
     }
