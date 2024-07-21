@@ -1,40 +1,17 @@
-m_eStatus:
+XcomPerkEdit
 
-eStatus_Dead
-eStatus_Active
-eStatus_Healing
-eStatus_GeneMod
-eStatus_PsiTesting
+simple Qt app that allows you to edit soldier perks in Long War modification of a XCOM: Enemy Within game.
+It has the same limitations as xcomsave library, so check out that repo for more info.
+So far it supports Soldiers that are alive, have assigned rank, and have rank above specialist.
+Thanks to tracktwo for creating xcomsave library!
 
+Building from Source:
 
+linux:
+mkdir build
+cd build
+qmake -o Makefile ../XcomPerkEdit.pro
 
-XGStrategySoldier["properties"]
-    [0] -> m_kChar
-        ["properties"]
-            [3] Upgrades
-                ["int_values"] -> array
-            [6] Stats
-                ["int_values:] -> array
-                    [0] -> Health
-                    [1] -> Aim
-                    [2] -> Defense
-                    [3] -> Mobility
-                    [7] -> Will
-    [1] -> m_kSoldier
-        ["properties"]
-            [1] firstname
-            [2] lastname
-            [3] nickname
-            [4] rank
-            [5] psi rank
-            [10] -> kAppearance
-                ["properties"]
-            [11] -> kClass
-                ["properties"]
-                    ["value"]
-                        ["str"] -> Engineer
-    
-    [2] ->
+XcomPerkEdit executable has to be in a subfolder of the main folder for proper assets loading.
 
-    [3] -> eStatus
-    
+I'm probably doing something wrong, but whenever I compile xcomsave source files inside my .pro file, It seems to work faster than including pre-compiled xcomsave library.
