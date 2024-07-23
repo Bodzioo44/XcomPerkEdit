@@ -12,16 +12,6 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     return tokens;
 }
 
-json11::Json load_json_file(const std::string& file_path) {
-
-    json11::Json json;
-    int err = xcom2json(file_path, json);
-    if (err != 0) {
-        throw std::runtime_error("Could not load file " + file_path);
-    }
-    return json;
-}
-
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index)
 {
     std::vector<int> upgrades = Get_Soldiers::upgrades(json, soldier_index);
@@ -101,7 +91,25 @@ perk_map load_perk_info(std::vector<Perk> perks)
     return all_perks;
 }
 
-json11::Json update_json(json11::Json& json, Soldier soldier)
+json11::Json load_json_file(const std::string& file_path) {
+    json11::Json json;
+    int err = xcom2json(file_path, json);
+    if (err != 0) {
+        throw std::runtime_error("Could not load file " + file_path);
+    }
+    return json;
+}
+
+void save_json_file(const std::string& file_path, json11::Json& json)
+{
+    int err = json2xcom(file_path, json);
+    if (err != 0) {
+        throw std::runtime_error("Could not save file " + file_path);
+    }
+}
+
+
+void update_json(json11::Json& json, Soldier soldier)
 {
     //ugly af
     //this is the only way to update the json object without switching to a different library, or heavily modifying the current one?
@@ -163,16 +171,10 @@ json11::Json update_json(json11::Json& json, Soldier soldier)
 
     json11::Json new_step1_checkpoints = step1_checkpoints;
     new_json["checkpoints"] = new_step1_checkpoints;
-    json11::Json new_json_json = new_json;
-
-    return new_json_json;
+    json = json11::Json(new_json);
 }
 
-void save_json_file(const std::string& file_path, json11::Json& json)
-{
-    int err = json2xcom(file_path, json);
-    std::cout << "json2xcom err: " << err << std::endl;
-}
+
 
 //soldier_index is the index of the soldier in the checkpoint_table (NOT the XGStrategySoldier index)
 //json is the whole save file
@@ -218,5 +220,13 @@ namespace Get_Soldiers
         stats.aim = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][1].int_value();
         stats.will = json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][0]["properties"][6]["int_values"][7].int_value();
         return stats;
+    }
+    //needs work
+    //checkpoints[0].checkpoint_table[260].properties[0].properties[2].properties[4].int_values[0]
+    //eStatus + 12 -> "properties" -> [4] -> "int_values" for the backed up (inventory that soldier will equip whenever hes back to health?)
+    //upgrades - 1 -> "properties" -> [4] -> "int_vales" for current inventory?
+    void reset_arrSmallItems(json11::Json& json, int soldier_index)
+    {
+        json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][3]["value"].string_value();
     }
 }

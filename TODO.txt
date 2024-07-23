@@ -1,66 +1,42 @@
-==================
-GENERAL
-==================
-
-Add MEC's icons. DONE
-Add perks icons. DONE
-Move all the perk buttons to single grid. DONE
-Replace all the small arrays with structs?
-replace perk vector with array since its set size?
-
-Somekind of soldier class/struct is needed?
-Where to check for the weird perk values? (needs testing)
+Try to load just the header while loading save descriptions.
+Rewrite app so it doesnt use json, just xcom_save. (if possible?)
+Remove option to unassign a perk, or randomly decrease stats (would be exploitable).
+Add random stats lvlup after assigning fresh perks.
+Add Vanilla XCOM support.
 
 
-Smokegrenade value is based on amount of smokes in eq + skill itself?
-how to tell apart if soldier has grenade equiped or the skill?
+=============================
 
-Add somekind of hashing to avoid saving unedited soldiers?
-add edited bool?
+Perks connected to items for some reason have values different than 1/0 (Needs more testing)
+Value can be greater than 0 even when perk isnt selected.
+Other perks can increase its value?
 
-On click:
--check if button is greyed out. (or not? will it work in game?)
--greyout other buttons.
--use the same vector perk, edit everything by reference.
--edit the vector perk.
--get another soldier_stats for the difference from skill change.
--update the labels.
-
-====================
-MAINWINDOW
-====================
-
-Move json loading and soldier list generation to separate function.
-replace index_translation with single int that marks beggining of the soldiers?
-soldiers SHOULD be next to each other in the save file.
-this would mess with potential sorting/search later on?
+Index 22 - Shredder Ammo
+Index 8 - Battle scanner
 
 
-=====================
-PERK BUTTON
-======================
-Add extra stats to description. pass perk itself along the data? SOMEWHAT DONE
-fix the above formating, and pass only soldier stats instead of whole perk. (change Perk struct?)
+Index 44 - smoke grenade
+- depends on the items equiped.
+- represents how many extra smokes soldier can throw based on abilites?
+- can be 0 if no smoke grenades are equiped.
+- can be > 0 even whenever another perk is selected.
+- how does the game know if perk should be highlighted or not? or when to apply 2nd part of the perk during battle.
+
+Index represents how many extra uses of said item you get from your abilites based on your inventory?
+or the amout of smokes that should be displayed in the inventory tab? (needs testing)
 
 
-=======================
-UTILS
-=======================
+Smoke Grenade + 1 
+Smoke & Mirrors + 1 (so SMoke & Mirros dont give you extra item, it increases charges of that perk granted item? this way packmaster only works once)
+Packmaster + 1 (shouldnt be +2 since both smoke grenade and smoke & mirrors give you 1 nade?)
 
-Try to load just the header while loading saves?
+Assuming no Smoke grenades in the EQ:
+index = 0 (smoke grenades in eq)
+if (Somke Grenade): index + 1
+if (Smoke Grenade AND Smoke and mirrors) index + 1
+if (Smoke Grenade AND Packmaster) index + 1
 
-is it more efficient to pull whole upgrades array, or read single entries form json?
-yeah, thats need a change.
-
-remove std::string soldier_class from load_perks? DONE
-merge load_perks with load_stats?
-fix load_perk_info mess
-
-Soldier struct needs current_stats and extra_stats DONE
-
-
-=======================
-assets
-======================
-
-something is wrong with rocketeer.txt DONE
+Assuming ONE Smoke Grenades in the EQ:
+index = 1 (smoke grenades in eq)
+if (smoke Greande): index + 1
+if (SMoke and mirrors) 
