@@ -8,6 +8,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
+#include <QtCore/QDateTime>
 
 #include <map>
 #include <vector>

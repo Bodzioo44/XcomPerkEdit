@@ -69,6 +69,15 @@ void MainWindow::SelectPathButtonClicked() {
 }
 
 void MainWindow::onSaveSelected() {
+    QDir dir("../backup");
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
+    QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
+    QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
+    QFile::copy(sourcePath, destPath);
+
     ui.SoldierListWidget->clear();
     //TODO: remove try/catch? (not needed anymore since the header check?)
     try {
@@ -88,6 +97,12 @@ void MainWindow::onSaveSelected() {
                     ui.SoldierListWidget->addItem(item);
 
                     index_translation[ui.SoldierListWidget->count() - 1] = i; 
+                    //debugging
+                    if (Get_Soldiers::class_type(json, i) == "Engineer") {
+                        cout << "Engineer found: " << Get_Soldiers::nickname(json, i) << endl;
+                        cout << "Perk index 22 value: " <<  Get_Soldiers::upgrades(json, i)[44] << endl << endl;
+
+                    }
                 }
             }
             i++;
@@ -119,6 +134,7 @@ void MainWindow::onSoldierSelected() {
     }
 
     //grey out all other perks in the same row
+    //TODO: do this check whenever loading soldiers?
     for (int i = 0; i < 18; i++) {
         const Perk& current_perk = soldier_perks[i];
         perk_buttons[i]->LoadPerk(perk_info[current_perk.index], current_perk);
@@ -128,6 +144,14 @@ void MainWindow::onSoldierSelected() {
         else {
             perk_buttons[i]->GreyOut();
         }
+        //disable perks from rank that wasnt assigned yet.
+        //assigning perk for the first time should be done in game, otherwise it messes with stats increase on level up.
+        if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
+            perk_buttons[i]->setDisabled(true);
+            perk_buttons[i-1]->setDisabled(true);
+            perk_buttons[i-2]->setDisabled(true);
+        }
+        //disable perks that are not available yet (based on soldier rank)
         if ((i+1) > (soldier_rank-1)*3) {
             perk_buttons[i]->setDisabled(true);
         }
@@ -150,14 +174,9 @@ void MainWindow::onPerkSelected(int i) {
         current_soldier.Disable_Perk(j);
         perk_buttons[j]->GreyOut();
     }
-    if(current_soldier.perks[i].enabled) {
-        current_soldier.Disable_Perk(i);
-        perk_buttons[i]->GreyOut();
-    }
-    else {
-        current_soldier.Enable_Perk(i);
-        perk_buttons[i]->LightUp();
-    }
+    current_soldier.Enable_Perk(i);
+    perk_buttons[i]->LightUp();
+
     array<string, 3> stats_labels = current_soldier.Calculate_Stats();
     ui.MobilityLabel->setText(QString::fromStdString(stats_labels[0]));
     ui.AimLabel->setText(QString::fromStdString(stats_labels[1]));
@@ -166,17 +185,26 @@ void MainWindow::onPerkSelected(int i) {
 
 void MainWindow::SaveButtonClicked() {
     //iterate over soldiers_to_save map, update the json for each one, and save it.
-    if (current_soldier.json_index != -1)
-    {
+    if (current_soldier.json_index != -1) {
     soldiers_to_save[current_soldier.json_index] = current_soldier;
     }
-    // for (const auto& pair : soldiers_to_save)
-    // {
-    //     Json jsonv2 = update_json(json, pair.second);
+    for (const auto& pair : soldiers_to_save) {
+        update_json(json, pair.second);
+    }
+    string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
+    save_json_file(path, json);
+    soldiers_to_save.clear();
+    current_soldier.json_index = -1;
+    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
-    //     save_json_file("../Testing/save475_original.json", json);
-    //     save_json_file("../Testing/save475_edited.json", jsonv2);
-    // }
+    QDir dir("../backup");
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
+    QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
+    QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_edited_"+ dateTimeNow.toStdString());
+    QFile::copy(sourcePath, destPath);
 }
 
 void MainWindow::ExitButtonClicked() {
