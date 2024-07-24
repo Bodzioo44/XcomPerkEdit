@@ -48,7 +48,7 @@ void MainWindow::SelectPathButtonClicked() {
         if (name.contains("save")) {
             try {
                 QString file_path = path + name;
-                xcom::header hdr = xcom::read_xcom_save(file_path.toStdString()).hdr;
+                xcom::header hdr = xcom::read_only_header(file_path.toStdString());
                 if (!hdr.tactical_save) {
                     //formats hdr.save_description.str into a more readable format
                     vector<string> split = splitString(hdr.save_description.str, '-');
