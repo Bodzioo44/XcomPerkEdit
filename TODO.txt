@@ -16,6 +16,8 @@ Index 8 - Battle scanner
 
 
 Index 44 - smoke grenade
+5-all 3 skills and 2x nade in eq
+
 - depends on the items equiped.
 - represents how many extra smokes soldier can throw based on abilites?
 - can be 0 if no smoke grenades are equiped.
@@ -40,3 +42,15 @@ Assuming ONE Smoke Grenades in the EQ:
 index = 1 (smoke grenades in eq)
 if (smoke Greande): index + 1
 if (SMoke and mirrors) 
+
+
+
+NOT CONFIRMED:
+Field Medic
+Fire Rocket
+Grenadier?
+Packmaster
+Repair
+Savior
+Shock & Awe
+Smoke & Mirrors
