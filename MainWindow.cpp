@@ -46,6 +46,8 @@ void MainWindow::SelectPathButtonClicked() {
     QStringList file_names = dir.entryList(QDir::NoFilter, QDir::Time);
     for (QString& name : file_names) {
         if (name.contains("save")) {
+            //TODO: remove try/catch (not needed anymore since now only header is being loaded?)
+            //TODO: keep it as a check if file is a xcom save?
             try {
                 QString file_path = path + name;
                 xcom::header hdr = xcom::read_only_header(file_path.toStdString());
@@ -55,6 +57,7 @@ void MainWindow::SelectPathButtonClicked() {
                     string desc = split[0].substr(0, split[0].size()-1) + " - " + split[1].substr(1) + " \n" + split[2].substr(1) + "\n" + split[3].substr(1, split[3].size()-2) + " - " + split[4].substr(1);
                     QListWidgetItem* item = new QListWidgetItem(save_icon, QString::fromStdString(desc));
                     item->setFont(bold_font);
+                    item->setToolTip(name);
                     ui.SaveListWidget->addItem(item);
                     save_translation[ui.SaveListWidget->count() -1] = name.toStdString();
                 }
@@ -144,19 +147,23 @@ void MainWindow::onSoldierSelected() {
         else {
             perk_buttons[i]->GreyOut();
         }
-        //disable perks from rank that wasnt assigned yet.
-        //assigning perk for the first time should be done in game, otherwise it messes with stats increase on level up.
-        if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
-            perk_buttons[i]->setDisabled(true);
-            perk_buttons[i-1]->setDisabled(true);
-            perk_buttons[i-2]->setDisabled(true);
-        }
+
         //disable perks that are not available yet (based on soldier rank)
         if ((i+1) > (soldier_rank-1)*3) {
             perk_buttons[i]->setDisabled(true);
         }
         else {
             perk_buttons[i]->setDisabled(false);
+            //cout << "enabling: " << i << endl;
+        }
+        //disable perks from rank that wasnt assigned yet.
+        //assigning perk for the first time should be done in game, otherwise it messes with stats increase on level up.
+        //TODO: move this to onSaveSelected soldier availability check?
+        if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
+            perk_buttons[i]->setDisabled(true);
+            perk_buttons[i-1]->setDisabled(true);
+            perk_buttons[i-2]->setDisabled(true);
+            //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
         }
     }
     current_soldier.current_stats = stats;
