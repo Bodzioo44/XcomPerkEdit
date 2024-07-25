@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include "json11.hpp"
+#include "xcomsave/xcom.h"
 
 #include <map>
 #include <iostream>
@@ -9,6 +10,8 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+
+using namespace json11;
 
 // std::string GetSavePath();
 
@@ -170,6 +173,8 @@ void save_json_file(const std::string& file_path, json11::Json& json);
 namespace Get_Soldiers
 {
     std::string firstname(const json11::Json& entry, int soldier_index);
+    //later on replace soldier_index with pointer to a soldier?
+    std::string firstname(const xcom::saved_game& save, int soldier_index);
     std::string nickname(const json11::Json& entry, int soldier_index);
     std::string lastname(const json11::Json& entry, int soldier_index);
     std::string class_type(const json11::Json& entry, int soldier_index);
@@ -177,6 +182,12 @@ namespace Get_Soldiers
     std::string eStatus(const json11::Json& entry, int soldier_index);
     std::vector<int> upgrades(const json11::Json& entry, int soldier_index);
     SoldierStats stats(json11::Json& json, int soldier_index);
+    //Perks that give extra items have weird values based on other perks and items equipped.
+    //This function uneqiups all items that might cause problems.
+    //Items so far (Perk index - Item name - Item value):
+    // 44 - Smoke Grenade - 82
+    // 22 - Shredder Rocket - 89
+    // 8 - Battle Scanner - 97
     void reset_arrSmallItems(json11::Json& json, int soldier_index);
 }
 

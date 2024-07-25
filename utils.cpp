@@ -184,6 +184,20 @@ namespace Get_Soldiers
     {
         return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][1]["value"]["str"].string_value();
     }
+
+    std::string firstname(const xcom::saved_game& save, int soldier_index)
+    {
+        const xcom::checkpoint_chunk_table& checkpoint_chunk_table = save.checkpoints;
+        const xcom::checkpoint_chunk& checkpoint_chunk = checkpoint_chunk_table[0];
+        const xcom::checkpoint_table& checkpoint_table = checkpoint_chunk.checkpoints;
+        const xcom::checkpoint& soldier = checkpoint_table[soldier_index];
+        const xcom::property_list& properties = soldier.properties;
+        const xcom::struct_property* m_kSoldier = static_cast<xcom::struct_property*> (properties[1].get());
+        const xcom::string_property* strFirstName = static_cast<xcom::string_property*> (m_kSoldier->properties[1].get());
+        return strFirstName->str.str;
+
+    }
+
     std::string nickname(const json11::Json& json, int soldier_index)
     {
         return json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][1]["properties"][3]["value"]["str"].string_value();
@@ -225,8 +239,13 @@ namespace Get_Soldiers
     //checkpoints[0].checkpoint_table[260].properties[0].properties[2].properties[4].int_values[0]
     //eStatus + 12 -> "properties" -> [4] -> "int_values" for the backed up (inventory that soldier will equip whenever hes back to health?)
     //upgrades - 1 -> "properties" -> [4] -> "int_vales" for current inventory?
+
+    //checkpoints[0].checkpoint_table[260].properties[15].properties[4].int_values()
+    //return checkpoints[0].checkpoint_table[260].properties[0].properties[2] (same lvl as upgrades)
+    //return checkpoints[0].checkpoint_table[260].properties[15]
+    //checkpoints[0].checkpoint_table[260].properties[0].properties[2].properties[4].int_values()
     void reset_arrSmallItems(json11::Json& json, int soldier_index)
     {
-        json["checkpoints"][0]["checkpoint_table"][soldier_index]["properties"][3]["value"].string_value();
+
     }
 }
