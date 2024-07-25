@@ -4,14 +4,23 @@
 #include <QtWidgets/QToolButton>
 #include "utils.h"
 
-class PerkButton : public QToolButton
-{
+struct PerkDisplay {
+    QString name;
+    QString description;
+    QString icon_path;
+    QString extra_stats;
+};
+
+using PerkDisplayMap = std::map<int, PerkDisplay>;
+PerkDisplayMap load_perk_display(std::vector<Perk> perks);
+
+class PerkButton : public QToolButton {
     Q_OBJECT
 
 public:
     PerkButton(QWidget* parent = nullptr);
     ~PerkButton() {};
-    void LoadPerk(const PerkAssets data, Perk current_perk);
+    void LoadPerk(const PerkDisplay& perk_assets);
     void GreyOut();
     void LightUp();
 
@@ -20,7 +29,6 @@ private:
     bool is_greyed_out;
     QIcon icon;
     QIcon greyed_out_icon;
-
 };
 
 #endif

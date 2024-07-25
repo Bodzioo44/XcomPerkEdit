@@ -40,57 +40,6 @@ std::vector<Perk> load_perks(json11::Json& json, int soldier_index)
     return perks;
 }
 
-perk_map load_perk_info(std::vector<Perk> perks)
-{
-    std::vector<int> perks_indexes;
-    for (const Perk& p: perks)
-    {
-        perks_indexes.push_back(p.index);
-    }
-    std::sort(perks_indexes.begin(), perks_indexes.end());
-
-    perk_map all_perks;
-    std::string path = "../assets/All_Perk_Data.txt";
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open file " + path);
-    }
-    std::string line;
-    int i = 1;
-    unsigned int current_perk = 0; //compiler was complaining about comparing signed and unsigned
-    bool is_correct = false;
-    PerkAssets icon_assets;
-
-    while (std::getline(file,line))
-    {
-        if (i % 4 == 1 && std::stoi(line) == perks_indexes[current_perk])
-        {
-            is_correct = true;
-        }
-        else if (is_correct && i % 4 == 2)
-        {
-            icon_assets.name = line;
-        }
-        else if (is_correct && i % 4 == 3)
-        {
-            icon_assets.description = line;
-        }
-        else if (is_correct && i % 4 == 0)
-        {
-            icon_assets.icon_path = line;
-            all_perks[perks_indexes[current_perk]] = icon_assets;
-            current_perk++;
-            is_correct = false;
-            if (current_perk == perks_indexes.size())
-            {
-                break;
-            }
-        }
-        i++;
-    }
-    return all_perks;
-}
-
 json11::Json load_json_file(const std::string& file_path) {
     json11::Json json;
     int err = xcom2json(file_path, json);

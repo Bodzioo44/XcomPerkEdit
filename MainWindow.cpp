@@ -101,11 +101,10 @@ void MainWindow::onSaveSelected() {
 
                     index_translation[ui.SoldierListWidget->count() - 1] = i; 
                     //debugging
-                    if (Get_Soldiers::class_type(json, i) == "Engineer") {
-                        cout << "Engineer found: " << Get_Soldiers::nickname(json, i) << endl;
-                        cout << "Perk index 22 value: " <<  Get_Soldiers::upgrades(json, i)[44] << endl << endl;
-
-                    }
+                    // if (Get_Soldiers::class_type(json, i) == "Engineer") {
+                    //     cout << "Engineer found: " << Get_Soldiers::nickname(json, i) << endl;
+                    //     cout << "Perk index 22 value: " <<  Get_Soldiers::upgrades(json, i)[44] << endl << endl;
+                    // }
                 }
             }
             i++;
@@ -130,17 +129,16 @@ void MainWindow::onSoldierSelected() {
     ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats.will) + "</b>"));
 
     vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
-    perk_map perk_info = load_perk_info(soldier_perks); //map of perk index to perk data
+    PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
 
     if (current_soldier.json_index != -1) { 
         soldiers_to_save[current_soldier.json_index] = current_soldier;
     }
-
     //grey out all other perks in the same row
     //TODO: do this check whenever loading soldiers?
     for (int i = 0; i < 18; i++) {
         const Perk& current_perk = soldier_perks[i];
-        perk_buttons[i]->LoadPerk(perk_info[current_perk.index], current_perk);
+        perk_buttons[i]->LoadPerk(perk_display_map[current_perk.index]);
         if (current_perk.enabled) {
             perk_buttons[i]->LightUp();
         }

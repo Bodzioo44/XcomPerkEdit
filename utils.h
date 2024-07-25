@@ -13,22 +13,6 @@
 
 using namespace json11;
 
-// std::string GetSavePath();
-
-// #ifdef _WIN32
-// std::string GetSavePath()
-// {
-//     return "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
-// }
-// #endif
-
-// #ifdef __linux__
-// std::string GetSavePath()
-// {
-//     return ".local/share/feral-interactive/XCOM/XEW/savedata/";
-// }
-// #endif
-
 std::vector<std::string> splitString(const std::string& str, char delimiter);
 
 struct PerkAssets
@@ -57,7 +41,6 @@ struct SoldierStats
     }
     void operator -= (const SoldierStats& statsy)
     {
-        //std::cout << "ayo: " << will << " - " << statsy.will << std::endl;
         mobility = mobility - statsy.mobility;
         aim = aim - statsy.aim;
         will = will - statsy.will;
@@ -163,8 +146,6 @@ struct Soldier
 int xcom2json(std::string save_path, json11::Json& to_write);
 int json2xcom(std::string save_path, json11::Json& to_write);
 
-using perk_map = std::map<int, PerkAssets>;
-perk_map load_perk_info(std::vector<Perk> perks);
 json11::Json load_json_file(const std::string& file_path);
 std::vector<Perk> load_perks(json11::Json& json, int soldier_index);
 void update_json(json11::Json& json, Soldier soldier);
