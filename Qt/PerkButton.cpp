@@ -1,6 +1,7 @@
 #include "PerkButton.h"
 
-PerkDisplayMap load_perk_display(std::vector<Perk> perks) {
+//TODO: switch this shit to csv like file
+PerkDisplayMap load_perk_display(PerkSet perks) {
     std::sort(perks.begin(), perks.end(), [](const Perk& a, const Perk& b) { return a.index < b.index; });
     std::ifstream file("../assets/All_Perk_Data.txt");
     if (!file.is_open()) {

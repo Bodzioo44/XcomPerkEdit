@@ -14,15 +14,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
 
-    vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
+    std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
         PerkButton* button = new PerkButton(this);
         rows[i / 3]->addWidget(button);
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
-    //FIXME: why is this here?
-    current_soldier.json_index = -1;
 
     //TODO: try to move this inside .ui file
     ui.SaveListWidget->setStyleSheet("QListWidget::item { padding: 5px; }");
@@ -53,8 +51,14 @@ void MainWindow::SelectPathButtonClicked() {
                 xcom::header hdr = xcom::read_only_header(file_path.toStdString());
                 if (!hdr.tactical_save) {
                     //formats hdr.save_description.str into a more readable format
-                    vector<string> split = splitString(hdr.save_description.str, '-');
-                    string desc = split[0].substr(0, split[0].size()-1) + " - " + split[1].substr(1) + " \n" + split[2].substr(1) + "\n" + split[3].substr(1, split[3].size()-2) + " - " + split[4].substr(1);
+                    //vector<string> split = splitString(hdr.save_description.str, '-');
+                    std::vector<std::string> split;
+                    std::stringstream ss(hdr.save_description.str);
+                    std::string value;
+                    while (std::getline(ss, value, '-')) {
+                        split.push_back(value);
+                    }
+                    std::string desc = split[0].substr(0, split[0].size()-1) + " - " + split[1].substr(1) + " \n" + split[2].substr(1) + "\n" + split[3].substr(1, split[3].size()-2) + " - " + split[4].substr(1);
                     QListWidgetItem* item = new QListWidgetItem(save_icon, QString::fromStdString(desc));
                     item->setFont(bold_font);
                     item->setToolTip(name);
@@ -72,6 +76,8 @@ void MainWindow::SelectPathButtonClicked() {
 }
 
 void MainWindow::onSaveSelected() {
+    ui.SoldierListWidget->clear();
+    //temp backup
     QDir dir("../backup");
     if (!dir.exists()) {
         dir.mkpath(".");
@@ -81,38 +87,32 @@ void MainWindow::onSaveSelected() {
     QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
     QFile::copy(sourcePath, destPath);
 
-    ui.SoldierListWidget->clear();
-    //TODO: remove try/catch? (not needed anymore since the header check?)
-    try {
-        string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
-        json = load_json_file(path);
-        int i = 0;
-        for (const Json& entry : json["checkpoints"][0]["checkpoint_table"].array_items()) {
-            //Checks if entry is a soldier
-            if (entry["name"].string_value().find("XGStrategySoldier") != string::npos) {
-                //Checks if soldier is alive, has class assigned and has rank above specialist
-                if (Get_Soldiers::eStatus(json, i) != "eStatus_Dead" && Get_Soldiers::rank(json, i) > 1 && Get_Soldiers::class_type(json, i) != "") {
-                    string soldier_fullname = Get_Soldiers::firstname(json, i) + " '" + Get_Soldiers::nickname(json, i) + "' " + Get_Soldiers::lastname(json, i);
-                    string icon_path = "../assets/icons/" + Get_Soldiers::class_type(json, i) + "_icon" + ".png";
+    std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
+    save = xcom::read_xcom_save(path);
+    int i = 0;
+    xcom::checkpoint_chunk_table& checkpoint_chunk_table = save.checkpoints;
+    xcom::checkpoint_chunk& checkpoint_chunk = checkpoint_chunk_table[0];
+    xcom::checkpoint_table& checkpoint_table = checkpoint_chunk.checkpoints;
+    checkpoint_table_ptr = &checkpoint_table;
+    for (const xcom::checkpoint& soldier_checkpoint : checkpoint_table) {
+        //Check if entry is a soldier
+        if (soldier_checkpoint.name.find("XGStrategySoldier") != std::string::npos) {
+            //Various checks if soldier is valid for the editor.
+            const xcom::property_list& properties = soldier_checkpoint.properties;
+            if (GetSoldiers::eStatus(properties) != "eStatus_Dead" && GetSoldiers::rank(properties) > 1 && GetSoldiers::class_type(properties) != "") {
+                std::string full_name = GetSoldiers::full_name(properties);
+                std::string icon_path = "../assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
-                    QIcon icon(QString::fromStdString(icon_path));
-                    QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(soldier_fullname));
-                    ui.SoldierListWidget->addItem(item);
+                QIcon icon (QString::fromStdString(icon_path));
+                QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
+                ui.SoldierListWidget->addItem(item);
 
-                    index_translation[ui.SoldierListWidget->count() - 1] = i; 
-                    //debugging
-                    // if (Get_Soldiers::class_type(json, i) == "Engineer") {
-                    //     cout << "Engineer found: " << Get_Soldiers::nickname(json, i) << endl;
-                    //     cout << "Perk index 22 value: " <<  Get_Soldiers::upgrades(json, i)[44] << endl << endl;
-                    // }
-                }
+                index_translation[ui.SoldierListWidget->count() - 1] = i;
             }
-            i++;
         }
+        i++;
     }
-    catch (runtime_error& e) {
-        cerr << e.what() << endl;
-    }
+
     //TODO: add a check if no soldiers were found? (very unlikely)
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     onSoldierSelected();
@@ -121,19 +121,22 @@ void MainWindow::onSaveSelected() {
 void MainWindow::onSoldierSelected() {
     int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
     int soldier_index = index_translation[current_row]; //soldier index in the save file
-    int soldier_rank = Get_Soldiers::rank(json, soldier_index);
-    SoldierStats stats = Get_Soldiers::stats(json, soldier_index);
 
-    ui.MobilityLabel->setText(QString::fromStdString("<b>Mobility: " + to_string(stats.mobility) + "</b>"));
-    ui.AimLabel->setText(QString::fromStdString("<b>Aim: " + to_string(stats.aim) + "</b>"));
-    ui.WillLabel->setText(QString::fromStdString("<b>Will: " + to_string(stats.will) + "</b>"));
+    if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
+        soldiers_to_save.emplace(soldier_index, checkpoint_table_ptr->at(soldier_index));
+    }
+    current_soldier = &soldiers_to_save[soldier_index];
+    int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
 
-    vector<Perk> soldier_perks = load_perks(json, soldier_index); //vector of soldier perks (in order)
+    LabelSet labels = current_soldier->GetLabels();
+    ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
+    ui.AimLabel->setText(QString::fromStdString(labels[1]));
+    ui.WillLabel->setText(QString::fromStdString(labels[2]));
+
+
+    PerkSet soldier_perks = current_soldier->GetPerks();
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
 
-    if (current_soldier.json_index != -1) { 
-        soldiers_to_save[current_soldier.json_index] = current_soldier;
-    }
     //grey out all other perks in the same row
     //TODO: do this check whenever loading soldiers?
     for (int i = 0; i < 18; i++) {
@@ -145,7 +148,6 @@ void MainWindow::onSoldierSelected() {
         else {
             perk_buttons[i]->GreyOut();
         }
-
         //disable perks that are not available yet (based on soldier rank)
         if ((i+1) > (soldier_rank-1)*3) {
             perk_buttons[i]->setDisabled(true);
@@ -157,17 +159,13 @@ void MainWindow::onSoldierSelected() {
         //disable perks from rank that wasnt assigned yet.
         //assigning perk for the first time should be done in game, otherwise it messes with stats increase on level up.
         //TODO: move this to onSaveSelected soldier availability check?
-        if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
-            perk_buttons[i]->setDisabled(true);
-            perk_buttons[i-1]->setDisabled(true);
-            perk_buttons[i-2]->setDisabled(true);
-            //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
-        }
+        // if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
+        //     perk_buttons[i]->setDisabled(true);
+        //     perk_buttons[i-1]->setDisabled(true);
+        //     perk_buttons[i-2]->setDisabled(true);
+        //     //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
+        // }
     }
-    current_soldier.current_stats = stats;
-    current_soldier.stats_diff = { 0, 0, 0 };
-    current_soldier.perks = soldier_perks;
-    current_soldier.json_index = soldier_index;
 }
 
 void MainWindow::onPerkSelected(int i) {
@@ -176,40 +174,28 @@ void MainWindow::onPerkSelected(int i) {
         if (j == i) {
             continue;
         }
-        current_soldier.Disable_Perk(j);
+        current_soldier->DisablePerk(j);
         perk_buttons[j]->GreyOut();
     }
-    current_soldier.Enable_Perk(i);
+    current_soldier->EnablePerk(i);
     perk_buttons[i]->LightUp();
 
-    array<string, 3> stats_labels = current_soldier.Calculate_Stats();
-    ui.MobilityLabel->setText(QString::fromStdString(stats_labels[0]));
-    ui.AimLabel->setText(QString::fromStdString(stats_labels[1]));
-    ui.WillLabel->setText(QString::fromStdString(stats_labels[2]));
+    LabelSet labels = current_soldier->GetLabels();
+    ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
+    ui.AimLabel->setText(QString::fromStdString(labels[1]));
+    ui.WillLabel->setText(QString::fromStdString(labels[2]));
 }
 
 void MainWindow::SaveButtonClicked() {
     //iterate over soldiers_to_save map, update the json for each one, and save it.
-    if (current_soldier.json_index != -1) {
-    soldiers_to_save[current_soldier.json_index] = current_soldier;
+    for (auto& pair : soldiers_to_save) {
+        pair.second.UpdateSoldier();
     }
-    for (const auto& pair : soldiers_to_save) {
-        update_json(json, pair.second);
-    }
-    string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
-    save_json_file(path, json);
-    soldiers_to_save.clear();
-    current_soldier.json_index = -1;
-    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
-    QDir dir("../backup");
-    if (!dir.exists()) {
-        dir.mkpath(".");
-    }
-    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
-    QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
-    QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_edited_"+ dateTimeNow.toStdString());
-    QFile::copy(sourcePath, destPath);
+    std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
+    xcom::write_xcom_save(save, path);
+    soldiers_to_save.clear();
+    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 }
 
 void MainWindow::ExitButtonClicked() {

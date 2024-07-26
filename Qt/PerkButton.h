@@ -2,7 +2,7 @@
 #define PERKBUTTON_H
 
 #include <QtWidgets/QToolButton>
-#include "utils.h"
+#include <Soldier.h>
 
 struct PerkDisplay {
     QString name;
@@ -12,7 +12,7 @@ struct PerkDisplay {
 };
 
 using PerkDisplayMap = std::map<int, PerkDisplay>;
-PerkDisplayMap load_perk_display(std::vector<Perk> perks);
+PerkDisplayMap load_perk_display(PerkSet perks);
 
 class PerkButton : public QToolButton {
     Q_OBJECT

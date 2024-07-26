@@ -10,21 +10,19 @@
 #include <QtCore/QDir>
 #include <QtCore/QDateTime>
 
-#include <map>
 #include <vector>
-#include <iostream>
+#include <map>
+#include <string>
 
+#include "xcomsave/xcom.h"
 #include "build/ui_QtDesigner_v2.h"
 #include "Qt/PerkButton.h"
-#include "json11.hpp"
-#include "utils.h"
+#include "Soldier.h"
 
 //xcomsave headers for loading the savefile header
-#include "xcomsave/xcomio.h"
-#include "xcomsave/xcom.h"
+//#include "xcomsave/xcomio.h"
 
-using namespace json11;
-using namespace std;
+
 
 class MainWindow: public QMainWindow
 {
@@ -52,13 +50,14 @@ public slots:
 
 private:
     Ui::MainWindow ui;
-    Json json;
-    map<int, int> index_translation;
-    map<int, string> save_translation;
-    vector<PerkButton*> perk_buttons;
-    Soldier current_soldier;
-    //map is the best way to avoid duplicates for the same soldier?
-    map<int, Soldier> soldiers_to_save;
+    xcom::saved_game save;
+    xcom::checkpoint_table* checkpoint_table_ptr;
+    std::map<int, int> index_translation;
+    std::map<int, std::string> save_translation;
+    std::vector<PerkButton*> perk_buttons;
+    Soldier* current_soldier;
+    //TODO: best way to store the soldiers to save?
+    std::map<int, Soldier> soldiers_to_save;
     QIcon save_icon;
     QFont bold_font;
 };
