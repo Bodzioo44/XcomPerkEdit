@@ -11,16 +11,66 @@ Perks connected to items for some reason have values different than 1/0 (Needs m
 Value can be greater than 0 even when perk isnt selected.
 Other perks can increase its value?
 
+sooo, uneven means the perk is actually selected, and every item that is in eq is just 2x
+
+
 Index 22 - Shredder Ammo
+
+Having shreeder rocket without perk in the inventory sets the value to 2?
+Having Perk without shderred rocket in eq sets value to 1
+Having Both sets value to 3.
+
+So 1 or 3 indicates perk?
+
 Index 8 - Battle scanner
+
+NO NADE IN EQ
+1 - despite having packaster 
+
+1 NADE IN EQ
+2 - both smoke nad mirrors and packamster
+3 - packmaster and scanner
 
 
 Index 44 - smoke grenade
+
+NO NADES IN EQ
+1 - Smoke Greande Perk (along with both others)
+0 - No Smoke Grenade Perk (no matter the others)
+
+1 NADE IN EQ
+3 - Smoke Grenade Perk (along with both others)
+2 - Smoke and Mirrors (none of the others)
+2 - Smoke and Mirorrs/Packmaster
+2 - Fresh Engineer, no perks at all.
+2 - ONLY Packmaster.
+3 - SMoke Grenade AND packmaster.
+3 - SMOKE GRENADE AND SMOKE & MIRRORS
+
+2 NADE IN EQ
+4 - Somke and Mirros
+4 - Smoke and mirros and packmaster
+5 - first 2
+5 - all 3
+5 - just first
+
+
+
+
+
+
+
+
+
+
+
+
+
 5-all 3 skills and 2x nade in eq
 
 - depends on the items equiped.
 - represents how many extra smokes soldier can throw based on abilites?
-- can be 0 if no smoke grenades are equiped.
+//- can be 0 if no smoke grenades are equiped.
 - can be > 0 even whenever another perk is selected.
 - how does the game know if perk should be highlighted or not? or when to apply 2nd part of the perk during battle.
 
@@ -36,7 +86,9 @@ Assuming no Smoke grenades in the EQ:
 index = 0 (smoke grenades in eq)
 if (Somke Grenade): index + 1
 if (Smoke Grenade AND Smoke and mirrors) index + 1
-if (Smoke Grenade AND Packmaster) index + 1
+
+
+value is 1 with no nades equiped and all 3 abilites. maybe this is the way?
 
 Assuming ONE Smoke Grenades in the EQ:
 index = 1 (smoke grenades in eq)
@@ -54,3 +106,19 @@ Repair
 Savior
 Shock & Awe
 Smoke & Mirrors
+
+
+
+
+
+
+
+
+
+Soldier Class is needed if we want to avoid live edits.
+
+Soldier should store pointer to property_list of soldier
+
+Perks are sorted in a vector.
+
+Load perk data based on a perk.
