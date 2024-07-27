@@ -15,31 +15,20 @@ QT += widgets gui
 
 # Input
 
-INCLUDEPATH += Qt \
-               #xcomsave/minilzo-2.09 \
-               #xcomsave/json11 \
-               #xcomsave/zlib  
-
 HEADERS +=  MainWindow.h \
             Soldier.h \
             build/ui_QtDesigner.h \
-            xcomsave/json11/json11.hpp \
             Qt/PerkButton.h \
-            xcomsave/xcom.h \
-            #xcomsave/xcomio.h \
-            #xcomsave/util.h 
+            xcomsave/xcom.h 
 
-FORMS += QtDesigner_v2.ui
+FORMS += QtDesigner.ui
 
 SOURCES +=  main.cpp \
             MainWindow.cpp \
             Soldier.cpp \
-            Qt/PerkButton.cpp \
-            #xcomsave/json11/json11.cpp \
-            #xcomsave/xcom2json.cpp \
-            #xcomsave/json2xcom.cpp
+            Qt/PerkButton.cpp
 
 QMAKE_CXXFLAGS += -std=gnu++17 -Wall -Wextra -Wno-missing-field-initializers -Wno-attributes
 
 LIBS += -L../xcomsave/build \
-        -lxcomsave -lz
+        -lxcomsave -lzlib
