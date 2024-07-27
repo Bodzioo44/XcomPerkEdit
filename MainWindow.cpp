@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
     connect(ui.SoldierListWidget, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
-    connect(ui.SaveListWidget, &QListWidget::itemSelectionChanged, this, &MainWindow::onSaveSelected);
+    connect(ui.SaveListWidget, &QListWidget::itemActivated, this, &MainWindow::onSaveSelected);
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
@@ -47,26 +47,24 @@ void MainWindow::SelectPathButtonClicked() {
     auto start = std::chrono::high_resolution_clock::now();
     ui.SaveListWidget->clear();
     QString path = ui.PathLineEdit->text();
-    QDir dir(path);
+    current_dir = QDir(path);
 
-    if (!dir.exists()) {
-        QMessageBox::warning(this, "Invalid Path", "The path does not exist.");
+    if (!current_dir.exists()) {
+        QMessageBox::warning(this, "Invalid Path", "Path does not exist.");
         return;
     }
     else {
         qDebug() << "Selected path: " << path;
     }
-    dir.setFilter(QDir::Files);
-    QStringList file_names = dir.entryList(QDir::NoFilter, QDir::Time);
-    //TODO: add a check for the OS and set the path accordingly
+    current_dir.setFilter(QDir::Files);
+    QStringList file_names = current_dir.entryList(QDir::NoFilter, QDir::Time);
     QProgressDialog progress("Processing saves...", "Abort", 0, file_names.size(), this);
     progress.setWindowModality(Qt::WindowModal);
     progress.show();
-
     for (QString& name : file_names) {
         if (name.contains("save")) {
             try {
-                QString file_path = dir.filePath(name);
+                QString file_path = current_dir.filePath(name);
                 xcom::header hdr = xcom::read_only_header(file_path.toStdString());
                 if (!hdr.tactical_save) {
                     //formats hdr.save_description.str into a more readable format
@@ -77,11 +75,11 @@ void MainWindow::SelectPathButtonClicked() {
                         split.push_back(value);
                     }
                     std::string desc = split[0].substr(0, split[0].size()-1) + " - " + split[1].substr(1) + " \n" + split[2].substr(1) + "\n" + split[3].substr(1, split[3].size()-2) + " - " + split[4].substr(1);
+                    //create a new item with the save icon and the formatted description.
                     QListWidgetItem* item = new QListWidgetItem(save_icon, QString::fromStdString(desc));
                     item->setFont(bold_font);
                     item->setToolTip(name);
                     ui.SaveListWidget->addItem(item);
-                    save_translation[ui.SaveListWidget->count() -1] = name.toStdString();
                 }
             }
             catch (xcom::error::xcom_exception& e) {
@@ -110,7 +108,7 @@ void MainWindow::onSaveSelected() {
     // QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
     // QFile::copy(sourcePath, destPath);
 
-    std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
+    std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
     qDebug() << QString::fromStdString("loading save: " + path);
     save = xcom::read_xcom_save(path);
     qDebug() << "save successfully loaded!";
@@ -132,20 +130,21 @@ void MainWindow::onSaveSelected() {
                 QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
                 ui.SoldierListWidget->addItem(item);
 
-                index_translation[ui.SoldierListWidget->count() - 1] = i;
+                soldier_index_translation[ui.SoldierListWidget->count() - 1] = i;
             }
         }
         i++;
     }
-
     //TODO: add a check if no soldiers were found? (very unlikely)
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
+    qDebug() << "checkpoint table loaded!";
     onSoldierSelected();
 }
 
 void MainWindow::onSoldierSelected() {
     int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
-    int soldier_index = index_translation[current_row]; //soldier index in the save file
+    int soldier_index = soldier_index_translation[current_row]; //soldier index in the save file
+    //qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
@@ -159,7 +158,6 @@ void MainWindow::onSoldierSelected() {
     ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
     ui.AimLabel->setText(QString::fromStdString(labels[1]));
     ui.WillLabel->setText(QString::fromStdString(labels[2]));
-
 
     PerkSet soldier_perks = current_soldier->GetPerks();
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
@@ -193,6 +191,7 @@ void MainWindow::onSoldierSelected() {
         //     //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
         // }
     }
+    //qDebug() << "Soldier successfully loaded!";
 }
 
 void MainWindow::onPerkSelected(int i) {
@@ -214,20 +213,35 @@ void MainWindow::onPerkSelected(int i) {
 }
 
 void MainWindow::SaveButtonClicked() {
-    qDebug() << "Save button clicked";
-    //FIXME: disable the button on the save page.
-    for (auto& pair : soldiers_to_save) {
-        pair.second.UpdateSoldier();
+    qDebug() << "Saving...";
+    if (!soldiers_to_save.empty()) {
+        for (auto& pair : soldiers_to_save) {
+            pair.second.UpdateSoldier();
+        }
+        std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
+        xcom::write_xcom_save(save, path);
+        qDebug() << "successfully saved the game!";
+        QMessageBox::information(this, "Save successful", "Save successful!");
+        soldiers_to_save.clear();
+        ui.SaveListWidget->clearSelection();
+        ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
     }
-    qDebug() << "save var updated";
-    std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
-    xcom::write_xcom_save(save, path);
-    qDebug() << "successfully saved the game!";
-    soldiers_to_save.clear();
-    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+    else {
+        if (ui.stackedWidget->currentWidget() == ui.PerkEditPage) {
+            QMessageBox::warning(this, "No soldiers selected", "No soldiers were selected for editing.");
+        }
+        else {
+            QMessageBox::warning(this, "No save selected", "No save was selected for editing.");
+        }
+    }
 }
 
 void MainWindow::ExitButtonClicked() {
-    soldiers_to_save.clear();
-    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+    if (ui.stackedWidget->currentWidget() == ui.PerkEditPage) {
+        ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+        soldiers_to_save.clear();
+    }
+    else {
+        this->close();
+    }
 }
