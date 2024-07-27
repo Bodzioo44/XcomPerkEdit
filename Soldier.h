@@ -25,7 +25,6 @@ struct SoldierStats {
     }
 };
 
-
 struct Perk {
     int index;
     int value;
@@ -51,16 +50,23 @@ using LabelSet = std::array<std::string, 3>;
 
 class Soldier {
     public:
-        Soldier(xcom::checkpoint& soldier);
+        Soldier(xcom::checkpoint* soldier);
+        //FIXME: complier is crying about default constructor while 
+        //creating map entry in MainWindow::onSoldierSelected().
+        //emplace() or insert_or_assign() didnt help either.
+        //it was even worse with properties as a reference member.
+        //something about stl map pair...
+        Soldier() {};
         void EnablePerk(int index);
         void DisablePerk(int index);
-        xcom::property_list& GetPropertyList() const;
+        xcom::property_list* GetPropertyList() const;
         LabelSet GetLabels() const;
         PerkSet GetPerks() const;
         void UpdateSoldier();
+        void RevertChanges();
 
     private:
-        xcom::property_list& properties;
+        xcom::property_list* properties;
         PerkSet perks;
         SoldierStats starting_stats;
         SoldierStats difference_stats;
@@ -68,12 +74,12 @@ class Soldier {
 
 //look into property_visitor again? is there a better way to fo it?
 namespace GetSoldiers {
-    std::string class_type(const xcom::property_list& properties);
-    std::string full_name(const xcom::property_list& properties);
-    std::string eStatus(const xcom::property_list& properties);
-    int rank(const xcom::property_list& properties);
-    PerkSet perks(const xcom::property_list& properties);
-    SoldierStats stats(const xcom::property_list& properties);
+    std::string class_type(const xcom::property_list* properties);
+    std::string full_name(const xcom::property_list* properties);
+    std::string eStatus(const xcom::property_list* properties);
+    int rank(const xcom::property_list* properties);
+    PerkSet perks(const xcom::property_list* properties);
+    SoldierStats stats(const xcom::property_list* properties);
 }
 
 #endif // SOLDIER_H

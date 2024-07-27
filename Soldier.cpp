@@ -1,13 +1,10 @@
 #include "Soldier.h"
 
-//PerkSet GetSoldiers::perks(const xcom::property_list* properties_ptr);
-
-Soldier::Soldier(xcom::checkpoint& soldier): properties(soldier.properties) {
+Soldier::Soldier(xcom::checkpoint* soldier = nullptr): properties(&soldier->properties) {
     starting_stats = GetSoldiers::stats(properties);
     difference_stats = SoldierStats();
     perks = GetSoldiers::perks(properties);
-
-};
+}
 
 void Soldier::EnablePerk(int index) {
     Perk& perk = perks[index];
@@ -27,7 +24,7 @@ void Soldier::DisablePerk(int index) {
     }
 }
 
-xcom::property_list& Soldier::GetPropertyList() const{
+xcom::property_list* Soldier::GetPropertyList() const{
     return properties;
 }
 
@@ -62,35 +59,50 @@ PerkSet Soldier::GetPerks() const {
 }
 
 void Soldier::UpdateSoldier() {
-    
+    //Updating Perks
+    xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
+    xcom::static_array_property& aUpgrades = static_cast<xcom::static_array_property&> (*m_kChar.properties[3]);
+    for (const Perk& perk : perks) {
+        static_cast<xcom::int_property*> (aUpgrades.properties[perk.index].get())->value = perk.value;
+    }
+    //Updating Stats
+    xcom::static_array_property& aStats = static_cast<xcom::static_array_property&> (*m_kChar.properties[6]);
+    static_cast<xcom::int_property*> (aStats.properties[3].get())->value = starting_stats.mobility + difference_stats.mobility;
+    static_cast<xcom::int_property*> (aStats.properties[1].get())->value = starting_stats.aim + difference_stats.aim;
+    static_cast<xcom::int_property*> (aStats.properties[7].get())->value = starting_stats.will + difference_stats.will;
+}
+
+void Soldier::RevertChanges() {
+    perks = GetSoldiers::perks(properties);
+    difference_stats = {0, 0, 0};
 }
 
 namespace GetSoldiers {
-    std::string class_type(const xcom::property_list& properties) {
-        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties[1]);
+    std::string class_type(const xcom::property_list* properties) {
+        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
         xcom::struct_property& kClass = static_cast<xcom::struct_property&> (*m_kSoldier.properties[11]);
         return static_cast<xcom::string_property&> (*kClass.properties[0]).str.str;
     }
-    std::string full_name(const xcom::property_list& properties) {
-        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties[1]);
+    std::string full_name(const xcom::property_list* properties) {
+        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
         xcom::string_property& strFirstName = static_cast<xcom::string_property&> (*m_kSoldier.properties[1]);
         xcom::string_property& strLastName = static_cast<xcom::string_property&> (*m_kSoldier.properties[2]);
         xcom::string_property& strNickName = static_cast<xcom::string_property&> (*m_kSoldier.properties[3]);
-        return strFirstName.str.str + '"' + strNickName.str.str + '"' + strLastName.str.str;
+        return strFirstName.str.str + " \"" + strNickName.str.str + "\" " + strLastName.str.str;
     }
     //TODO: check if this works?
-    std::string eStatus(const xcom::property_list& properties) {
-        xcom::enum_property& m_eStatus = static_cast<xcom::enum_property&> (*properties[3]);
+    std::string eStatus(const xcom::property_list* properties) {
+        xcom::enum_property& m_eStatus = static_cast<xcom::enum_property&> (*properties->at(3));
         return m_eStatus.value.name;
     }
 
-    int rank(const xcom::property_list& properties) {
-        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties[1]);
+    int rank(const xcom::property_list* properties) {
+        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
         return static_cast<xcom::int_property&> (*m_kSoldier.properties[4]).value;
     }
 
-    PerkSet perks(const xcom::property_list& properties) {
-        xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties[0]);
+    PerkSet perks(const xcom::property_list* properties) {
+        xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
         xcom::static_array_property& aUpgrades = static_cast<xcom::static_array_property&> (*m_kChar.properties[3]);
 
         std::string path = "../assets/" + class_type(properties) + ".txt";
@@ -119,8 +131,8 @@ namespace GetSoldiers {
         return perks;
     }
 
-    SoldierStats stats(const xcom::property_list& properties) {
-        xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties[0]);
+    SoldierStats stats(const xcom::property_list* properties) {
+        xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
         xcom::static_array_property& aStats = static_cast<xcom::static_array_property&> (*m_kChar.properties[6]);
         return SoldierStats(static_cast<xcom::int_property&> (*aStats.properties[3]).value, static_cast<xcom::int_property&> (*aStats.properties[1]).value, static_cast<xcom::int_property&> (*aStats.properties[7]).value);
     }

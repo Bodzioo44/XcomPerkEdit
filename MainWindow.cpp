@@ -98,7 +98,7 @@ void MainWindow::onSaveSelected() {
         //Check if entry is a soldier
         if (soldier_checkpoint.name.find("XGStrategySoldier") != std::string::npos) {
             //Various checks if soldier is valid for the editor.
-            const xcom::property_list& properties = soldier_checkpoint.properties;
+            const xcom::property_list* properties = &soldier_checkpoint.properties;
             if (GetSoldiers::eStatus(properties) != "eStatus_Dead" && GetSoldiers::rank(properties) > 1 && GetSoldiers::class_type(properties) != "") {
                 std::string full_name = GetSoldiers::full_name(properties);
                 std::string icon_path = "../assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
@@ -123,7 +123,9 @@ void MainWindow::onSoldierSelected() {
     int soldier_index = index_translation[current_row]; //soldier index in the save file
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
-        soldiers_to_save.emplace(soldier_index, checkpoint_table_ptr->at(soldier_index));
+        soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
+        //soldiers_to_save.emplace(soldier_index, &checkpoint_table_ptr->at(soldier_index));
+        //soldiers_to_save.insert_or_assign(soldier_index, &checkpoint_table_ptr->at(soldier_index));
     }
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
@@ -187,7 +189,6 @@ void MainWindow::onPerkSelected(int i) {
 }
 
 void MainWindow::SaveButtonClicked() {
-    //iterate over soldiers_to_save map, update the json for each one, and save it.
     for (auto& pair : soldiers_to_save) {
         pair.second.UpdateSoldier();
     }

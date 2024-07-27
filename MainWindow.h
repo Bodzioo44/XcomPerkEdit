@@ -15,14 +15,9 @@
 #include <string>
 
 #include "xcomsave/xcom.h"
-#include "build/ui_QtDesigner_v2.h"
+#include "build/ui_QtDesigner.h"
 #include "Qt/PerkButton.h"
 #include "Soldier.h"
-
-//xcomsave headers for loading the savefile header
-//#include "xcomsave/xcomio.h"
-
-
 
 class MainWindow: public QMainWindow
 {
@@ -46,8 +41,6 @@ public slots:
     //Exit Button
     void ExitButtonClicked();
 
-
-
 private:
     Ui::MainWindow ui;
     xcom::saved_game save;
@@ -57,6 +50,7 @@ private:
     std::vector<PerkButton*> perk_buttons;
     Soldier* current_soldier;
     //TODO: best way to store the soldiers to save?
+    //switch to vector? map is problematic...
     std::map<int, Soldier> soldiers_to_save;
     QIcon save_icon;
     QFont bold_font;
