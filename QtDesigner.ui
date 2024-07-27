@@ -126,7 +126,17 @@
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="SaveListWidget"/>
+           <widget class="QListWidget" name="SaveListWidget">
+            <property name="styleSheet">
+             <string notr="true">QListWidget::item { padding: 5px; }</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>100</width>
+              <height>50</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

@@ -40,9 +40,7 @@ PerkDisplayMap load_perk_display(PerkSet perks) {
     return perk_display_map;
 }
 
-
 PerkButton::PerkButton(QWidget* parent) : QToolButton(parent) {
-    //TODO: try to move this inside .ui file
     size = 60;
     setIconSize(QSize(size, size));
     QString StyleSheet = "QToolButton { padding: 0px; border: none;}";
