@@ -5,14 +5,17 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QMessageBox>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
 #include <QtCore/QDateTime>
+#include <QtCore/QDebug>
+#include <QtWidgets/QProgressDialog>
 
 #include <vector>
 #include <map>
 #include <string>
+#include <chrono>
 
 #include "xcomsave/xcom.h"
 #include "build/ui_QtDesigner.h"

@@ -21,37 +21,55 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
-
-    //TODO: try to move this inside .ui file
-    ui.SaveListWidget->setStyleSheet("QListWidget::item { padding: 5px; }");
-    ui.SaveListWidget->setIconSize(QSize(100, 50));
+    
     save_icon = QIcon("../assets/icons/appswitcher-xcom-ew-active.png");
     bold_font.setBold(true);
 
-    //TODO: add a check for the OS and set the path accordingly
     QString home_path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString windows_path = "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
-    QString linux_path = "/.local/share/feral-interactive/XCOM/XEW/savedata/";
-    QString path = home_path + linux_path;
+    //TODO: confirm windows/mac path.
+    #ifdef Q_OS_WIN
+        QString path = home_path + "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
+        qDebug() << "Windows OS detected";
+    #elif defined(Q_OS_LINUX)
+        QString path = home_path + "/.local/share/feral-interactive/XCOM/XEW/savedata/";
+        qDebug() << "Linux OS detected";
+    #elif defined(Q_OS_MACOS)
+        QString path = home_path + "/Library/Application Support/Feral Interactive/XCOM Enemy Unknown/XEW/SaveData/";
+        qDebug() << "Mac OS detected";
+    #else
+        QString path = "No idea where the save files are located on this OS";
+        qDebug() << "Unknown OS detected";
+    #endif
     ui.PathLineEdit->setText(path);
 }
 
 void MainWindow::SelectPathButtonClicked() {
+    auto start = std::chrono::high_resolution_clock::now();
     ui.SaveListWidget->clear();
     QString path = ui.PathLineEdit->text();
     QDir dir(path);
+
+    if (!dir.exists()) {
+        QMessageBox::warning(this, "Invalid Path", "The path does not exist.");
+        return;
+    }
+    else {
+        qDebug() << "Selected path: " << path;
+    }
     dir.setFilter(QDir::Files);
     QStringList file_names = dir.entryList(QDir::NoFilter, QDir::Time);
+    //TODO: add a check for the OS and set the path accordingly
+    QProgressDialog progress("Processing saves...", "Abort", 0, file_names.size(), this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+
     for (QString& name : file_names) {
         if (name.contains("save")) {
-            //TODO: remove try/catch (not needed anymore since now only header is being loaded?)
-            //TODO: keep it as a check if file is a xcom save?
             try {
-                QString file_path = path + name;
+                QString file_path = dir.filePath(name);
                 xcom::header hdr = xcom::read_only_header(file_path.toStdString());
                 if (!hdr.tactical_save) {
                     //formats hdr.save_description.str into a more readable format
-                    //vector<string> split = splitString(hdr.save_description.str, '-');
                     std::vector<std::string> split;
                     std::stringstream ss(hdr.save_description.str);
                     std::string value;
@@ -66,29 +84,36 @@ void MainWindow::SelectPathButtonClicked() {
                     save_translation[ui.SaveListWidget->count() -1] = name.toStdString();
                 }
             }
-            catch (xcom::error::general_exception& e) {
-                //expected error while trying to load save that is non tactical save
-                //TODO: try to load just the header so this check is not needed.
+            catch (xcom::error::xcom_exception& e) {
+                qDebug() << "XCOM exception occured while reading" << name << "header:" << QString::fromStdString(e.what());
             }
         }
+        progress.setValue(progress.value() + 1);
+        QCoreApplication::processEvents();
     }
-    //TODO: add some popup window whenever no saves are found?
+    if (ui.SaveListWidget->count() == 0) {
+        QMessageBox::warning(this, "No Saves Found", "No XCOM saves found in the selected path. Only files containing 'save' in the name are considered.");
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    qDebug() << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms";
 }
 
 void MainWindow::onSaveSelected() {
     ui.SoldierListWidget->clear();
-    //temp backup
-    QDir dir("../backup");
-    if (!dir.exists()) {
-        dir.mkpath(".");
-    }
-    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
-    QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
-    QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
-    QFile::copy(sourcePath, destPath);
+    //TODO: fix the backup, keep the original QDir?
+    // QDir dir("../backup");
+    // if (!dir.exists()) {
+    //     dir.mkpath(".");
+    // }
+    // QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
+    // QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
+    // QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
+    // QFile::copy(sourcePath, destPath);
 
     std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
+    qDebug() << QString::fromStdString("loading save: " + path);
     save = xcom::read_xcom_save(path);
+    qDebug() << "save successfully loaded!";
     int i = 0;
     xcom::checkpoint_chunk_table& checkpoint_chunk_table = save.checkpoints;
     xcom::checkpoint_chunk& checkpoint_chunk = checkpoint_chunk_table[0];
@@ -189,16 +214,20 @@ void MainWindow::onPerkSelected(int i) {
 }
 
 void MainWindow::SaveButtonClicked() {
+    qDebug() << "Save button clicked";
+    //FIXME: disable the button on the save page.
     for (auto& pair : soldiers_to_save) {
         pair.second.UpdateSoldier();
     }
-
+    qDebug() << "save var updated";
     std::string path = ui.PathLineEdit->text().toStdString() + save_translation[ui.SaveListWidget->currentRow()];
     xcom::write_xcom_save(save, path);
+    qDebug() << "successfully saved the game!";
     soldiers_to_save.clear();
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 }
 
 void MainWindow::ExitButtonClicked() {
+    soldiers_to_save.clear();
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 }
