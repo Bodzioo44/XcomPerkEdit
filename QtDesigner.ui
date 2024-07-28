@@ -25,7 +25,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout" columnminimumwidth="0,0">
      <property name="leftMargin">
-      <number>15</number>
+      <number>5</number>
      </property>
      <property name="topMargin">
       <number>15</number>
@@ -86,7 +86,7 @@
      <item row="0" column="1">
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="SavePageWidget">
         <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -166,12 +166,35 @@
            </spacer>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout" stretch="1,2,1,2,2,2,2,2,2,2,1">
             <property name="spacing">
              <number>20</number>
             </property>
             <item>
              <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="InfoLabel">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>

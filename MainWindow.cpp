@@ -124,9 +124,9 @@ void MainWindow::onSaveSelected() {
         qDebug() << "Creating backup directory: " << backup_dir.path();
         backup_dir.mkpath(".");
     }
-    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
+    QString dateTimeNow = QDateTime::currentDateTime().toString("_dd-MM-yy_hh-mm-ss");
     QString sourcePath = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip());
-    QString destPath = backup_dir.filePath(ui.SaveListWidget->currentItem()->toolTip() + "_original_"+ dateTimeNow);
+    QString destPath = backup_dir.filePath(ui.SaveListWidget->currentItem()->toolTip() + dateTimeNow);
     QFile::copy(sourcePath, destPath);
     qDebug() << "Backup created!";
 
@@ -196,6 +196,8 @@ void MainWindow::onSoldierSelected() {
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
 
+    //TODO: Try out horizontal labels to avoid stretching buttons?
+    //TODO: Add strechers between buttons?
     LabelSet labels = current_soldier->GetLabels();
     ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
     ui.AimLabel->setText(QString::fromStdString(labels[1]));
@@ -205,6 +207,7 @@ void MainWindow::onSoldierSelected() {
     PerkSet soldier_perks = current_soldier->GetPerks();
     //map of [perk_index] -> PerkDisplay (name, icon, description)
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
+    ui.InfoLabel->clear();
 
     for (int i = 0; i < 18; i++) {
         const Perk& current_perk = soldier_perks[i];
@@ -228,7 +231,7 @@ void MainWindow::onSoldierSelected() {
             perk_buttons[i]->setDisabled(true);
             perk_buttons[i-1]->setDisabled(true);
             perk_buttons[i-2]->setDisabled(true);
-            //TODO: add a "Promotion available in game" label.
+            ui.InfoLabel->setText("<b>Promotion available in game!<br>Some perks wont be editable<br>until you assign rank in game.</b>");
         }
     }
     //qDebug() << "Soldier successfully loaded!";
@@ -289,7 +292,6 @@ void MainWindow::ExitButtonClicked() {
 void MainWindow::GenerateINIFile() {
     qDebug() << "Generating config file...";
     QSettings settings("config.ini", QSettings::IniFormat);
-
     QString home_path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     #ifdef Q_OS_WIN
         QString path = home_path + "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
@@ -310,10 +312,8 @@ void MainWindow::GenerateINIFile() {
     settings.setValue("LOGS_ENABLED", false);
     qDebug() << "Setting LOGS_ENABLED to:" << settings.value("LOGS_ENABLED").toBool();
     settings.setValue("BACKUP_LIMIT", 10);
-    backup_limit = 10;
     qDebug() << "Setting BACKUP_LIMIT to:" << settings.value("BACKUP_LIMIT").toInt();
     settings.setValue("SAVE_DIR_PATH", path);
-    save_dir_path = path;
     qDebug() << "Setting SAVE_DIR_PATH to:" << settings.value("SAVE_DIR_PATH").toString();
     settings.sync();
     qDebug() << "Config file generated.";
