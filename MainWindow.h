@@ -11,6 +11,8 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDebug>
 #include <QtWidgets/QProgressDialog>
+#include <QtCore/QSettings>
+#include <QtCore/QTimer>
 
 #include <vector>
 #include <map>
@@ -59,6 +61,11 @@ private:
     std::map<int, Soldier> soldiers_to_save;
     QIcon save_icon;
     QFont bold_font;
+
+    void GenerateINIFile();
+    void LoadINIFile();
+    int backup_limit;
+    QString save_dir_path;
 };
 
 

@@ -25,50 +25,41 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     save_icon = QIcon("../assets/icons/appswitcher-xcom-ew-active.png");
     bold_font.setBold(true);
 
-    QString home_path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    //TODO: confirm windows/mac path.
-    //Add check if config file exists, if not create one with default values.
-    //popup message if config file is missing. 
-    #ifdef Q_OS_WIN
-        QString path = home_path + "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
-        qDebug() << "Windows OS detected";
-    #elif defined(Q_OS_LINUX)
-        QString path = home_path + "/.local/share/feral-interactive/XCOM/XEW/savedata/";
-        qDebug() << "Linux OS detected";
-    #elif defined(Q_OS_MACOS)
-        QString path = home_path + "/Library/Application Support/Feral Interactive/XCOM Enemy Unknown/XEW/SaveData/";
-        qDebug() << "Mac OS detected";
-    #else
-        QString path = "No idea where the save files are located on this OS";
-        qDebug() << "Unknown OS detected";
-    #endif
-    ui.PathLineEdit->setText(path);
+    if (!QFile("config.ini").exists()) {
+        GenerateINIFile();
+    }
+    LoadINIFile();
+    ui.PathLineEdit->setText(save_dir_path);
 }
 
 void MainWindow::SelectPathButtonClicked() {
     auto start = std::chrono::high_resolution_clock::now();
     ui.SaveListWidget->clear();
-    //TODO: Add LAST_PATH to the config file.
+    //Check if path exists
     QString path = ui.PathLineEdit->text();
-    current_dir = QDir(path);
-
-    if (!current_dir.exists()) {
+    if (!QDir(path).exists()) {
         QMessageBox::warning(this, "Invalid Path", "Path does not exist.");
         return;
     }
-    else {
-        qDebug() << "Selected path: " << path;
-    }
-    current_dir.setFilter(QDir::Files);
-    QStringList file_names = current_dir.entryList(QDir::NoFilter, QDir::Time);
+    qDebug() << "Selected path: " << path;
+    current_dir = QDir(path);
+    QStringList file_names = current_dir.entryList(QDir::Files, QDir::Time);
 
+    //Update the last used path in the config file
+    QSettings settings("config.ini", QSettings::IniFormat);
+    if (settings.value("SAVE_DIR_PATH").toString() != ui.PathLineEdit->text()) {
+        settings.setValue("SAVE_DIR_PATH", ui.PathLineEdit->text());
+        qDebug() << "SAVE_DIR_PATH updated: " << ui.PathLineEdit->text();
+        settings.sync();
+    }
+    //Create a progress bar if needed
     QProgressDialog* progress = nullptr;
     if (file_names.size() > 5) {
         progress = new QProgressDialog("Processing saves...", "Abort", 0, file_names.size(), this);
         progress->setWindowModality(Qt::WindowModal);
         progress->show();
     }
-
+    //Go over the files and load all GEOSCAPE saves
     for (QString& name : file_names) {
         if (name.contains("save")) {
             try {
@@ -112,11 +103,14 @@ void MainWindow::SelectPathButtonClicked() {
     if (ui.SaveListWidget->count() == 0) {
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle("No TACTICAL Saves Found");
+        msgBox.setWindowTitle("No GEOSCAPE Saves Found");
         msgBox.setTextFormat(Qt::RichText);
-        msgBox.setText("No TACTICAL xcom saves were found in the selected path, only files containing 'save' in the name are considered.\n"
+        msgBox.setText("No GEOSCAPE xcom saves were found in the selected path, only files containing 'save' in the name are considered.\n");
+        #ifdef Q_OS_LINUX
+        msgBox.setText(msgBox.text() + 
         "If you are on linux there is a bug that creates 2 separate folders for XCOM and steamcloud.\n"
         "Its caused by case sensitivity of the file system, read more: <a href=\"https://steamcommunity.com/app/200510/discussions/0/613956964581020366/\">here</a>");
+        #endif
         msgBox.exec();
     }
 }
@@ -137,10 +131,9 @@ void MainWindow::onSaveSelected() {
     qDebug() << "Backup created!";
 
     QFileInfoList backupFiles = backup_dir.entryInfoList(QDir::Files, QDir::Time);
-    //TODO:: add BACKUP_LIMIT to the config file.
-    if (backupFiles.size() > 10) {
+    if (backupFiles.size() > backup_limit) {
         qDebug() << "Deleting old backups...";
-        for (int i = 10; i < backupFiles.size(); i++) {
+        for (int i = backup_limit; i < backupFiles.size(); i++) {
             //backupFiles[i].dir().remove(backupFiles[i].fileName());
             QFile::remove(backupFiles[i].absoluteFilePath());
             qDebug() << "Deleting: " << backupFiles[i].absoluteFilePath();
@@ -149,9 +142,9 @@ void MainWindow::onSaveSelected() {
     }
 
     std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
-    qDebug() << QString::fromStdString("Loading save: " + path);
+    qDebug() << "Loading save:" << QString::fromStdString( path);
     save = xcom::read_xcom_save(path);
-    qDebug() << "Save successfully loaded!";
+    qDebug() << "Save successfully loaded";
     int i = 0;
     xcom::checkpoint_chunk_table& checkpoint_chunk_table = save.checkpoints;
     xcom::checkpoint_chunk& checkpoint_chunk = checkpoint_chunk_table[0];
@@ -182,11 +175,11 @@ void MainWindow::onSaveSelected() {
         i++;
     }
     if (ui.SoldierListWidget->count() == 0) {
-        QMessageBox::warning(this, "No soldiers found", "No soldiers were found in the save file.");
+        QMessageBox::warning(this, "No soldiers found", "No acceptable soldiers were found in the save file.");
         return;
     }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
-    qDebug() << "checkpoint table loaded!";
+    qDebug() << "Checkpoint table loaded.";
     onSoldierSelected();
 }
 
@@ -230,12 +223,12 @@ void MainWindow::onSoldierSelected() {
             perk_buttons[i]->setDisabled(false);
         }
         //disable perks from rank that wasnt assigned yet.
-        //all available perks should be assigned in game before editing anything, otherwise it will mess with level up stats.
+        //all available perks should be assigned in game before changing anything, otherwise it will mess with level up stats.
         if ((i+1) % 3 == 0 && !(soldier_perks[i].enabled || soldier_perks[i-1].enabled || soldier_perks[i-2].enabled)) {
             perk_buttons[i]->setDisabled(true);
             perk_buttons[i-1]->setDisabled(true);
             perk_buttons[i-2]->setDisabled(true);
-            //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
+            //TODO: add a "Promotion available in game" label.
         }
     }
     //qDebug() << "Soldier successfully loaded!";
@@ -267,7 +260,7 @@ void MainWindow::SaveButtonClicked() {
         }
         std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
         xcom::write_xcom_save(save, path);
-        qDebug() << "successfully saved the game!";
+        qDebug() << "Successfully saved the game.";
         QMessageBox::information(this, "Save successful", "Save successful!");
         soldiers_to_save.clear();
         ui.SaveListWidget->clearSelection();
@@ -291,4 +284,58 @@ void MainWindow::ExitButtonClicked() {
     else {
         this->close();
     }
+}
+
+void MainWindow::GenerateINIFile() {
+    qDebug() << "Generating config file...";
+    QSettings settings("config.ini", QSettings::IniFormat);
+
+    QString home_path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    #ifdef Q_OS_WIN
+        QString path = home_path + "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
+        qDebug() << "Windows OS detected";
+    #elif defined(Q_OS_LINUX)
+        QString path = home_path + "/.local/share/feral-interactive/XCOM/XEW/savedata/";
+        qDebug() << "Linux OS detected";
+    #elif defined(Q_OS_MACOS)
+        QString path = home_path + "/Library/Application Support/Feral Interactive/XCOM Enemy Unknown/XEW/SaveData/";
+        qDebug() << "Mac OS detected";
+    #else
+        QString path = "No idea where the save files are located on this OS";
+        qDebug() << "Unknown OS detected";
+    #endif
+
+    settings.setValue("FIRST_RUN", true);
+    qDebug() << "Setting FIRST_RUN to:" << settings.value("FIRST_RUN").toBool();
+    settings.setValue("LOGS_ENABLED", false);
+    qDebug() << "Setting LOGS_ENABLED to:" << settings.value("LOGS_ENABLED").toBool();
+    settings.setValue("BACKUP_LIMIT", 10);
+    backup_limit = 10;
+    qDebug() << "Setting BACKUP_LIMIT to:" << settings.value("BACKUP_LIMIT").toInt();
+    settings.setValue("SAVE_DIR_PATH", path);
+    save_dir_path = path;
+    qDebug() << "Setting SAVE_DIR_PATH to:" << settings.value("SAVE_DIR_PATH").toString();
+    settings.sync();
+    qDebug() << "Config file generated.";
+}
+
+void MainWindow::LoadINIFile() {
+    QSettings settings("config.ini", QSettings::IniFormat);
+    backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
+    save_dir_path = settings.value("SAVE_DIR_PATH", "").toString();
+    // if (backup_limit == -1 || save_dir_path == "") {
+    //     qDebug() << "Something went wrong while reading the config file, generating a new one...";
+    //     QFile configFile("config.ini");
+    //     if (configFile.exists()) {
+    //         configFile.remove();
+    //     }
+    //     GenerateINIFile();
+    //     return;
+    // }
+    if (settings.value("FIRST_RUN", false).toBool()) {
+        settings.setValue("FIRST_RUN", false);
+        settings.sync();
+        QTimer::singleShot(0, this, [this] { QMessageBox::information(this, "First Launch!", "First app launch detected.\n To load available saves make sure to confirm path with the \"Load Path...\" button in the top right.\nIf you have any problems while using the app check out USAGE.md"); });
+    }
+    qDebug() << "Loaded settings from config file.";
 }
