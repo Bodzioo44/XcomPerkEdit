@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     QString home_path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     //TODO: confirm windows/mac path.
+    //Add check if config file exists, if not create one with default values.
+    //popup message if config file is missing. 
     #ifdef Q_OS_WIN
         QString path = home_path + "/Documents/My Games/XCOM - Enemy Within/XComGame/SaveData/";
         qDebug() << "Windows OS detected";
@@ -46,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 void MainWindow::SelectPathButtonClicked() {
     auto start = std::chrono::high_resolution_clock::now();
     ui.SaveListWidget->clear();
+    //TODO: Add LAST_PATH to the config file.
     QString path = ui.PathLineEdit->text();
     current_dir = QDir(path);
 
@@ -58,9 +61,14 @@ void MainWindow::SelectPathButtonClicked() {
     }
     current_dir.setFilter(QDir::Files);
     QStringList file_names = current_dir.entryList(QDir::NoFilter, QDir::Time);
-    QProgressDialog progress("Processing saves...", "Abort", 0, file_names.size(), this);
-    progress.setWindowModality(Qt::WindowModal);
-    progress.show();
+
+    QProgressDialog* progress = nullptr;
+    if (file_names.size() > 5) {
+        progress = new QProgressDialog("Processing saves...", "Abort", 0, file_names.size(), this);
+        progress->setWindowModality(Qt::WindowModal);
+        progress->show();
+    }
+
     for (QString& name : file_names) {
         if (name.contains("save")) {
             try {
@@ -86,32 +94,64 @@ void MainWindow::SelectPathButtonClicked() {
                 qDebug() << "XCOM exception occured while reading" << name << "header:" << QString::fromStdString(e.what());
             }
         }
-        progress.setValue(progress.value() + 1);
-        QCoreApplication::processEvents();
+        if (progress) {
+            progress->setValue(progress->value() + 1);
+            QCoreApplication::processEvents();
+            if (progress->wasCanceled()) {
+                break;
+            }
+        }
     }
-    if (ui.SaveListWidget->count() == 0) {
-        QMessageBox::warning(this, "No Saves Found", "No XCOM saves found in the selected path. Only files containing 'save' in the name are considered.");
+    if (progress) {
+        progress->close();
+        delete progress;
     }
+
     auto end = std::chrono::high_resolution_clock::now();
     qDebug() << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms";
+    if (ui.SaveListWidget->count() == 0) {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("No TACTICAL Saves Found");
+        msgBox.setTextFormat(Qt::RichText);
+        msgBox.setText("No TACTICAL xcom saves were found in the selected path, only files containing 'save' in the name are considered.\n"
+        "If you are on linux there is a bug that creates 2 separate folders for XCOM and steamcloud.\n"
+        "Its caused by case sensitivity of the file system, read more: <a href=\"https://steamcommunity.com/app/200510/discussions/0/613956964581020366/\">here</a>");
+        msgBox.exec();
+    }
 }
 
 void MainWindow::onSaveSelected() {
     ui.SoldierListWidget->clear();
-    //TODO: fix the backup, keep the original QDir?
-    // QDir dir("../backup");
-    // if (!dir.exists()) {
-    //     dir.mkpath(".");
-    // }
-    // QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
-    // QString sourcePath = ui.PathLineEdit->text() + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()]);
-    // QString destPath = QString("../backup/") + QString::fromStdString(save_translation[ui.SaveListWidget->currentRow()] + "_original_"+ dateTimeNow.toStdString());
-    // QFile::copy(sourcePath, destPath);
+    qDebug() << "Save selected!";
+    qDebug() << "Creating backup...";
+    QDir backup_dir(current_dir.filePath("backup"));
+    if (!backup_dir.exists()) {
+        qDebug() << "Creating backup directory: " << backup_dir.path();
+        backup_dir.mkpath(".");
+    }
+    QString dateTimeNow = QDateTime::currentDateTime().toString("yy-MM-dd_hh-mm-ss");
+    QString sourcePath = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip());
+    QString destPath = backup_dir.filePath(ui.SaveListWidget->currentItem()->toolTip() + "_original_"+ dateTimeNow);
+    QFile::copy(sourcePath, destPath);
+    qDebug() << "Backup created!";
+
+    QFileInfoList backupFiles = backup_dir.entryInfoList(QDir::Files, QDir::Time);
+    //TODO:: add BACKUP_LIMIT to the config file.
+    if (backupFiles.size() > 10) {
+        qDebug() << "Deleting old backups...";
+        for (int i = 10; i < backupFiles.size(); i++) {
+            //backupFiles[i].dir().remove(backupFiles[i].fileName());
+            QFile::remove(backupFiles[i].absoluteFilePath());
+            qDebug() << "Deleting: " << backupFiles[i].absoluteFilePath();
+        }
+        qDebug() << "Old backups deleted!";
+    }
 
     std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
-    qDebug() << QString::fromStdString("loading save: " + path);
+    qDebug() << QString::fromStdString("Loading save: " + path);
     save = xcom::read_xcom_save(path);
-    qDebug() << "save successfully loaded!";
+    qDebug() << "Save successfully loaded!";
     int i = 0;
     xcom::checkpoint_chunk_table& checkpoint_chunk_table = save.checkpoints;
     xcom::checkpoint_chunk& checkpoint_chunk = checkpoint_chunk_table[0];
@@ -123,6 +163,12 @@ void MainWindow::onSaveSelected() {
             //Various checks if soldier is valid for the editor.
             const xcom::property_list* properties = &soldier_checkpoint.properties;
             if (GetSoldiers::eStatus(properties) != "eStatus_Dead" && GetSoldiers::rank(properties) > 1 && GetSoldiers::class_type(properties) != "") {
+                //extra check if soldier has at least 1 perk assigned.
+                PerkSet temp_perks = GetSoldiers::perks(properties);
+                if (!(temp_perks[0].enabled || temp_perks[1].enabled || temp_perks[2].enabled)) {
+                    i++;
+                    continue;
+                }
                 std::string full_name = GetSoldiers::full_name(properties);
                 std::string icon_path = "../assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
@@ -135,7 +181,10 @@ void MainWindow::onSaveSelected() {
         }
         i++;
     }
-    //TODO: add a check if no soldiers were found? (very unlikely)
+    if (ui.SoldierListWidget->count() == 0) {
+        QMessageBox::warning(this, "No soldiers found", "No soldiers were found in the save file.");
+        return;
+    }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     qDebug() << "checkpoint table loaded!";
     onSoldierSelected();
@@ -159,11 +208,11 @@ void MainWindow::onSoldierSelected() {
     ui.AimLabel->setText(QString::fromStdString(labels[1]));
     ui.WillLabel->setText(QString::fromStdString(labels[2]));
 
+    //soldier perks
     PerkSet soldier_perks = current_soldier->GetPerks();
+    //map of [perk_index] -> PerkDisplay (name, icon, description)
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
 
-    //grey out all other perks in the same row
-    //TODO: do this check whenever loading soldiers?
     for (int i = 0; i < 18; i++) {
         const Perk& current_perk = soldier_perks[i];
         perk_buttons[i]->LoadPerk(perk_display_map[current_perk.index]);
@@ -179,17 +228,15 @@ void MainWindow::onSoldierSelected() {
         }
         else {
             perk_buttons[i]->setDisabled(false);
-            //cout << "enabling: " << i << endl;
         }
         //disable perks from rank that wasnt assigned yet.
-        //assigning perk for the first time should be done in game, otherwise it messes with stats increase on level up.
-        //TODO: move this to onSaveSelected soldier availability check?
-        // if ((i+1) % 3 == 0 && !soldier_perks[i].enabled && !soldier_perks[i-1].enabled && !soldier_perks[i-2].enabled) {
-        //     perk_buttons[i]->setDisabled(true);
-        //     perk_buttons[i-1]->setDisabled(true);
-        //     perk_buttons[i-2]->setDisabled(true);
-        //     //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
-        // }
+        //all available perks should be assigned in game before editing anything, otherwise it will mess with level up stats.
+        if ((i+1) % 3 == 0 && !(soldier_perks[i].enabled || soldier_perks[i-1].enabled || soldier_perks[i-2].enabled)) {
+            perk_buttons[i]->setDisabled(true);
+            perk_buttons[i-1]->setDisabled(true);
+            perk_buttons[i-2]->setDisabled(true);
+            //cout << "disabling: " << i << " " << i-1 << " " << i-2 << endl;
+        }
     }
     //qDebug() << "Soldier successfully loaded!";
 }
@@ -231,7 +278,7 @@ void MainWindow::SaveButtonClicked() {
             QMessageBox::warning(this, "No soldiers selected", "No soldiers were selected for editing.");
         }
         else {
-            QMessageBox::warning(this, "No save selected", "No save was selected for editing.");
+            QMessageBox::warning(this, "No save selected", "No save selected.");
         }
     }
 }
