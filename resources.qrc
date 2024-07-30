@@ -1,5 +1,6 @@
 <RCC>
     <qresource>
+        <file>assets/icons/app-icon.png</file>
         <file>assets/icons/120px-Council_Medal_of_Honor_2_(EU2012).png</file>
         <file>assets/icons/120px-Defenders_Medal_1_(EU2012).png</file>
         <file>assets/icons/120px-Defenders_Medal_2_(EU2012).png</file>
