@@ -3,4 +3,4 @@ build/*
 Logs/*
 backup/*
 Testing/*
-config.ini
+*.pro.user
