@@ -20,7 +20,7 @@
 #include <chrono>
 
 #include "xcomsave/xcom.h"
-#include "build/ui_QtDesigner.h"
+#include "ui_QtDesigner.h"
 #include "Qt/PerkButton.h"
 #include "Soldier.h"
 

@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
     
-    save_icon = QIcon("../assets/icons/appswitcher-xcom-ew-active.png");
+    save_icon = QIcon(":/icons/appswitcher-xcom-ew-active.png");
     bold_font.setBold(true);
 
     if (!QFile("config.ini").exists()) {
@@ -163,7 +163,7 @@ void MainWindow::onSaveSelected() {
                     continue;
                 }
                 std::string full_name = GetSoldiers::full_name(properties);
-                std::string icon_path = "../assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
+                std::string icon_path = ":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
                 QIcon icon (QString::fromStdString(icon_path));
                 QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));

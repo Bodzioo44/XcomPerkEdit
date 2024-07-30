@@ -17,7 +17,7 @@ QT += widgets gui
 
 HEADERS +=  MainWindow.h \
             Soldier.h \
-            build/ui_QtDesigner.h \
+            ui_QtDesigner.h \
             Qt/PerkButton.h \
             xcomsave/xcom.h 
 
@@ -28,7 +28,15 @@ SOURCES +=  main.cpp \
             Soldier.cpp \
             Qt/PerkButton.cpp
 
+RESOURCES += resources.qrc
+
 QMAKE_CXXFLAGS += -std=gnu++17 -Wall -Wextra -Wno-missing-field-initializers -Wno-attributes
 
-LIBS += -L../xcomsave/build \
-        -lxcomsave -lzlib
+
+# Include the directory containing the headers (relative to the .pro file location)
+#INCLUDEPATH += $$PWD/xcomsave/include
+
+# Specify the directory containing the .lib files (relative to the .pro file location)
+LIBS += -L$$PWD/xcomsave/build -lxcomsave -lzlib
+
+

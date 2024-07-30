@@ -105,7 +105,7 @@ namespace GetSoldiers {
         xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
         xcom::static_array_property& aUpgrades = static_cast<xcom::static_array_property&> (*m_kChar.properties[3]);
 
-        std::string path = "../assets/" + class_type(properties) + ".txt";
+        std::string path = ":/assets/" + class_type(properties) + ".txt";
         std::ifstream file(path);
         if (!file.is_open()) {
             throw std::runtime_error("Could not open file: " + path);

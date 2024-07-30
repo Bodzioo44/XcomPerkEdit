@@ -3,9 +3,9 @@
 //TODO: switch this shit to csv like file
 PerkDisplayMap load_perk_display(PerkSet perks) {
     std::sort(perks.begin(), perks.end(), [](const Perk& a, const Perk& b) { return a.index < b.index; });
-    std::ifstream file("../assets/All_Perk_Data.txt");
+    std::ifstream file(":/assets/All_Perk_Data.txt");
     if (!file.is_open()) {
-        throw std::runtime_error("Could not open file: ../assets/All_Perk_Data.txt");
+        throw std::runtime_error("Could not open file: :/assets/All_Perk_Data.txt");
     }
     std::string line;
     int current_line = 1;
@@ -26,7 +26,7 @@ PerkDisplayMap load_perk_display(PerkSet perks) {
                 current_PerkDisplay.description = QString::fromStdString(line);
             }
             else if (current_line % 4 == 0) {
-                current_PerkDisplay.icon_path = QString::fromStdString("../assets/icons/" + line);
+                current_PerkDisplay.icon_path = QString::fromStdString(":/assets/icons/" + line);
                 perk_display_map[perks[current_perk].index] = current_PerkDisplay;
                 correct_perk = false;
                 current_perk++;
