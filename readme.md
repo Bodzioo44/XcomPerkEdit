@@ -1,6 +1,7 @@
 # XcomPerkEdit
 Simple GUI app made with Qt that allows you to reassign soldier perks in Long War modification of a XCOM: Enemy Within game.
-Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github.com/tracktwo/xcomsave) library!
+This is my first somewhat seriours project, so feedback on any matter will be greatly appreciated!
+Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github.com/tracktwo/xcomsave) library.
 ## Usage
  - Launch the app.
  - Update the path if you are not using default one.
@@ -16,19 +17,13 @@ Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github
 - Only perks from already assigned ranks are editable.
 - You can edit few soldiers at once, press "Save File" to write changes to save file.
 - There is a backup directory with 10 most recent saves.
-## Disclaimer
-I'm a beginner dev, this is my first somewhat seriours project. I've never managed to corrupt any save files, but I encourage you to make your own backups anyway. Any feedback on any matter will be greatly appreciated!
 ## Building from Source
 - Qt binaries/CMake is required.
 - use `git clone --recursive` to also include submodules.
 - Checkout [README.md](https://github.com/tracktwo/xcomsave/blob/master/README.md) of xcomsave library for more info on how to compile it.
 ### Linux
-```
-mkdir build
-cd build
-qmake -o Makefile ../XcomPerkEdit.pro
-make
-```
+Requires GCC and GNU Make. Tested on Ubuntu 22.04.
+1. Running `./Compile.sh` from project directory should be enough.
 ### Windows
 You can either use Mingw (Qt Creator default) or MSVC to build the app, I used MSVC since xcomsave was already configured for that. Tested on Windows 10 with Visual Studio 2022.
 1. Building xcomsave:
