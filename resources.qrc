@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons">
+    <qresource>
         <file>assets/icons/120px-Council_Medal_of_Honor_2_(EU2012).png</file>
         <file>assets/icons/120px-Defenders_Medal_1_(EU2012).png</file>
         <file>assets/icons/120px-Defenders_Medal_2_(EU2012).png</file>
@@ -92,8 +92,6 @@
         <file>assets/icons/SUPPORT_SMOKEMIRRORS.png</file>
         <file>assets/icons/SUPPORT_SPRINTER.png</file>
         <file>assets/icons/Valkyrie_icon.png</file>
-    </qresource>
-    <qresource prefix="/LongWar">
         <file>assets/All_Perk_Data.txt</file>
         <file>assets/Archer.txt</file>
         <file>assets/Assault.txt</file>

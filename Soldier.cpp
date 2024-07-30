@@ -106,22 +106,24 @@ namespace GetSoldiers {
         xcom::static_array_property& aUpgrades = static_cast<xcom::static_array_property&> (*m_kChar.properties[3]);
 
         std::string path = ":/assets/" + class_type(properties) + ".txt";
-        std::ifstream file(path);
-        if (!file.is_open()) {
+
+        QFile file(QString::fromStdString(path));
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             throw std::runtime_error("Could not open file: " + path);
         }
 
         PerkSet perks;
-        std::string line;
+        QTextStream in(&file);
+        QString line;
         int i = 0;
         //loads perks from the file in format: index, mobility, aim, will
         //same perk can give different stats for different classes.
-        while(std::getline(file, line)) {
+        while(!in.atEnd()) {
+            line = in.readLine();
             std::vector<std::string> row;
-            std::stringstream ss(line);
-            std::string value;
-            while (std::getline(ss, value, ',')) {
-                row.push_back(value);
+            QStringList tokens = line.split(",");
+            for (const QString& token : tokens) {
+                row.push_back(token.toStdString());
             }
             //pulls index value from the save file
             int index_value = static_cast<xcom::int_property*> (aUpgrades.properties[std::stoi(row[0])].get())->value;

@@ -5,6 +5,9 @@
 #include <fstream>
 #include <sstream>
 
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+
 struct SoldierStats {
     int mobility;
     int aim;

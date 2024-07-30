@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
     
-    save_icon = QIcon(":/icons/appswitcher-xcom-ew-active.png");
+    save_icon = QIcon(":/assets/icons/appswitcher-xcom-ew-active.png");
     bold_font.setBold(true);
 
     if (!QFile("config.ini").exists()) {
