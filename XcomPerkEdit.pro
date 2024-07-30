@@ -30,13 +30,14 @@ SOURCES +=  main.cpp \
 
 RESOURCES += resources.qrc
 
+win32 {
+QMAKE_CXXFLAGS += -std:c++17 -W3 -Wall
+LIBS += -L$$PWD/xcomsave/build/Release -lxcomsave -lzlib
+}
+
+unix{
 QMAKE_CXXFLAGS += -std=gnu++17 -Wall -Wextra -Wno-missing-field-initializers -Wno-attributes
-
-
-# Include the directory containing the headers (relative to the .pro file location)
-#INCLUDEPATH += $$PWD/xcomsave/include
-
-# Specify the directory containing the .lib files (relative to the .pro file location)
 LIBS += -L$$PWD/xcomsave/build -lxcomsave -lzlib
+}
 
 
