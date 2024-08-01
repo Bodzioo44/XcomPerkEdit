@@ -25,7 +25,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout" columnminimumwidth="0,0">
      <property name="leftMargin">
-      <number>5</number>
+      <number>15</number>
      </property>
      <property name="topMargin">
       <number>15</number>
@@ -36,84 +36,6 @@
      <property name="bottomMargin">
       <number>15</number>
      </property>
-     <item row="0" column="0">
-      <layout class="QVBoxLayout" name="ButtonVBoxLayout" stretch="5,1,5,1,1,10,1">
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="SaveFileButton">
-         <property name="text">
-          <string>Save 
-File</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="RevertSoldierButton">
-         <property name="text">
-          <string>Revert Soldier
-Changes</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="RevertAllButton">
-         <property name="text">
-          <string>Revert All
-Changes</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ExitButton">
-         <property name="toolTip">
-          <string>Go back to save selection menu</string>
-         </property>
-         <property name="text">
-          <string>Back To Save
-Selection</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
      <item row="0" column="1">
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
@@ -182,7 +104,85 @@ Selection</string>
            <height>601</height>
           </rect>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5,1,3">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,5,1,3">
+          <item>
+           <layout class="QVBoxLayout" name="ButtonVBoxLayout" stretch="5,1,5,1,1,10,1">
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="SaveFileButton">
+              <property name="text">
+               <string>Save 
+File</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RevertSoldierButton">
+              <property name="text">
+               <string>Revert Soldier
+Changes</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RevertAllButton">
+              <property name="text">
+               <string>Revert All
+Changes</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="ExitButton">
+              <property name="toolTip">
+               <string>Go back to save selection menu</string>
+              </property>
+              <property name="text">
+               <string>Back To Save
+Selection</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">

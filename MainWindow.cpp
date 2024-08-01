@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
+    // connect(ui.stackedWidget, &QStackedWidget::currentChanged, this, &MainWindow::PageChanged);
 
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
@@ -174,19 +175,24 @@ void MainWindow::onSaveSelected() {
         }
         i++;
     }
+    ui.SoldierListWidget->setFixedWidth(ui.SoldierListWidget->sizeHint().width() + 50);
     if (ui.SoldierListWidget->count() == 0) {
         QMessageBox::warning(this, "No soldiers found", "No acceptable soldiers were found in the save file.");
         return;
     }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     qDebug() << "Checkpoint table loaded.";
+    //Why did moving button layout inside PerkEditPage affected which row is selected after loading soldiers?
+    //Before that change below line wasnt needed.
+    ui.SoldierListWidget->setCurrentRow(0);
     onSoldierSelected();
 }
 
 void MainWindow::onSoldierSelected() {
+    // qDebug() << ui.SoldierListWidget->count();
     int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
     int soldier_index = soldier_index_translation[current_row]; //soldier index in the save file
-    //qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
+    // qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
@@ -196,13 +202,8 @@ void MainWindow::onSoldierSelected() {
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
 
-    //TODO: Try out horizontal labels to avoid stretching buttons?
-    //TODO: Add strechers between buttons?
-    LabelSet labels = current_soldier->GetLabels();
-    ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
-    ui.AimLabel->setText(QString::fromStdString(labels[1]));
-    ui.WillLabel->setText(QString::fromStdString(labels[2]));
-
+    //soldier stats
+    ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
     PerkSet soldier_perks = current_soldier->GetPerks();
     //map of [perk_index] -> PerkDisplay (name, icon, description)
@@ -234,7 +235,7 @@ void MainWindow::onSoldierSelected() {
             ui.InfoLabel->setText("<b>Promotion available in game!<br>Some perks wont be editable<br>until you assign rank in game.</b>");
         }
     }
-    //qDebug() << "Soldier successfully loaded!";
+    // qDebug() << "Soldier successfully loaded!";
 }
 
 void MainWindow::onPerkSelected(int i) {
@@ -248,11 +249,7 @@ void MainWindow::onPerkSelected(int i) {
     }
     current_soldier->EnablePerk(i);
     perk_buttons[i]->LightUp();
-
-    LabelSet labels = current_soldier->GetLabels();
-    ui.MobilityLabel->setText(QString::fromStdString(labels[0]));
-    ui.AimLabel->setText(QString::fromStdString(labels[1]));
-    ui.WillLabel->setText(QString::fromStdString(labels[2]));
+    ui.StatsLabel->setText(current_soldier->GetLabels());
 }
 
 void MainWindow::SaveButtonClicked() {
@@ -322,7 +319,7 @@ void MainWindow::GenerateINIFile() {
 void MainWindow::LoadINIFile() {
     QSettings settings("config.ini", QSettings::IniFormat);
     backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
-    save_dir_path = settings.value("SAVE_DIR_PATH", "").toString();
+    save_dir_path = settings.value("SAVE_DIR_PATH", "wato").toString();
     // if (backup_limit == -1 || save_dir_path == "") {
     //     qDebug() << "Something went wrong while reading the config file, generating a new one...";
     //     QFile configFile("config.ini");
