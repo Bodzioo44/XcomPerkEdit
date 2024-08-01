@@ -28,7 +28,7 @@ xcom::property_list* Soldier::GetPropertyList() const{
     return properties;
 }
 
-LabelSet Soldier::GetLabels() const{
+QString Soldier::GetLabels() const{
         std::string mobility_label = "<b>Mobility: "+ std::to_string(starting_stats.mobility) + "</b>";
         std::string aim_label = "<b>Aim: " + std::to_string(starting_stats.aim) + "</b>";
         std::string will_label = "<b>Will: " + std::to_string(starting_stats.will) + "</b>";
@@ -51,7 +51,7 @@ LabelSet Soldier::GetLabels() const{
         else if (difference_stats.will < 0) {
             will_label += "<b><font color='red'> " + std::to_string(difference_stats.will) + "</font></b>";
         }
-        return {mobility_label, aim_label, will_label};   
+        return QString::fromStdString(mobility_label + "<br>" + aim_label + "<br>" + will_label);
 }
 
 PerkSet Soldier::GetPerks() const {

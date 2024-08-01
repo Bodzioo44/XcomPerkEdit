@@ -7,6 +7,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QString>
 
 struct SoldierStats {
     int mobility;
@@ -49,7 +50,7 @@ struct Perk {
 };
 
 using PerkSet = std::array<Perk, 18>;
-using LabelSet = std::array<std::string, 3>;
+// using LabelSet = std::array<std::string, 3>;
 
 class Soldier {
     public:
@@ -63,7 +64,7 @@ class Soldier {
         void EnablePerk(int index);
         void DisablePerk(int index);
         xcom::property_list* GetPropertyList() const;
-        LabelSet GetLabels() const;
+        QString GetLabels() const;
         PerkSet GetPerks() const;
         void UpdateSoldier();
         void RevertChanges();
