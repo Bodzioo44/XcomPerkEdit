@@ -45,6 +45,10 @@ public slots:
     void SelectPathButtonClicked();
     //Exit Button
     void ExitButtonClicked();
+    //Revert Soldier Changes
+    void RevertSoldierClicked();
+    //Revert All Changes
+    void RevertAllClicked();
 private:
     Ui::MainWindow ui;
     xcom::saved_game save;
@@ -59,8 +63,6 @@ private:
     //TODO: best way to store the soldiers to save?
     //switch to vector? map is problematic...
     std::map<int, Soldier> soldiers_to_save;
-    QIcon save_icon;
-    QFont bold_font;
 
     void GenerateINIFile();
     void LoadINIFile();

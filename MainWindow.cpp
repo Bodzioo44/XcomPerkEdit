@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
-    // connect(ui.stackedWidget, &QStackedWidget::currentChanged, this, &MainWindow::PageChanged);
+    connect(ui.RevertSoldierButton, &QPushButton::clicked, this, &MainWindow::RevertSoldierClicked);
+    connect(ui.RevertAllButton, &QPushButton::clicked, this, &MainWindow::RevertAllClicked);
 
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
@@ -22,9 +23,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
-    
-    save_icon = QIcon(":/assets/icons/appswitcher-xcom-ew-active.png");
-    bold_font.setBold(true);
 
     if (!QFile("config.ini").exists()) {
         GenerateINIFile();
@@ -34,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 }
 
 void MainWindow::SelectPathButtonClicked() {
+    // qDebug() << "SelectPathButtonClicked";
     auto start = std::chrono::high_resolution_clock::now();
     ui.SaveListWidget->clear();
     //Check if path exists
@@ -60,6 +59,11 @@ void MainWindow::SelectPathButtonClicked() {
         progress->setWindowModality(Qt::WindowModal);
         progress->show();
     }
+
+    //font and icon for the ui.SaveListWidget items
+    QFont bold_font;
+    bold_font.setBold(true);
+    QIcon save_icon(":/assets/icons/appswitcher-xcom-ew-active.png");
     //Go over the files and load all GEOSCAPE saves
     for (QString& name : file_names) {
         if (name.contains("save")) {
@@ -117,6 +121,9 @@ void MainWindow::SelectPathButtonClicked() {
 }
 
 void MainWindow::onSaveSelected() {
+    qDebug() << "onSaveSelected";
+    //FIXME: this below triggers signal?
+    //this triggers itemSelectionChanged signal before clearing itself.
     ui.SoldierListWidget->clear();
     qDebug() << "Save selected!";
     qDebug() << "Creating backup...";
@@ -182,17 +189,21 @@ void MainWindow::onSaveSelected() {
     }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     qDebug() << "Checkpoint table loaded.";
-    //Why did moving button layout inside PerkEditPage affected which row is selected after loading soldiers?
-    //Before that change below line wasnt needed.
+    //to always trigger onSoldierSelected() when the save is loaded.
     ui.SoldierListWidget->setCurrentRow(0);
-    onSoldierSelected();
 }
-
+//QListWidget::itemSelectionChanged signal triggers on QListWidget*->clear(), but QListWidget*->currentRow() value stays the same (signal is being processed before the clear() method).
+//so if I want to keep QListWidget::itemSelectionChanged instead of switching to QListWidget::itemActivated additional check is needed.
 void MainWindow::onSoldierSelected() {
-    // qDebug() << ui.SoldierListWidget->count();
+    //ui.SoldierListWidget->clear() is never called on PerkEditPage, so this check is valid?
+    //this should only happen whenever QListWidget::itemSelectionChanged signal is triggered because QListWidget::clear() is called.
+    if (ui.stackedWidget->currentWidget() != ui.PerkEditPage) {
+        qDebug() << "QListWidget::itemSelectionChanged signal triggered while not on the PerkEditPage.";
+        return;
+    }
     int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
     int soldier_index = soldier_index_translation[current_row]; //soldier index in the save file
-    // qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
+    qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
@@ -201,7 +212,6 @@ void MainWindow::onSoldierSelected() {
     }
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
-
     //soldier stats
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
@@ -232,13 +242,16 @@ void MainWindow::onSoldierSelected() {
             perk_buttons[i]->setDisabled(true);
             perk_buttons[i-1]->setDisabled(true);
             perk_buttons[i-2]->setDisabled(true);
-            ui.InfoLabel->setText("<b>Promotion available in game!<br>Some perks wont be editable<br>until you assign rank in game.</b>");
+            if (ui.InfoLabel->text().isEmpty()) {
+                ui.InfoLabel->setText("<b>Promotion available in game!<br>Some perks wont be editable<br>until you assign rank in game.</b>");
+            }
         }
     }
     // qDebug() << "Soldier successfully loaded!";
 }
 
 void MainWindow::onPerkSelected(int i) {
+    // qDebug() << "onPerkSelected";
     int start_index = (i / 3) * 3;
     for (int j = start_index; j < start_index + 3; j++) {
         if (j == i) {
@@ -262,28 +275,40 @@ void MainWindow::SaveButtonClicked() {
         xcom::write_xcom_save(save, path);
         qDebug() << "Successfully saved the game.";
         QMessageBox::information(this, "Save successful", "Save successful!");
+        current_soldier = nullptr;
         soldiers_to_save.clear();
         ui.SaveListWidget->clearSelection();
         ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
     }
     else {
-        if (ui.stackedWidget->currentWidget() == ui.PerkEditPage) {
-            QMessageBox::warning(this, "No soldiers selected", "No soldiers were selected for editing.");
-        }
-        else {
-            QMessageBox::warning(this, "No save selected", "No save selected.");
-        }
+        QMessageBox::warning(this, "No soldiers selected", "No soldiers were selected for editing.");
     }
 }
 
+void MainWindow::RevertSoldierClicked() {
+    // qDebug() << "RevertSoldierClicked";
+    if (current_soldier) {
+        current_soldier->RevertChanges();
+        onSoldierSelected();
+    }
+}
+
+void MainWindow::RevertAllClicked() {
+    // qDebug() << "RevertAllClicked";
+    for (auto& pair : soldiers_to_save) {
+        pair.second.RevertChanges();
+    }
+    soldiers_to_save.clear();
+    onSoldierSelected();
+}
+
 void MainWindow::ExitButtonClicked() {
-    if (ui.stackedWidget->currentWidget() == ui.PerkEditPage) {
-        ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
-        soldiers_to_save.clear();
-    }
-    else {
-        this->close();
-    }
+    // qDebug() << "ExitButtonClicked";
+    ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+    current_soldier = nullptr;
+    soldiers_to_save.clear();
+
+
 }
 
 void MainWindow::GenerateINIFile() {
@@ -306,8 +331,6 @@ void MainWindow::GenerateINIFile() {
 
     settings.setValue("FIRST_RUN", true);
     qDebug() << "Setting FIRST_RUN to:" << settings.value("FIRST_RUN").toBool();
-    settings.setValue("LOGS_ENABLED", false);
-    qDebug() << "Setting LOGS_ENABLED to:" << settings.value("LOGS_ENABLED").toBool();
     settings.setValue("BACKUP_LIMIT", 10);
     qDebug() << "Setting BACKUP_LIMIT to:" << settings.value("BACKUP_LIMIT").toInt();
     settings.setValue("SAVE_DIR_PATH", path);
@@ -319,16 +342,7 @@ void MainWindow::GenerateINIFile() {
 void MainWindow::LoadINIFile() {
     QSettings settings("config.ini", QSettings::IniFormat);
     backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
-    save_dir_path = settings.value("SAVE_DIR_PATH", "wato").toString();
-    // if (backup_limit == -1 || save_dir_path == "") {
-    //     qDebug() << "Something went wrong while reading the config file, generating a new one...";
-    //     QFile configFile("config.ini");
-    //     if (configFile.exists()) {
-    //         configFile.remove();
-    //     }
-    //     GenerateINIFile();
-    //     return;
-    // }
+    save_dir_path = settings.value("SAVE_DIR_PATH", "Failed to load config.ini file").toString();
     if (settings.value("FIRST_RUN", false).toBool()) {
         settings.setValue("FIRST_RUN", false);
         settings.sync();
