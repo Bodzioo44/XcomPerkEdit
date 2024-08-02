@@ -121,13 +121,13 @@ void MainWindow::SelectPathButtonClicked() {
 }
 
 void MainWindow::onSaveSelected() {
-    qDebug() << "onSaveSelected";
-    //FIXME: this below triggers signal?
-    //this triggers itemSelectionChanged signal before clearing itself.
+    qDebug() << "Save selected.";
+    //clear the list for new soliders.
+    //this triggers itemSelectionChanged signal before the clear() method is called on the QListWidget.
     ui.SoldierListWidget->clear();
-    qDebug() << "Save selected!";
-    qDebug() << "Creating backup...";
-    QDir backup_dir(current_dir.filePath("backup"));
+
+    //backup folder needs to be outside SaveData file since xcom also checks subfolders for saves.
+    QDir backup_dir(QDir(QCoreApplication::applicationDirPath()).filePath("backup"));
     if (!backup_dir.exists()) {
         qDebug() << "Creating backup directory: " << backup_dir.path();
         backup_dir.mkpath(".");
@@ -136,8 +136,9 @@ void MainWindow::onSaveSelected() {
     QString sourcePath = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip());
     QString destPath = backup_dir.filePath(ui.SaveListWidget->currentItem()->toolTip() + dateTimeNow);
     QFile::copy(sourcePath, destPath);
-    qDebug() << "Backup created!";
+    qDebug() << "Backup created.";
 
+    //removing old backups
     QFileInfoList backupFiles = backup_dir.entryInfoList(QDir::Files, QDir::Time);
     if (backupFiles.size() > backup_limit) {
         qDebug() << "Deleting old backups...";
@@ -146,7 +147,7 @@ void MainWindow::onSaveSelected() {
             QFile::remove(backupFiles[i].absoluteFilePath());
             qDebug() << "Deleting: " << backupFiles[i].absoluteFilePath();
         }
-        qDebug() << "Old backups deleted!";
+        qDebug() << "Old backups deleted.";
     }
 
     std::string path = current_dir.filePath(ui.SaveListWidget->currentItem()->toolTip()).toStdString();
@@ -212,6 +213,7 @@ void MainWindow::onSoldierSelected() {
     }
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
+    qDebug() << "Soldier rank: " << soldier_rank;
     //soldier stats
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
@@ -230,7 +232,7 @@ void MainWindow::onSoldierSelected() {
             perk_buttons[i]->GreyOut();
         }
         //disable perks that are not available yet (based on soldier rank)
-        if ((i+1) > (soldier_rank-1)*3) {
+        if (i / 3 > soldier_rank - 2 ) {
             perk_buttons[i]->setDisabled(true);
         }
         else {
@@ -238,7 +240,7 @@ void MainWindow::onSoldierSelected() {
         }
         //disable perks from rank that wasnt assigned yet.
         //all available perks should be assigned in game before changing anything, otherwise it will mess with level up stats.
-        if ((i+1) % 3 == 0 && !(soldier_perks[i].enabled || soldier_perks[i-1].enabled || soldier_perks[i-2].enabled)) {
+        if (i % 3 == 2 && i / 3 <= soldier_rank - 2 && !(soldier_perks[i].enabled || soldier_perks[i-1].enabled || soldier_perks[i-2].enabled)) {
             perk_buttons[i]->setDisabled(true);
             perk_buttons[i-1]->setDisabled(true);
             perk_buttons[i-2]->setDisabled(true);
