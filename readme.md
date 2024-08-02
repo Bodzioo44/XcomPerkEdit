@@ -2,6 +2,12 @@
 Simple GUI app made with Qt that allows you to reassign soldier perks in Long War modification of a XCOM: Enemy Within game.
 This is my first somewhat seriours project, so feedback on any matter will be greatly appreciated!
 Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github.com/tracktwo/xcomsave) library.
+<div align="center">
+<img src="https://github.com/user-attachments/assets/f5049b07-1b06-46f6-b92d-64f0d70b3e2c">
+<img src="https://github.com/user-attachments/assets/5505099d-0b1a-45da-a926-324ddda8dced">
+<img src="https://github.com/user-attachments/assets/da8c1ede-daac-49fa-ba65-6e82a8efef7e">
+</div>
+
 ## Usage
  - Launch the app.
  - Update the path if you are not using default one.
@@ -23,7 +29,7 @@ Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github
 - Checkout [README.md](https://github.com/tracktwo/xcomsave/blob/master/README.md) of xcomsave library for more info on how to compile it.
 ### Linux
 Requires GCC and GNU Make. Tested on Ubuntu 22.04.
-1. Running `./Compile.sh` from project directory should be enough.
+1. Run `./Compile.sh` script from project directory.
 ### Windows
 You can either use Mingw (Qt Creator default) or MSVC to build the app, I used MSVC since xcomsave was already configured for that. Tested on Windows 10 with Visual Studio 2022.
 1. Building xcomsave:
