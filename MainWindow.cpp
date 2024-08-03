@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     ui.SavePageWidget->setLayout(ui.SavePageVBoxLayout);
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
-    connect(ui.SoldierListWidget, &QListWidget::itemSelectionChanged, this, &MainWindow::onSoldierSelected);
+    connect(ui.SoldierListWidget, &QListWidget::currentRowChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.SaveListWidget, &QListWidget::itemActivated, this, &MainWindow::onSaveSelected);
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
@@ -126,7 +126,7 @@ void MainWindow::onSaveSelected() {
     //this triggers itemSelectionChanged signal before the clear() method is called on the QListWidget.
     ui.SoldierListWidget->clear();
 
-    //backup folder needs to be outside SaveData file since xcom also checks subfolders for saves.
+    //backup folder needs to be outside SaveData since xcom also checks subfolders for saves.
     QDir backup_dir(QDir(QCoreApplication::applicationDirPath()).filePath("backup"));
     if (!backup_dir.exists()) {
         qDebug() << "Creating backup directory: " << backup_dir.path();
@@ -193,13 +193,12 @@ void MainWindow::onSaveSelected() {
     //to always trigger onSoldierSelected() when the save is loaded.
     ui.SoldierListWidget->setCurrentRow(0);
 }
-//QListWidget::itemSelectionChanged signal triggers on QListWidget*->clear(), but QListWidget*->currentRow() value stays the same (signal is being processed before the clear() method).
-//so if I want to keep QListWidget::itemSelectionChanged instead of switching to QListWidget::itemActivated additional check is needed.
+
+//QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
-    //ui.SoldierListWidget->clear() is never called on PerkEditPage, so this check is valid?
-    //this should only happen whenever QListWidget::itemSelectionChanged signal is triggered because QListWidget::clear() is called.
-    if (ui.stackedWidget->currentWidget() != ui.PerkEditPage) {
-        qDebug() << "QListWidget::itemSelectionChanged signal triggered while not on the PerkEditPage.";
+    qDebug() << "Soldier selected.";
+    if (ui.SoldierListWidget->currentRow() == -1) {
+        qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
         return;
     }
     int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
