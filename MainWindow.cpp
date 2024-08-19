@@ -8,13 +8,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     ui.SavePageWidget->setLayout(ui.SavePageVBoxLayout);
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
-    connect(ui.SoldierListWidget, &QListWidget::currentRowChanged, this, &MainWindow::onSoldierSelected);
+    connect(ui.SoldierTreeWidget, &QTreeWidget::currentItemChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.SaveListWidget, &QListWidget::itemActivated, this, &MainWindow::onSaveSelected);
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
     connect(ui.RevertSoldierButton, &QPushButton::clicked, this, &MainWindow::RevertSoldierClicked);
     connect(ui.RevertAllButton, &QPushButton::clicked, this, &MainWindow::RevertAllClicked);
+    connect(ui.PathLineEdit, &QLineEdit::returnPressed, this, &MainWindow::SelectPathButtonClicked);
 
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
@@ -124,7 +125,7 @@ void MainWindow::onSaveSelected() {
     qDebug() << "Save selected.";
     //clear the list for new soliders.
     //this triggers itemSelectionChanged signal before the clear() method is called on the QListWidget.
-    ui.SoldierListWidget->clear();
+    ui.SoldierTreeWidget->clear();
 
     //backup folder needs to be outside SaveData since xcom also checks subfolders for saves.
     QDir backup_dir(QDir(QCoreApplication::applicationDirPath()).filePath("backup"));
@@ -175,35 +176,43 @@ void MainWindow::onSaveSelected() {
                 std::string icon_path = ":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
                 QIcon icon (QString::fromStdString(icon_path));
-                QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
-                ui.SoldierListWidget->addItem(item);
-
-                soldier_index_translation[ui.SoldierListWidget->count() - 1] = i;
+                QTreeWidgetItem* item = new QTreeWidgetItem();
+                item->setIcon(0, icon);
+                item->setText(1, QString::fromStdString(full_name));
+                item->setText(2, "Rank");
+                item->setText(3, "Edited");
+                ui.SoldierTreeWidget->addTopLevelItem(item);
+                soldier_index_translation[item] = i;
+                // QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
+                // ui.SoldierTreeWidget->addItem(item);
+                // soldier_index_translation[ui.SoldierListWidget->count() - 1] = i;
             }
         }
         i++;
     }
-    ui.SoldierListWidget->setFixedWidth(ui.SoldierListWidget->sizeHint().width() + 50);
-    if (ui.SoldierListWidget->count() == 0) {
+    ui.SoldierTreeWidget->setFixedWidth(ui.SoldierTreeWidget->sizeHint().width() + 50);
+    if (ui.SoldierTreeWidget->topLevelItemCount() == 0) {
         QMessageBox::warning(this, "No soldiers found", "No acceptable soldiers were found in the save file.");
         return;
     }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     qDebug() << "Checkpoint table loaded.";
     //to always trigger onSoldierSelected() when the save is loaded.
-    ui.SoldierListWidget->setCurrentRow(0);
+    ui.SoldierTreeWidget->setCurrentItem(ui.SoldierTreeWidget->topLevelItem(0));
 }
 
 //QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
     qDebug() << "Soldier selected.";
-    if (ui.SoldierListWidget->currentRow() == -1) {
+    // this is needed even with TreeWidget???
+    qDebug() << ui.SoldierTreeWidget->topLevelItemCount();
+    if (ui.stackedWidget->currentWidget() == ui.SavePageWidget) {
         qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
         return;
     }
-    int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
-    int soldier_index = soldier_index_translation[current_row]; //soldier index in the save file
-    qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
+    QTreeWidgetItem* current_item = ui.SoldierTreeWidget->currentItem();
+    int soldier_index = soldier_index_translation[current_item]; //soldier index in the save file
+    // qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
