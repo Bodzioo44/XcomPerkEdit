@@ -18,7 +18,7 @@ QT += widgets gui
 HEADERS +=  MainWindow.h \
             Soldier.h \
             ui_QtDesigner.h \
-            Qt/PerkButton.h \
+            Qt/CustomQt.h \
             xcomsave/xcom.h 
 
 FORMS += QtDesigner.ui
@@ -26,7 +26,7 @@ FORMS += QtDesigner.ui
 SOURCES +=  main.cpp \
             MainWindow.cpp \
             Soldier.cpp \
-            Qt/PerkButton.cpp
+            Qt/CustomQt.cpp
 
 RESOURCES += resources.qrc
 
