@@ -93,6 +93,18 @@
         <file>assets/icons/SUPPORT_SMOKEMIRRORS.png</file>
         <file>assets/icons/SUPPORT_SPRINTER.png</file>
         <file>assets/icons/Valkyrie_icon.png</file>
+        
+        <file>assets/icons/RANK_COLONEL.png</file>
+        <file>assets/icons/RANK_SQUADDIE.png</file>
+        <file>assets/icons/RANK_SERGEANT.png</file>
+        <file>assets/icons/RANK_MAJOR.png</file>
+        <file>assets/icons/RANK_CORPORAL.png</file>
+        <file>assets/icons/RANK_CAPTAIN.png</file>
+        <file>assets/icons/RANK_LIEUTENANT.png</file>
+        <file>assets/icons/RANK_ROOKIE.png</file>
+        <file>assets/icons/promotion_icon_transparent_fixed.png</file>
+        <file>assets/icons/swirl_icon_transparent_fixed.png</file>
+        
         <file>assets/All_Perk_Data.txt</file>
         <file>assets/Archer.txt</file>
         <file>assets/Assault.txt</file>
@@ -110,5 +122,6 @@
         <file>assets/Shogun.txt</file>
         <file>assets/Sniper.txt</file>
         <file>assets/Valkyrie.txt</file>
+        
     </qresource>
 </RCC>
