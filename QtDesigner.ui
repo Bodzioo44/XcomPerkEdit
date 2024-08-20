@@ -104,7 +104,7 @@
            <height>601</height>
           </rect>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,5,1,0">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,5,1,12">
           <item>
            <layout class="QVBoxLayout" name="ButtonVBoxLayout" stretch="5,1,5,1,1,10,1">
             <item>
@@ -318,29 +318,18 @@ Selection</string>
               <height>16777215</height>
              </size>
             </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
             <property name="sortingEnabled">
              <bool>true</bool>
             </property>
-            <column>
-             <property name="text">
-              <string>Class</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Rank</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Edited</string>
-             </property>
-            </column>
+            <attribute name="headerMinimumSectionSize">
+             <number>10</number>
+            </attribute>
+            <attribute name="headerStretchLastSection">
+             <bool>false</bool>
+            </attribute>
            </widget>
           </item>
          </layout>

@@ -25,6 +25,32 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
 
+    // QPixmap pixmap(32, 32);
+    // pixmap.fill(Qt::transparent);
+    // QPainter painter(&pixmap);
+    // painter.setRenderHint(QPainter::Antialiasing);
+    // painter.setBrush(Qt::yellow);
+    // painter.drawEllipse(0, 0, 32, 32);
+    // QIcon yellowDotIcon(pixmap);
+    // header->setText(3, "Edited");
+    // header->setToolTip(3, "Sort by Edited");
+    // header->setIcon(3, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+
+    QTreeWidgetItem* header = new QTreeWidgetItem();
+    header->setText(0, "Soldiers Name");
+    header->setToolTip(0, "Sort by Name");
+
+    header->setText(1, "Class");
+    header->setToolTip(1, "Sort by Class");
+    // header->setIcon(1, QIcon(":/assets/icons/RANK_ROOKIE.png"));
+
+    header->setText(2, "Rank");
+    header->setToolTip(2, "Sort by Rank");
+    // header->setIcon(2, QIcon(":/assets/icons/RANK_SQUADDIE.png"));
+    
+    ui.SoldierTreeWidget->setHeaderItem(header);
+    ui.SoldierTreeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     if (!QFile("config.ini").exists()) {
         GenerateINIFile();
     }
@@ -176,21 +202,31 @@ void MainWindow::onSaveSelected() {
                 std::string icon_path = ":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
                 QIcon icon (QString::fromStdString(icon_path));
-                QTreeWidgetItem* item = new QTreeWidgetItem();
-                item->setIcon(0, icon);
-                item->setText(1, QString::fromStdString(full_name));
-                item->setText(2, "Rank");
-                item->setText(3, "Edited");
+                QTreeWidgetItem* item = new SoldierTreeItem();
+
+                item->setText(0, QString::fromStdString(full_name));
+
+                item->setIcon(1, icon);
+                item->setData(1, Qt::UserRole, QString::fromStdString(icon_path));
+
+                item->setIcon(2, QIcon(rank_translation.at(GetSoldiers::rank(properties))));
+                item->setData(2, Qt::UserRole, GetSoldiers::rank(properties));
+
+                // item->setData(3, Qt::UserRole, 0);
+
                 ui.SoldierTreeWidget->addTopLevelItem(item);
                 soldier_index_translation[item] = i;
-                // QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
-                // ui.SoldierTreeWidget->addItem(item);
-                // soldier_index_translation[ui.SoldierListWidget->count() - 1] = i;
             }
         }
         i++;
     }
-    ui.SoldierTreeWidget->setFixedWidth(ui.SoldierTreeWidget->sizeHint().width() + 50);
+    int size = 2;
+    for (int i = 0; i < ui.SoldierTreeWidget->columnCount(); i++) {
+        size += ui.SoldierTreeWidget->columnWidth(i);
+    }
+    size += ui.SoldierTreeWidget->verticalScrollBar()->sizeHint().width();
+    ui.SoldierTreeWidget->setFixedWidth(size);
+
     if (ui.SoldierTreeWidget->topLevelItemCount() == 0) {
         QMessageBox::warning(this, "No soldiers found", "No acceptable soldiers were found in the save file.");
         return;
@@ -203,9 +239,8 @@ void MainWindow::onSaveSelected() {
 
 //QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
-    qDebug() << "Soldier selected.";
+    // qDebug() << "Soldier selected.";
     // this is needed even with TreeWidget???
-    qDebug() << ui.SoldierTreeWidget->topLevelItemCount();
     if (ui.stackedWidget->currentWidget() == ui.SavePageWidget) {
         qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
         return;
@@ -221,7 +256,7 @@ void MainWindow::onSoldierSelected() {
     }
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
-    qDebug() << "Soldier rank: " << soldier_rank;
+    // qDebug() << "Soldier rank: " << soldier_rank;
     //soldier stats
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks

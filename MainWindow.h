@@ -13,6 +13,8 @@
 #include <QtWidgets/QProgressDialog>
 #include <QtCore/QSettings>
 #include <QtCore/QTimer>
+#include <QtWidgets/QScrollBar>
+#include <QtGui/QPainter>
 
 #include <vector>
 #include <map>
@@ -21,7 +23,7 @@
 
 #include "xcomsave/xcom.h"
 #include "ui_QtDesigner.h"
-#include "Qt/PerkButton.h"
+#include "Qt/CustomQt.h"
 #include "Soldier.h"
 
 class MainWindow: public QMainWindow
@@ -68,8 +70,19 @@ private:
     void LoadINIFile();
     int backup_limit;
     QString save_dir_path;
-};
 
+    // QIcon yellowDotIcon;
+    const std::map<int,QString> rank_translation =
+    {
+        {2, ":/assets/icons/RANK_CORPORAL.png"},
+        {3, ":/assets/icons/RANK_SERGEANT.png"},
+        {4, ":/assets/icons/RANK_LIEUTENANT.png"},
+        {5, ":/assets/icons/RANK_CAPTAIN.png"},
+        {6, ":/assets/icons/RANK_MAJOR.png"},
+        {7, ":/assets/icons/RANK_COLONEL.png"},
+    };
+
+};
 
 
 #endif
