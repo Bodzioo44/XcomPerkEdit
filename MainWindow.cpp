@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     // header->setIcon(2, QIcon(":/assets/icons/RANK_SQUADDIE.png"));
     
     ui.SoldierTreeWidget->setHeaderItem(header);
+    ui.SoldierTreeWidget->setIndentation(0);
     ui.SoldierTreeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     if (!QFile("config.ini").exists()) {
@@ -198,16 +199,25 @@ void MainWindow::onSaveSelected() {
                     i++;
                     continue;
                 }
-                std::string full_name = GetSoldiers::full_name(properties);
-                std::string icon_path = ":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
-                QIcon icon (QString::fromStdString(icon_path));
+                QString full_name = QString::fromStdString(GetSoldiers::full_name(properties));
+                QString icon_path = QString::fromStdString(":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png");
+
+                QIcon icon (icon_path);
                 QTreeWidgetItem* item = new SoldierTreeItem();
 
-                item->setText(0, QString::fromStdString(full_name));
+                item->setText(0, full_name);
+                // TODO: add custom widget so the icon is behind text.
+                for (int rank_check = 1; rank_check < GetSoldiers::rank(properties) - 1; rank_check++) {
+                    if (!(temp_perks[rank_check * 3].enabled || temp_perks[rank_check * 3 + 1].enabled || temp_perks[rank_check * 3 + 2].enabled)) {
+                        // TODO: add promotion icon.
+                        item->setIcon(0, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+                        break;
+                    }
+                }
 
                 item->setIcon(1, icon);
-                item->setData(1, Qt::UserRole, QString::fromStdString(icon_path));
+                item->setData(1, Qt::UserRole, icon_path);
 
                 item->setIcon(2, QIcon(rank_translation.at(GetSoldiers::rank(properties))));
                 item->setData(2, Qt::UserRole, GetSoldiers::rank(properties));
@@ -220,6 +230,7 @@ void MainWindow::onSaveSelected() {
         }
         i++;
     }
+    // resize soldier tree to fit the content
     int size = 2;
     for (int i = 0; i < ui.SoldierTreeWidget->columnCount(); i++) {
         size += ui.SoldierTreeWidget->columnWidth(i);
@@ -240,7 +251,7 @@ void MainWindow::onSaveSelected() {
 //QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
     // qDebug() << "Soldier selected.";
-    // this is needed even with TreeWidget???
+    // FIXME: not the nicest solution
     if (ui.stackedWidget->currentWidget() == ui.SavePageWidget) {
         qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
         return;
