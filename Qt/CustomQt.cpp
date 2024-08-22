@@ -75,8 +75,7 @@ void PerkButton::GreyOut() {
     }
 }
 
-void PerkButton::LightUp()
-{
+void PerkButton::LightUp() {
     if (is_greyed_out) {
         setIcon(icon);
         is_greyed_out = false;
@@ -87,6 +86,22 @@ void PerkButton::LightUp()
 bool SoldierTreeItem::operator< (const QTreeWidgetItem &other) const {
     QTreeWidget* tree = treeWidget();
     int sortColumn = tree->sortColumn();
+    //custom widget compare
+    if (sortColumn == 0) {
+        QString text1 = data(0, Qt::UserRole).toString();
+        QString text2 = other.data(0, Qt::UserRole).toString();
+        return text1 < text2;
+        // const QTreeWidgetItem* baseThis = static_cast<const QTreeWidgetItem*>(this);
+        // QWidget* widget1 = tree->itemWidget(const_cast<QTreeWidgetItem*>(baseThis), 0);
+        // QWidget* widget2 = tree->itemWidget(const_cast<QTreeWidgetItem*>(&other), 0);
+        // if (widget1 && widget2) {
+        //     QLabel* label1 = qobject_cast<QLabel*>(widget1->layout()->itemAt(0)->widget());
+        //     QLabel* label2 = qobject_cast<QLabel*>(widget2->layout()->itemAt(0)->widget());
+        //     if (label1 && label2) {
+        //         return label1->text() < label2->text();
+        //     }
+        // }
+    }
     //class icon compare
     if (sortColumn == 1) {
         QString icon1_path = data(1, Qt::UserRole).toString();
@@ -99,12 +114,11 @@ bool SoldierTreeItem::operator< (const QTreeWidgetItem &other) const {
         QString icon2_path = other.data(2, Qt::UserRole).toString();
         return icon1_path > icon2_path;
     }
-    //edited icon compare
-    if (sortColumn == 3) {
-        int icon1_path = data(3, Qt::UserRole).toInt();
-        int icon2_path = other.data(3, Qt::UserRole).toInt();
-        return icon1_path < icon2_path;
-    }    
-    return QTreeWidgetItem::operator<(other);
-    
+    // //edited icon compare
+    // if (sortColumn == 3) {
+    //     int icon1_path = data(3, Qt::UserRole).toInt();
+    //     int icon2_path = other.data(3, Qt::UserRole).toInt();
+    //     return icon1_path < icon2_path;
+    // }    
+    return QTreeWidgetItem::operator<(other);   
 }

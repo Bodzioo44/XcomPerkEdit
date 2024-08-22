@@ -203,28 +203,37 @@ void MainWindow::onSaveSelected() {
                 QString full_name = QString::fromStdString(GetSoldiers::full_name(properties));
                 QString icon_path = QString::fromStdString(":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png");
 
-                QIcon icon (icon_path);
                 QTreeWidgetItem* item = new SoldierTreeItem();
 
-                item->setText(0, full_name);
-                // TODO: add custom widget so the icon is behind text.
+                // Check if soldier can be promoted in game.
+                bool promotion_icon = false;
                 for (int rank_check = 1; rank_check < GetSoldiers::rank(properties) - 1; rank_check++) {
                     if (!(temp_perks[rank_check * 3].enabled || temp_perks[rank_check * 3 + 1].enabled || temp_perks[rank_check * 3 + 2].enabled)) {
-                        // TODO: add promotion icon.
-                        item->setIcon(0, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+                        promotion_icon = true;
                         break;
                     }
                 }
+                // QTreeWidgetItem only supports icons in front, so custom widget is needed.
+                CustomWidget* widget;
+                if (promotion_icon) {
+                    widget = new CustomWidget(full_name, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+                }
+                else {
+                    widget = new CustomWidget(full_name);
+                }
+                item->setData(0, Qt::UserRole, full_name);
 
-                item->setIcon(1, icon);
+                item->setIcon(1, QIcon(icon_path));
                 item->setData(1, Qt::UserRole, icon_path);
 
                 item->setIcon(2, QIcon(rank_translation.at(GetSoldiers::rank(properties))));
                 item->setData(2, Qt::UserRole, GetSoldiers::rank(properties));
 
                 // item->setData(3, Qt::UserRole, 0);
-
                 ui.SoldierTreeWidget->addTopLevelItem(item);
+
+                //Set the custom widget 
+                ui.SoldierTreeWidget->setItemWidget(item, 0, widget);
                 soldier_index_translation[item] = i;
             }
         }

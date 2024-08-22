@@ -3,6 +3,9 @@
 
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeWidgetItem>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QApplication>
 #include <Soldier.h>
 
 struct PerkDisplay {
@@ -36,6 +39,41 @@ class SoldierTreeItem : public QTreeWidgetItem {
 
 public:
     bool operator< (const QTreeWidgetItem &other) const;
+};
+
+class CustomWidget : public QWidget {
+    Q_OBJECT
+
+public:
+    template<typename... Args>
+    CustomWidget(Args... args) {
+        layout = new QHBoxLayout(this);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+        addWidgetsToLayout(args...);
+        setLayout(layout);
+    }
+    ~CustomWidget() {
+        delete layout;
+    };
+private:
+    void addWidgetToLayout(const QIcon& icon) {
+        QLabel* label = new QLabel(this);
+        label->setPixmap(icon.pixmap(20, 20));
+        layout->addWidget(label);
+    }
+    void addWidgetToLayout(const QString& text) {
+        QLabel* label = new QLabel(this);
+        label->setText(text);
+        layout->addWidget(label);
+    }
+
+    template<typename... Args>
+    void addWidgetsToLayout(Args... args) {
+        (addWidgetToLayout(args), ...);
+    }
+    QHBoxLayout* layout;
+
 };
 
 #endif
