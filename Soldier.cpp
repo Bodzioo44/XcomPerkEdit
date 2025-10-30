@@ -2,6 +2,7 @@
 
 Soldier::Soldier(xcom::checkpoint* soldier = nullptr): properties(&soldier->properties) {
     starting_stats = GetSoldiers::stats(properties);
+    appearance = GetSoldiers::appearance(properties);
     difference_stats = SoldierStats();
     perks = GetSoldiers::perks(properties);
 }
@@ -58,6 +59,37 @@ PerkSet Soldier::GetPerks() const {
     return perks;
 }
 
+AppearanceSet Soldier::GetAppearance() const {
+    return appearance;
+}
+
+//Default values
+    //iHead 44
+    //iGender 2
+    //iRace 0
+    //iHaircut 3
+    //iHairdColor 1-21 ig
+    //iFacialHair 0
+    //iBody -1
+    //iBodyMaterial -1
+    //iSkinColor 0
+    //iEyeColor -1 ???
+
+void Soldier::ApplyAppearancePreset() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(1, 21);
+    int hair_id = dist(gen);
+
+    appearance[0] = 44; //iHead
+    appearance[1] = 2; //iGender
+    appearance[2] = 0; //iRace
+    appearance[3] = 3; //iHaircut
+    appearance[4] = hair_id; //iHairColor randomized
+    appearance[5] = 0; //iFacialHair
+    appearance[8] = 0; //iSkinColor
+}
+
 void Soldier::UpdateSoldier() {
     //Updating Perks
     xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
@@ -70,7 +102,17 @@ void Soldier::UpdateSoldier() {
     static_cast<xcom::int_property*> (aStats.properties[3].get())->value = starting_stats.mobility + difference_stats.mobility;
     static_cast<xcom::int_property*> (aStats.properties[1].get())->value = starting_stats.aim + difference_stats.aim;
     static_cast<xcom::int_property*> (aStats.properties[7].get())->value = starting_stats.will + difference_stats.will;
+    //Updating Appearance
+    //Hopefully Works, needs testing
+    xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
+    xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
+    int i = 0;
+    for (const int& app_val : appearance) {
+        static_cast<xcom::int_property*> (kAppearance.properties[i].get())->value = app_val;
+        i++;
+    }
 }
+
 
 void Soldier::RevertChanges() {
     perks = GetSoldiers::perks(properties);
@@ -90,6 +132,8 @@ namespace GetSoldiers {
         xcom::string_property& strNickName = static_cast<xcom::string_property&> (*m_kSoldier.properties[3]);
         return strFirstName.str.str + " \"" + strNickName.str.str + "\" " + strLastName.str.str;
     }
+    
+
     //TODO: check if this works?
     std::string eStatus(const xcom::property_list* properties) {
         xcom::enum_property& m_eStatus = static_cast<xcom::enum_property&> (*properties->at(3));
@@ -138,4 +182,24 @@ namespace GetSoldiers {
         xcom::static_array_property& aStats = static_cast<xcom::static_array_property&> (*m_kChar.properties[6]);
         return SoldierStats(static_cast<xcom::int_property&> (*aStats.properties[3]).value, static_cast<xcom::int_property&> (*aStats.properties[1]).value, static_cast<xcom::int_property&> (*aStats.properties[7]).value);
     }
+
+    AppearanceSet appearance(const xcom::property_list* properties) {
+        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
+        xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
+        AppearanceSet appearance;
+        for(int i = 0; i < 17; i++) {
+            appearance[i] = static_cast<xcom::int_property&> (*kAppearance.properties[i]).value;
+        }
+        return appearance;
+    }
+    // std::ostream& operator<<(std::ostream& os, const AppearanceSet& set) {
+    //     std::string str_value = "Appearance values: ";
+    //     for (int int_val : set)
+    //     {
+    //         str_value.append(" ")
+    //         str_value.append(int_val)
+    //     }
+    //     os << "Appearance values: " << str_value;
+    //     return os;
+    // }
 }

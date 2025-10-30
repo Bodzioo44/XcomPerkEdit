@@ -4,6 +4,7 @@
 #include "xcomsave/xcom.h"
 #include <fstream>
 #include <sstream>
+#include <random>
 
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
@@ -50,6 +51,7 @@ struct Perk {
 };
 
 using PerkSet = std::array<Perk, 18>;
+using AppearanceSet = std::array<int, 17>;
 // using LabelSet = std::array<std::string, 3>;
 
 class Soldier {
@@ -65,7 +67,9 @@ class Soldier {
         void DisablePerk(int index);
         xcom::property_list* GetPropertyList() const;
         QString GetLabels() const;
-        PerkSet GetPerks() const;
+        PerkSet GetPerks() const;   
+        AppearanceSet GetAppearance() const;
+        void ApplyAppearancePreset();
         void UpdateSoldier();
         void RevertChanges();
 
@@ -74,9 +78,11 @@ class Soldier {
         PerkSet perks;
         SoldierStats starting_stats;
         SoldierStats difference_stats;
+        AppearanceSet appearance;
+        
 };
 
-//look into property_visitor again? is there a better way to fo it?
+//look into property_visitor again? is there a better way to do it?
 namespace GetSoldiers {
     std::string class_type(const xcom::property_list* properties);
     std::string full_name(const xcom::property_list* properties);
@@ -84,6 +90,7 @@ namespace GetSoldiers {
     int rank(const xcom::property_list* properties);
     PerkSet perks(const xcom::property_list* properties);
     SoldierStats stats(const xcom::property_list* properties);
+    AppearanceSet appearance(const xcom::property_list* properties);
 }
 
 #endif // SOLDIER_H
