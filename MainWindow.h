@@ -49,6 +49,8 @@ public slots:
     void RevertSoldierClicked();
     //Revert All Changes
     void RevertAllClicked();
+    //Apply Appearance Preset
+    void ApplyAppearancePreset();
 private:
     Ui::MainWindow ui;
     xcom::saved_game save;
@@ -68,6 +70,7 @@ private:
     void LoadINIFile();
     int backup_limit;
     QString save_dir_path;
+    bool auto_load_last_path;
 };
 
 

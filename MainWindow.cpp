@@ -15,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
     connect(ui.RevertSoldierButton, &QPushButton::clicked, this, &MainWindow::RevertSoldierClicked);
     connect(ui.RevertAllButton, &QPushButton::clicked, this, &MainWindow::RevertAllClicked);
+    connect(ui.AppearanceButton, &QPushButton::clicked, this, &MainWindow::ApplyAppearancePreset);
+    connect(ui.PathLineEdit, &QLineEdit::returnPressed, this, &MainWindow::SelectPathButtonClicked);
+
 
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
@@ -29,6 +32,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     }
     LoadINIFile();
     ui.PathLineEdit->setText(save_dir_path);
+    if (auto_load_last_path) {
+        QTimer::singleShot(0, this, [this] {
+        SelectPathButtonClicked(); });
+    }
 }
 
 void MainWindow::SelectPathButtonClicked() {
@@ -217,6 +224,18 @@ void MainWindow::onSoldierSelected() {
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
     PerkSet soldier_perks = current_soldier->GetPerks();
+    AppearanceSet soldier_appearance = current_soldier->GetAppearance();
+
+    
+    QString str_val = "Soldier Appearance:";
+    for (int val : soldier_appearance)
+    {
+        str_val+=' ';
+        str_val+= QString::number(val);
+        
+    }
+    qDebug().noquote() << str_val;
+
     //map of [perk_index] -> PerkDisplay (name, icon, description)
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
     ui.InfoLabel->clear();
@@ -286,6 +305,15 @@ void MainWindow::SaveButtonClicked() {
     }
 }
 
+void MainWindow::ApplyAppearancePreset() {
+    // qDebug() << "ApplyAppearancePreset";
+    if (current_soldier) {
+        current_soldier->ApplyAppearancePreset();
+        onSoldierSelected();
+    }
+}
+
+
 void MainWindow::RevertSoldierClicked() {
     // qDebug() << "RevertSoldierClicked";
     if (current_soldier) {
@@ -336,6 +364,10 @@ void MainWindow::GenerateINIFile() {
     qDebug() << "Setting BACKUP_LIMIT to:" << settings.value("BACKUP_LIMIT").toInt();
     settings.setValue("SAVE_DIR_PATH", path);
     qDebug() << "Setting SAVE_DIR_PATH to:" << settings.value("SAVE_DIR_PATH").toString();
+    settings.setValue("APPEARANCE_PRESET_ENABLED", false);
+    qDebug() << "Setting APPEARANCE_PRESET_ENABLED to:" << settings.value("APPEARANCE_PRESET_ENABLED").toBool();
+    settings.setValue("AUTO_LOAD_LAST_PATH", false);
+    qDebug() << "Setting AUTO_LOAD_LAST_PATH to:" << settings.value("AUTO_LOAD_LAST_PATH").toBool();
     settings.sync();
     qDebug() << "Config file generated.";
 }
@@ -344,10 +376,23 @@ void MainWindow::LoadINIFile() {
     QSettings settings("config.ini", QSettings::IniFormat);
     backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
     save_dir_path = settings.value("SAVE_DIR_PATH", "Failed to load config.ini file").toString();
+
     if (settings.value("FIRST_RUN", false).toBool()) {
         settings.setValue("FIRST_RUN", false);
         settings.sync();
         QTimer::singleShot(0, this, [this] { QMessageBox::information(this, "First Launch!", "First app launch detected.\n To load available saves make sure to confirm path with the \"Load Path...\" button in the top right.\nIf you have any problems while using the app check out USAGE.md"); });
     }
+    else {
+        settings.setValue("AUTO_LOAD_LAST_PATH", true);
+    }
+    if (settings.value("APPEARANCE_PRESET_ENABLED", false).toBool()) {
+        ui.AppearanceButton->setEnabled(true);
+        ui.AppearanceButton->show();
+    }
+    else {
+        ui.AppearanceButton->setEnabled(false);
+        ui.AppearanceButton->hide();
+    }
+    auto_load_last_path = settings.value("AUTO_LOAD_LAST_PATH", false).toBool();
     qDebug() << "Loaded settings from config file.";
 }
