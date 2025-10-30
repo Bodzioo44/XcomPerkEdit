@@ -75,19 +75,25 @@ AppearanceSet Soldier::GetAppearance() const {
     //iSkinColor 0
     //iEyeColor -1 ???
 
-void Soldier::ApplyAppearancePreset() {
+void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(1, 21);
-    int hair_id = dist(gen);
 
-    appearance[0] = 44; //iHead
-    appearance[1] = 2; //iGender
-    appearance[2] = 0; //iRace
-    appearance[3] = 3; //iHaircut
-    appearance[4] = hair_id; //iHairColor randomized
-    appearance[5] = 0; //iFacialHair
-    appearance[8] = 0; //iSkinColor
+    appearance[0] = preset[0]; //iHead
+    appearance[1] = preset[1]; //iGender
+    appearance[2] = preset[2]; //iRace
+    appearance[3] = preset[3]; //iHaircut
+    if (preset[4] == -1) {
+        appearance[4] = dist(gen); //iHairColor randomized
+    }
+    else {
+        appearance[4] = preset[4]; //iHairColor
+    }
+    appearance[5] = preset[5]; //iFacialHair
+    appearance[6] = preset[6]; //iBody
+    appearance[7] = preset[7]; //iBodyMaterial
+    appearance[8] = preset[8]; //iSkinColor
 }
 
 void Soldier::UpdateSoldier() {

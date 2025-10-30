@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.ini", QSettings::IniFormat) {
     ui.setupUi(this);
     this->setCentralWidget(ui.centralwidget);
     ui.centralwidget->setLayout(ui.gridLayout);
@@ -290,14 +290,14 @@ void MainWindow::onSoldierSelected() {
     AppearanceSet soldier_appearance = current_soldier->GetAppearance();
 
     
-    QString str_val = "Soldier Appearance:";
-    for (int val : soldier_appearance)
-    {
-        str_val+=' ';
-        str_val+= QString::number(val);
+    // QString str_val = "Soldier Appearance:";
+    // for (int val : soldier_appearance)
+    // {
+    //     str_val+=' ';
+    //     str_val+= QString::number(val);
         
-    }
-    qDebug().noquote() << str_val;
+    // }
+    // qDebug().noquote() << str_val;
 
     //map of [perk_index] -> PerkDisplay (name, icon, description)
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
@@ -371,7 +371,15 @@ void MainWindow::SaveButtonClicked() {
 void MainWindow::ApplyAppearancePreset() {
     // qDebug() << "ApplyAppearancePreset";
     if (current_soldier) {
-        current_soldier->ApplyAppearancePreset();
+        QVariantList loaded = settings.value("APPEARANCE_PRESET", QVariantList()).toList();
+        AppearanceSet appearance;
+        int i = 0;
+        for (const QVariant &v : loaded) {
+            appearance[i] = v.toInt();
+            // qDebug() << "Appearance preset value " << i << ": " << appearance[i];
+            i++;
+        }
+        current_soldier->ApplyAppearancePreset(appearance);
         onSoldierSelected();
     }
 }
@@ -431,12 +439,15 @@ void MainWindow::GenerateINIFile() {
     qDebug() << "Setting APPEARANCE_PRESET_ENABLED to:" << settings.value("APPEARANCE_PRESET_ENABLED").toBool();
     settings.setValue("AUTO_LOAD_LAST_PATH", false);
     qDebug() << "Setting AUTO_LOAD_LAST_PATH to:" << settings.value("AUTO_LOAD_LAST_PATH").toBool();
+    QVariantList appearance_preset;
+    appearance_preset << 44 << 2 << 0 << 3 << -1 << 0 << -1 << -1 << 0;
+    settings.setValue("APPEARANCE_PRESET", appearance_preset);
     settings.sync();
     qDebug() << "Config file generated.";
 }
 
 void MainWindow::LoadINIFile() {
-    QSettings settings("config.ini", QSettings::IniFormat);
+    // QSettings settings("config.ini", QSettings::IniFormat);
     backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
     save_dir_path = settings.value("SAVE_DIR_PATH", "Failed to load config.ini file").toString();
 

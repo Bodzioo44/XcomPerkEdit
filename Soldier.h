@@ -69,7 +69,7 @@ class Soldier {
         QString GetLabels() const;
         PerkSet GetPerks() const;   
         AppearanceSet GetAppearance() const;
-        void ApplyAppearancePreset();
+        void ApplyAppearancePreset(AppearanceSet preset);
         void UpdateSoldier();
         void RevertChanges();
 

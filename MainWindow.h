@@ -62,6 +62,7 @@ private:
     //std::map<int, QString> save_index_translation;
     //now its being stored in ListWidgetItem tooltip, which is probably bad.  
     QDir current_dir;
+    QSettings settings;
     std::vector<PerkButton*> perk_buttons;
     Soldier* current_soldier;
     //TODO: best way to store the soldiers to save?
