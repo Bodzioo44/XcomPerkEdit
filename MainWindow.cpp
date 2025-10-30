@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     ui.SavePageWidget->setLayout(ui.SavePageVBoxLayout);
     ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
 
-    connect(ui.SoldierListWidget, &QListWidget::currentRowChanged, this, &MainWindow::onSoldierSelected);
+    connect(ui.SoldierTreeWidget, &QTreeWidget::currentItemChanged, this, &MainWindow::onSoldierSelected);
     connect(ui.SaveListWidget, &QListWidget::itemActivated, this, &MainWindow::onSaveSelected);
     connect(ui.SaveFileButton, &QPushButton::clicked, this, &MainWindow::SaveButtonClicked);
     connect(ui.SelectPathButton, &QPushButton::clicked, this, &MainWindow::SelectPathButtonClicked);
@@ -26,6 +26,33 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         perk_buttons.push_back(button);
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
+
+    // QPixmap pixmap(32, 32);
+    // pixmap.fill(Qt::transparent);
+    // QPainter painter(&pixmap);
+    // painter.setRenderHint(QPainter::Antialiasing);
+    // painter.setBrush(Qt::yellow);
+    // painter.drawEllipse(0, 0, 32, 32);
+    // QIcon yellowDotIcon(pixmap);
+    // header->setText(3, "Edited");
+    // header->setToolTip(3, "Sort by Edited");
+    // header->setIcon(3, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+
+    QTreeWidgetItem* header = new QTreeWidgetItem();
+    header->setText(0, "Soldiers Name");
+    header->setToolTip(0, "Sort by Name");
+
+    header->setText(1, "Class");
+    header->setToolTip(1, "Sort by Class");
+    // header->setIcon(1, QIcon(":/assets/icons/RANK_ROOKIE.png"));
+
+    header->setText(2, "Rank");
+    header->setToolTip(2, "Sort by Rank");
+    // header->setIcon(2, QIcon(":/assets/icons/RANK_SQUADDIE.png"));
+    
+    ui.SoldierTreeWidget->setHeaderItem(header);
+    ui.SoldierTreeWidget->setIndentation(0);
+    ui.SoldierTreeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     if (!QFile("config.ini").exists()) {
         GenerateINIFile();
@@ -131,7 +158,7 @@ void MainWindow::onSaveSelected() {
     qDebug() << "Save selected.";
     //clear the list for new soliders.
     //this triggers itemSelectionChanged signal before the clear() method is called on the QListWidget.
-    ui.SoldierListWidget->clear();
+    ui.SoldierTreeWidget->clear();
 
     //backup folder needs to be outside SaveData since xcom also checks subfolders for saves.
     QDir backup_dir(QDir(QCoreApplication::applicationDirPath()).filePath("backup"));
@@ -178,39 +205,75 @@ void MainWindow::onSaveSelected() {
                     i++;
                     continue;
                 }
-                std::string full_name = GetSoldiers::full_name(properties);
-                std::string icon_path = ":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png";
 
-                QIcon icon (QString::fromStdString(icon_path));
-                QListWidgetItem* item = new QListWidgetItem(icon, QString::fromStdString(full_name));
-                ui.SoldierListWidget->addItem(item);
+                QString full_name = QString::fromStdString(GetSoldiers::full_name(properties));
+                QString icon_path = QString::fromStdString(":/assets/icons/" + GetSoldiers::class_type(properties) + "_icon.png");
 
-                soldier_index_translation[ui.SoldierListWidget->count() - 1] = i;
+                QTreeWidgetItem* item = new SoldierTreeItem();
+
+                // Check if soldier can be promoted in game.
+                bool promotion_icon = false;
+                for (int rank_check = 1; rank_check < GetSoldiers::rank(properties) - 1; rank_check++) {
+                    if (!(temp_perks[rank_check * 3].enabled || temp_perks[rank_check * 3 + 1].enabled || temp_perks[rank_check * 3 + 2].enabled)) {
+                        promotion_icon = true;
+                        break;
+                    }
+                }
+                // QTreeWidgetItem only supports icons in front, so custom widget is needed.
+                CustomWidget* widget;
+                if (promotion_icon) {
+                    widget = new CustomWidget(full_name, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
+                }
+                else {
+                    widget = new CustomWidget(full_name);
+                }
+                item->setData(0, Qt::UserRole, full_name);
+
+                item->setIcon(1, QIcon(icon_path));
+                item->setData(1, Qt::UserRole, icon_path);
+
+                item->setIcon(2, QIcon(rank_translation.at(GetSoldiers::rank(properties))));
+                item->setData(2, Qt::UserRole, GetSoldiers::rank(properties));
+
+                // item->setData(3, Qt::UserRole, 0);
+                ui.SoldierTreeWidget->addTopLevelItem(item);
+
+                //Set the custom widget 
+                ui.SoldierTreeWidget->setItemWidget(item, 0, widget);
+                soldier_index_translation[item] = i;
             }
         }
         i++;
     }
-    ui.SoldierListWidget->setFixedWidth(ui.SoldierListWidget->sizeHint().width() + 50);
-    if (ui.SoldierListWidget->count() == 0) {
+    // resize soldier tree to fit the content
+    int size = 2;
+    for (int i = 0; i < ui.SoldierTreeWidget->columnCount(); i++) {
+        size += ui.SoldierTreeWidget->columnWidth(i);
+    }
+    size += ui.SoldierTreeWidget->verticalScrollBar()->sizeHint().width();
+    ui.SoldierTreeWidget->setFixedWidth(size);
+
+    if (ui.SoldierTreeWidget->topLevelItemCount() == 0) {
         QMessageBox::warning(this, "No soldiers found", "No acceptable soldiers were found in the save file.");
         return;
     }
     ui.stackedWidget->setCurrentWidget(ui.PerkEditPage);
     qDebug() << "Checkpoint table loaded.";
     //to always trigger onSoldierSelected() when the save is loaded.
-    ui.SoldierListWidget->setCurrentRow(0);
+    ui.SoldierTreeWidget->setCurrentItem(ui.SoldierTreeWidget->topLevelItem(0));
 }
 
 //QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
-    qDebug() << "Soldier selected.";
-    if (ui.SoldierListWidget->currentRow() == -1) {
+    // qDebug() << "Soldier selected.";
+    // FIXME: not the nicest solution
+    if (ui.stackedWidget->currentWidget() == ui.SavePageWidget) {
         qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
         return;
     }
-    int current_row = ui.SoldierListWidget->currentRow(); //current row on the list
-    int soldier_index = soldier_index_translation[current_row]; //soldier index in the save file
-    qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
+    QTreeWidgetItem* current_item = ui.SoldierTreeWidget->currentItem();
+    int soldier_index = soldier_index_translation[current_item]; //soldier index in the save file
+    // qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
@@ -219,7 +282,7 @@ void MainWindow::onSoldierSelected() {
     }
     current_soldier = &soldiers_to_save[soldier_index];
     int soldier_rank = GetSoldiers::rank(current_soldier->GetPropertyList());
-    qDebug() << "Soldier rank: " << soldier_rank;
+    // qDebug() << "Soldier rank: " << soldier_rank;
     //soldier stats
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
