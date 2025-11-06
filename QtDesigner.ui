@@ -329,8 +329,14 @@ Selection</string>
               <height>16777215</height>
              </size>
             </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOn</enum>
+            </property>
             <property name="horizontalScrollBarPolicy">
              <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
             <property name="sortingEnabled">
              <bool>true</bool>
@@ -341,6 +347,11 @@ Selection</string>
             <attribute name="headerStretchLastSection">
              <bool>false</bool>
             </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>
