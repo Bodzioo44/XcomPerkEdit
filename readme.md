@@ -32,11 +32,11 @@ Requires GCC and GNU Make. Tested on Ubuntu 22.04.
 1. Run `./Compile.sh` script from project directory.
 ### Windows
 You can either use Mingw (Qt Creator default) or MSVC to build the app, I used MSVC since xcomsave was already configured for that. Tested on Windows 10 with Visual Studio 2022.
-1. Building xcomsave:
-  - Run CMake with the approperiate flag in the xcomsave build subdirectory: `cmake -G "Visual Studio 17 2022" ..`
-  - Open generated solution in Visual Studio and compile it as Release.
-2. Building XComPerkEdit:
-  - Use qmake on .pro file in the XComPerkEdit build subdirectory.
-  - Use nmake/jom (or any other MSVC build tool) to compile it.
+1. Building XComPerkEdit:
+  - Run CMake with the approperiate flag in the xcomsave build subdirectory: 
+  - 'cmake -S . -B build -G "Visual Studio 18 2026" -A x64'
+  - 'cd build'
+  - 'cmake --build . --config Release'
+  - Use windeployqt.exe on XcomPerkEdit.exe to add required dll's
 
 
