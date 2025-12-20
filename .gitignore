@@ -1,7 +1,11 @@
 .vscode
+.vs/
 build/*
 Logs/*
 backup/*
 Testing/*
+out/*
 *.pro.user
 save*
+CMakeUserPresets.json
+CMakePresets.json
