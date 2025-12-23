@@ -12,7 +12,7 @@ Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github
  - Launch the app.
  - Update the path if you are not using default one.
  - Press "Load Path..." in the top right to select save directory.
- - Wait for saves to load, and click any save to load it.
+ - Wait for the directory to finish loading, and choose a save to load it.
  - Select soldier to edit from the list on right side.
  - Reassign the perks.
  - Press "Save File" to update the save file.
@@ -24,19 +24,22 @@ Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github
 - You can edit few soldiers at once, press "Save File" to write changes to save file.
 - There is a backup directory with 10 most recent saves.
 ## Building from Source
-- Qt binaries/CMake is required.
-- use `git clone --recursive` to also include submodules.
-- Checkout [README.md](https://github.com/tracktwo/xcomsave/blob/master/README.md) of xcomsave library for more info on how to compile it.
+- Qt binaries are required.
+- C++17 is required.
+- App was build using Qt6, but Qt5 should work too.
+- use `gh repo clone Bodzioo44/XcomPerkEdit --recurse-submodules` to also include submodules.
 ### Linux
 Requires GCC and GNU Make. Tested on Ubuntu 22.04.
 1. Run `./Compile.sh` script from project directory.
 ### Windows
-You can either use Mingw (Qt Creator default) or MSVC to build the app, I used MSVC since xcomsave was already configured for that. Tested on Windows 10 with Visual Studio 2022.
+Requires preferably MSVC and CMake. It's possible to build using Qt Creator, but you would have to configure it to build xcomsave too. Tested on Windows 10 with Visual Studio 2022.
 1. Building XComPerkEdit:
-  - Run CMake with the approperiate flag in the xcomsave build subdirectory: 
-  - 'cmake -S . -B build -G "Visual Studio 18 2026" -A x64'
-  - 'cd build'
-  - 'cmake --build . --config Release'
-  - Use windeployqt.exe on XcomPerkEdit.exe to add required dll's
+  - Download Qt binaries, or build from source (only qt-base module is needed)
+  - Add Qt to CMake path: `setx CMAKE_PREFIX_PATH "C:\Qt\Qt-6.10.1`
+  - Run CMake with the approperiate flag in the XcomPerkEdit directory: 
+  - `cmake -S . -B build -G "Visual Studio 18 2026" -A x64`
+  - `cd build`
+  - `cmake --build . --config Release`
+  - Use windeployqt.exe on XcomPerkEdit.exe to add required dll's inside Release folder.
 
 
