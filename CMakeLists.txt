@@ -4,20 +4,17 @@ project(XcomPerkEdit
     LANGUAGES CXX
 )
 
-# ---- C++ standard ----
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ---- Qt automatic processing ----
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-
-# ---- Find Qt ----
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-# ---- Sources ----
+add_subdirectory(xcomsave)
+
 set(SOURCES
     main.cpp
     MainWindow.cpp
@@ -28,7 +25,6 @@ set(SOURCES
 set(HEADERS
     MainWindow.h
     Soldier.h
-#    ui_QtDesigner.h
     Qt/CustomQt.h
     xcomsave/xcom.h
 )
@@ -41,7 +37,6 @@ set(RESOURCES
     resources.qrc
 )
 
-# ---- Executable ----
 add_executable(XcomPerkEdit
     ${SOURCES}
     ${HEADERS}
@@ -49,25 +44,22 @@ add_executable(XcomPerkEdit
     ${RESOURCES}
 )
 
-# ---- Include paths ----
 target_include_directories(XcomPerkEdit PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# ---- Qt libraries ----
 target_link_libraries(XcomPerkEdit PRIVATE
     Qt6::Widgets
 )
 
-# ---- Platform-specific settings ----
 if (WIN32)
+    #set_target_properties(XcomPerkEdit PROPERTIES
+    #WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
+    #)
+
     target_compile_options(XcomPerkEdit PRIVATE
         /W3
         /Wall
-    )
-
-    target_link_directories(XcomPerkEdit PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/xcomsave/out/build/x64-Release
     )
 
     target_link_libraries(XcomPerkEdit PRIVATE
