@@ -289,7 +289,7 @@ void MainWindow::onSoldierSelected() {
     PerkSet soldier_perks = current_soldier->GetPerks();
     AppearanceSet soldier_appearance = current_soldier->GetAppearance();
 
-    
+    qDebug() << AppearanceSet(soldier_appearance);
     // QString str_val = "Soldier Appearance:";
     // for (int val : soldier_appearance)
     // {

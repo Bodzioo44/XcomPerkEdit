@@ -9,6 +9,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
+#include <QtCore/Debug>
 
 struct SoldierStats {
     int mobility;

@@ -64,16 +64,26 @@ AppearanceSet Soldier::GetAppearance() const {
 }
 
 //Default values
+//Some special soldiers (The General, Freaky) dont have full set of kAppearance.properties before joining xcom.
+//however it shouldnt matter since they are not stored in XGStrategySoldier struct, thus not being detected.
+//example int_property: { "name": "iHead", "kind": "IntProperty", "value": 148 }
     //iHead 44
     //iGender 2
     //iRace 0
     //iHaircut 3
-    //iHairdColor 1-21 ig
-    //iFacialHair 0
-    //iBody -1
-    //iBodyMaterial -1
+    //iHairColor 1-21
+    //      iFacialHair 0
+    //      iBody -1
+    //      iBodyMaterial -1
     //iSkinColor 0
-    //iEyeColor -1 ???
+    //      iEyeColor -1
+    //iFlag 
+    //      iArmorSkin 
+    //iVoice 
+    //iLanguage 
+    //      iAttitude 
+    //iArmorDeco 
+    //iArmorTint 
 
 void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
     std::random_device rd;
@@ -198,14 +208,15 @@ namespace GetSoldiers {
         }
         return appearance;
     }
-    // std::ostream& operator<<(std::ostream& os, const AppearanceSet& set) {
-    //     std::string str_value = "Appearance values: ";
-    //     for (int int_val : set)
-    //     {
-    //         str_value.append(" ")
-    //         str_value.append(int_val)
-    //     }
-    //     os << "Appearance values: " << str_value;
-    //     return os;
-    // }
+    QDebug operator<<(QDebug s, const AppearanceSet& set) {
+        s << "AppearanceSet:";
+        for (int i = 0; i < set.size(); i++) {
+            s << i <<": " << set[i] << "\n";
+        }
+        {
+            s << int_val;
+        }
+
+        return s;
+    }
 }
