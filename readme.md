@@ -27,7 +27,7 @@ Thanks to [tracktwo](github.com/tracktwo) for creating [xcomsave](https://github
 - Qt binaries are required.
 - C++17 is required.
 - App was build using Qt6, but Qt5 should work too.
-- use `gh repo clone Bodzioo44/XcomPerkEdit --recurse-submodules` to also include submodules.
+- use `gh repo clone Bodzioo44/XcomPerkEdit -- --recurse-submodules` to also include submodules.
 ### Linux
 Requires GCC and GNU Make. Tested on Ubuntu 22.04.
 1. Run `./Compile.sh` script from project directory.
