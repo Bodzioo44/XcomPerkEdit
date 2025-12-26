@@ -38,6 +38,7 @@ set(RESOURCES
 )
 
 add_executable(XcomPerkEdit
+    WIN32
     ${SOURCES}
     ${HEADERS}
     ${FORMS}
@@ -53,10 +54,6 @@ target_link_libraries(XcomPerkEdit PRIVATE
 )
 
 if (WIN32)
-    #set_target_properties(XcomPerkEdit PROPERTIES
-    #WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
-    #)
-
     target_compile_options(XcomPerkEdit PRIVATE
         /W3
         /Wall
@@ -74,10 +71,6 @@ if (UNIX AND NOT APPLE)
         -Wextra
         -Wno-missing-field-initializers
         -Wno-attributes
-    )
-
-    target_link_directories(XcomPerkEdit PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/xcomsave/build
     )
 
     target_link_libraries(XcomPerkEdit PRIVATE
