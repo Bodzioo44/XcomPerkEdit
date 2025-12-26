@@ -67,24 +67,6 @@ AppearanceSet Soldier::GetAppearance() const {
 //Some special soldiers (The General, Freaky) dont have full set of kAppearance.properties before joining xcom.
 //however it shouldnt matter since they are not stored in XGStrategySoldier struct, thus not being detected.
 //example int_property: { "name": "iHead", "kind": "IntProperty", "value": 148 }
-    //iHead 44
-    //iGender 2
-    //iRace 0
-    //iHaircut 3
-    //iHairColor 1-21
-    //      iFacialHair 0
-    //      iBody -1
-    //      iBodyMaterial -1
-    //iSkinColor 0
-    //      iEyeColor -1
-    //iFlag 
-    //      iArmorSkin 
-    //iVoice 
-    //iLanguage 
-    //      iAttitude 
-    //iArmorDeco 
-    //iArmorTint 
-
 void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -104,6 +86,28 @@ void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
     appearance[6] = preset[6]; //iBody
     appearance[7] = preset[7]; //iBodyMaterial
     appearance[8] = preset[8]; //iSkinColor
+}
+
+QDebug operator<<(QDebug s, const AppearanceSet& set) {
+    s << "AppearanceSet:\n";
+    s << "iHead: " << set[0] << "\n";
+    s << "iGender: " << set[1] << "\n";
+    s << "iRace: " << set[2] << "\n";
+    s << "iHaircut: " << set[3] << "\n";
+    s << "iHairColor: " << set[4] << "\n";
+    s << "iFacialHair: " << set[5] << "\n";
+    s << "iBody: " << set[6] << "\n";
+    s << "iBodyMaterial: " << set[7] << "\n";
+    s << "iSkinColor: " << set[8] << "\n";
+    s << "iEyeColor: " << set[9] << "\n";
+    s << "iFlag: " << set[10] << "\n";
+    s << "iArmorSkin: " << set[11] << "\n";
+    s << "iVoice: " << set[12] << "\n";
+    s << "iLanguage: " << set[13] << "\n";
+    s << "iAttitude: " << set[14] << "\n";
+    s << "iArmorDeco: " << set[15] << "\n";
+    s << "iArmorTint: " << set[16] << "\n";
+    return s;
 }
 
 void Soldier::UpdateSoldier() {
@@ -208,15 +212,5 @@ namespace GetSoldiers {
         }
         return appearance;
     }
-    QDebug operator<<(QDebug s, const AppearanceSet& set) {
-        s << "AppearanceSet:";
-        for (int i = 0; i < set.size(); i++) {
-            s << i <<": " << set[i] << "\n";
-        }
-        {
-            s << int_val;
-        }
 
-        return s;
-    }
 }

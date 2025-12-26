@@ -9,7 +9,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
-#include <QtCore/Debug>
+#include <QtCore/QDebug>
 
 struct SoldierStats {
     int mobility;
@@ -53,7 +53,9 @@ struct Perk {
 
 using PerkSet = std::array<Perk, 18>;
 using AppearanceSet = std::array<int, 17>;
+QDebug operator<<(QDebug, const AppearanceSet&);
 // using LabelSet = std::array<std::string, 3>;
+
 
 class Soldier {
     public:
