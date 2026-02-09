@@ -106,7 +106,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,5,1,12">
           <item>
-           <layout class="QVBoxLayout" name="ButtonVBoxLayout" stretch="5,1,5,1,1,0,10,1">
+           <layout class="QVBoxLayout" name="ButtonVBoxLayout" stretch="5,1,5,1,1,0,0,0,10,1">
             <item>
              <spacer name="verticalSpacer">
               <property name="orientation">
@@ -167,6 +167,35 @@ Changes</string>
 Preset</string>
               </property>
              </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="VentButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Apply Steam 
+Vents</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="VentLayout">
+              <item>
+               <widget class="QSpinBox" name="Vent2Box">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="Vent1Box">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <spacer name="verticalSpacer_5">
