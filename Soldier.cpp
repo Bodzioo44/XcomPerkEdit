@@ -72,20 +72,28 @@ void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(1, 21);
 
-    appearance[0] = preset[0]; //iHead
-    appearance[1] = preset[1]; //iGender
-    appearance[2] = preset[2]; //iRace
-    appearance[3] = preset[3]; //iHaircut
+    appearance[0] = preset[0]; //iHead 46
+    appearance[1] = preset[1]; //iGender 2
+    appearance[2] = preset[2]; //iRace 0
+    appearance[3] = preset[3]; //iHaircut 3
     if (preset[4] == -1) {
         appearance[4] = dist(gen); //iHairColor randomized
     }
     else {
         appearance[4] = preset[4]; //iHairColor
     }
-    appearance[5] = preset[5]; //iFacialHair
-    appearance[6] = preset[6]; //iBody
-    appearance[7] = preset[7]; //iBodyMaterial
-    appearance[8] = preset[8]; //iSkinColor
+    appearance[5] = preset[5]; //iFacialHair 0
+    appearance[6] = preset[6]; //iBody -1
+    appearance[7] = preset[7]; //iBodyMaterial -1
+    appearance[8] = preset[8]; //iSkinColor 0
+    appearance[9] = preset[9]; //iEyeColor -1
+    // appearance[10] = preset[10]; //iFlag Keep the flag
+    appearance[11] = preset[11]; //iArmorSkin -1
+    appearance[12] = preset[12]; //iVoice 0
+    appearance[13] = preset[13]; //iLanguage 0
+    appearance[14] = preset[14]; //iAttitude 0
+    appearance[15] = preset[15]; //iArmorDeco -1
+    // appearance[16] = preset[16]; //iArmorTint Keep the tint
 }
 
 QDebug operator<<(QDebug s, const AppearanceSet& set) {
