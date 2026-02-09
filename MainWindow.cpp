@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.i
     connect(ui.AppearanceButton, &QPushButton::clicked, this, &MainWindow::ApplyAppearancePreset);
     connect(ui.PathLineEdit, &QLineEdit::returnPressed, this, &MainWindow::SelectPathButtonClicked);
 
-
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
     for (int i = 0; i < 18; i++) {
         PerkButton* button = new PerkButton(this);
@@ -265,15 +264,19 @@ void MainWindow::onSaveSelected() {
 
 //QListWidget::currentRowChanged will also trigger on QListWidget::clear().
 void MainWindow::onSoldierSelected() {
-    // qDebug() << "Soldier selected.";
-    // FIXME: not the nicest solution
+    qDebug() << "Soldier selected.";
+
+    //Whenever ui.SoldierTreeWidget is being cleared (eg. when a new save is loaded) ui.SoldierTreeWidget->currentItemChanged is triggered before the actuall clear,
+    //which makes this method run with empty/old ui.SoldierTreeWidget and probably causes some bad stuff.
+    //Maybe clear the ui.SoldierTreeWidget on save quit instead of on save load? or think of less hacky solution.
     if (ui.stackedWidget->currentWidget() == ui.SavePageWidget) {
-        qDebug() << "Invalid row index, probably due to QListWidgeT::clear()";
+        // qDebug() << "Invalid row index, probably due to QListWidget::clear()";
+        qDebug() << "Tried to call onSoldierSelected while on SavePageWidget, probably due to QListWidget::clear() triggering the signal.";
         return;
     }
     QTreeWidgetItem* current_item = ui.SoldierTreeWidget->currentItem();
     int soldier_index = soldier_index_translation[current_item]; //soldier index in the save file
-    // qDebug() << "Soldier selected with row: " << current_row << " Save index: " << soldier_index;
+    qDebug() << "Selected soldier with save index: " << soldier_index;
 
     if (soldiers_to_save.find(soldier_index) == soldiers_to_save.end()) {
         soldiers_to_save[soldier_index] = Soldier(&checkpoint_table_ptr->at(soldier_index));
@@ -287,17 +290,6 @@ void MainWindow::onSoldierSelected() {
     ui.StatsLabel->setText(current_soldier->GetLabels());
     //soldier perks
     PerkSet soldier_perks = current_soldier->GetPerks();
-    AppearanceSet soldier_appearance = current_soldier->GetAppearance();
-
-    qDebug() << AppearanceSet(soldier_appearance);
-    // QString str_val = "Soldier Appearance:";
-    // for (int val : soldier_appearance)
-    // {
-    //     str_val+=' ';
-    //     str_val+= QString::number(val);
-        
-    // }
-    // qDebug().noquote() << str_val;
 
     //map of [perk_index] -> PerkDisplay (name, icon, description)
     PerkDisplayMap perk_display_map = load_perk_display(soldier_perks);
@@ -330,7 +322,11 @@ void MainWindow::onSoldierSelected() {
             }
         }
     }
-    // qDebug() << "Soldier successfully loaded!";
+    qDebug() << "Soldier successfully loaded!";
+    // qDebug() << "Current soldiers to save: " << soldiers_to_save.size();
+    // for (auto& pair : soldiers_to_save) {
+    //     qDebug() << " " << pair.first;
+    // }
 }
 
 void MainWindow::onPerkSelected(int i) {
@@ -350,6 +346,9 @@ void MainWindow::onPerkSelected(int i) {
 
 void MainWindow::SaveButtonClicked() {
     qDebug() << "Saving...";
+    //TODO: replace with a bool that tracks if any soldier was modified.
+    //check below is always active since selecting a soldier adds it to the map, even if it was not modified.
+    //maybe remove the check entirely?
     if (!soldiers_to_save.empty()) {
         for (auto& pair : soldiers_to_save) {
             pair.second.UpdateSoldier();
@@ -360,8 +359,14 @@ void MainWindow::SaveButtonClicked() {
         QMessageBox::information(this, "Save successful", "Save successful!");
         current_soldier = nullptr;
         soldiers_to_save.clear();
-        ui.SaveListWidget->clearSelection();
-        ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+
+        if (!stay_after_save) {
+            ui.SaveListWidget->clearSelection();
+            ui.stackedWidget->setCurrentWidget(ui.SavePageWidget);
+        }
+        else {
+            onSoldierSelected();
+        }
     }
     else {
         QMessageBox::warning(this, "No soldiers selected", "No soldiers were selected for editing.");
@@ -439,8 +444,10 @@ void MainWindow::GenerateINIFile() {
     qDebug() << "Setting APPEARANCE_PRESET_ENABLED to:" << settings.value("APPEARANCE_PRESET_ENABLED").toBool();
     settings.setValue("AUTO_LOAD_LAST_PATH", false);
     qDebug() << "Setting AUTO_LOAD_LAST_PATH to:" << settings.value("AUTO_LOAD_LAST_PATH").toBool();
+    settings.setValue("STAY_AFTER_SAVE", false);
+    qDebug() << "Setting STAY_AFTER_SAVE to:" << settings.value("STAY_AFTER_SAVE").toBool();
     QVariantList appearance_preset;
-    appearance_preset << 44 << 2 << 0 << 3 << -1 << 0 << -1 << -1 << 0;
+    appearance_preset << 46 << 2 << 0 << 3 << -1 << 0 << -1 << -1 << 0 << -1 << -1 << -1 << 0 << 0 << 0 << -1 << -1;
     settings.setValue("APPEARANCE_PRESET", appearance_preset);
     settings.sync();
     qDebug() << "Config file generated.";
@@ -450,6 +457,7 @@ void MainWindow::LoadINIFile() {
     // QSettings settings("config.ini", QSettings::IniFormat);
     backup_limit = settings.value("BACKUP_LIMIT", 10).toInt();
     save_dir_path = settings.value("SAVE_DIR_PATH", "Failed to load config.ini file").toString();
+    stay_after_save = settings.value("STAY_AFTER_SAVE", false).toBool();
 
     if (settings.value("FIRST_RUN", false).toBool()) {
         settings.setValue("FIRST_RUN", false);

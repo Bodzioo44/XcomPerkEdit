@@ -74,6 +74,7 @@ private:
     int backup_limit;
     QString save_dir_path;
     bool auto_load_last_path;
+    bool stay_after_save;
 
     // QIcon yellowDotIcon;
     const std::map<int,QString> rank_translation =
