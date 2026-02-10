@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.i
     connect(ui.RevertSoldierButton, &QPushButton::clicked, this, &MainWindow::RevertSoldierClicked);
     connect(ui.RevertAllButton, &QPushButton::clicked, this, &MainWindow::RevertAllClicked);
     connect(ui.AppearanceButton, &QPushButton::clicked, this, &MainWindow::ApplyAppearancePreset);
+    connect(ui.VentButton, &QPushButton::clicked, this, &MainWindow::VentButtonClicked);
     connect(ui.PathLineEdit, &QLineEdit::returnPressed, this, &MainWindow::SelectPathButtonClicked);
 
     std::vector<QHBoxLayout*> rows = { ui.Row1HBoxLayout, ui.Row2HBoxLayout, ui.Row3HBoxLayout, ui.Row4HBoxLayout, ui.Row5HBoxLayout, ui.Row6HBoxLayout };
@@ -193,6 +194,18 @@ void MainWindow::onSaveSelected() {
     xcom::checkpoint_table& checkpoint_table = checkpoint_chunk.checkpoints;
     checkpoint_table_ptr = &checkpoint_table;
     for (const xcom::checkpoint& soldier_checkpoint : checkpoint_table) {
+
+        if (soldier_checkpoint.name.find("Command1.TheWorld:PersistentLevel.XGBase_0") != std::string::npos) {
+            //Saving pointer to steam tile array for later use.
+            const xcom::property_list* XGBase_0_properties = &soldier_checkpoint.properties;
+            m_arrSteamTiles_ptr = &static_cast<xcom::array_property&> (*XGBase_0_properties->at(2));
+            int vent1 = m_arrSteamTiles_ptr->data[0];
+            int vent2 = m_arrSteamTiles_ptr->data[4];
+            ui.Vent1Box->setValue(vent1);
+            ui.Vent2Box->setValue(vent2);
+            qDebug() << "Steam vent tile checkpoint found, vent values: " << vent1 << ", " << vent2;
+
+        }
         //Check if entry is a soldier
         if (soldier_checkpoint.name.find("XGStrategySoldier") != std::string::npos) {
             //Various checks if soldier is valid for the editor.
@@ -373,6 +386,50 @@ void MainWindow::SaveButtonClicked() {
     }
 }
 
+void MainWindow::VentButtonClicked() {
+    qDebug() << "Vent button clicked!";
+    int32_t vent1 = ui.Vent1Box->value();
+    int32_t vent2 = ui.Vent2Box->value();
+    qDebug() << "New vent values: " << vent1 << ", " << vent2;
+
+    // xcomsave failed to detect kind of this specific array and applied generic array_property.
+    // we need to manually access raw data and treat it like int32_t array to get the vent values.
+    // so in this case every four bytes are a single int32_t, but we are using only every 4th byte since values are lesser than 255.
+    // for now only supports double steam vent.
+    xcom::array_property& arrSteamTiles = *m_arrSteamTiles_ptr;
+    unsigned char* data = arrSteamTiles.data.get();
+    qDebug() << "Original vent values: " << (int32_t)data[0] << ", " << (int32_t)data[4];
+    data[0] = vent1;
+    data[4] = vent2;
+
+    qDebug() << "Updated vent values: " << (int32_t)data[0] << ", " << (int32_t)data[4];
+    // array_property.size() is 4 bytes larger than the actual data, probably header or something?
+    qDebug() << "Raw data of the array (every 4th byte is a vent value): ";
+    QDebug dbg = qDebug();
+    for (int depth = 0; depth < arrSteamTiles.size(); depth++) {
+            dbg.nospace() << (int32_t)data[depth] << ',';
+    }
+    dbg << Qt::endl;
+
+    // qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5] << ", " << data[6] << ", " << data[7];
+    
+
+    // if (numberArraySteamTiles) {
+    // qDebug() << "Current SteamTiles values: " << numberArraySteamTiles->elements[0] << ", " << numberArraySteamTiles->elements[1];
+    // }
+    // else {
+    //     qDebug() << "Failed to cast to number_array_property.";
+    // }
+    // const xcom::number_array_property& NumberArraySteamTiles = static_cast<xcom::number_array_property&> (*XGBase_0_properties->at(2));
+    // int32_t Vent1 = NumberArraySteamTiles.elements[0];
+    // int32_t Vent2 = NumberArraySteamTiles.elements[1];
+    // qDebug() << "Vent1: " << Vent1;
+    // qDebug() << "Vent2: " << Vent2;
+
+
+
+}
+
 void MainWindow::ApplyAppearancePreset() {
     // qDebug() << "ApplyAppearancePreset";
     if (current_soldier) {
@@ -446,6 +503,8 @@ void MainWindow::GenerateINIFile() {
     qDebug() << "Setting AUTO_LOAD_LAST_PATH to:" << settings.value("AUTO_LOAD_LAST_PATH").toBool();
     settings.setValue("STAY_AFTER_SAVE", false);
     qDebug() << "Setting STAY_AFTER_SAVE to:" << settings.value("STAY_AFTER_SAVE").toBool();
+    settings.setValue("VENT_BUTTON", false);
+    qDebug() << "Setting VENT_BUTTON to:" << settings.value("VENT_BUTTON").toBool();
     QVariantList appearance_preset;
     appearance_preset << 46 << 2 << 0 << 3 << -1 << 0 << -1 << -1 << 0 << -1 << -1 << -1 << 0 << 0 << 0 << -1 << -1;
     settings.setValue("APPEARANCE_PRESET", appearance_preset);
@@ -476,5 +535,21 @@ void MainWindow::LoadINIFile() {
         ui.AppearanceButton->hide();
     }
     auto_load_last_path = settings.value("AUTO_LOAD_LAST_PATH", false).toBool();
+    if (settings.value("VENT_BUTTON", false).toBool()) {
+        ui.VentButton->setEnabled(true);
+        ui.VentButton->show();
+        ui.Vent1Box->setEnabled(true);
+        ui.Vent1Box->show();
+        ui.Vent2Box->setEnabled(true);
+        ui.Vent2Box->show();
+    }
+    else {
+        ui.VentButton->setEnabled(false);
+        ui.VentButton->hide();
+        ui.Vent1Box->setEnabled(false);
+        ui.Vent1Box->hide();
+        ui.Vent2Box->setEnabled(false);
+        ui.Vent2Box->hide();
+    }
     qDebug() << "Loaded settings from config file.";
 }

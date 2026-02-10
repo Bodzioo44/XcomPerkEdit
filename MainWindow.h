@@ -53,10 +53,12 @@ public slots:
     void RevertAllClicked();
     //Apply Appearance Preset
     void ApplyAppearancePreset();
+    void VentButtonClicked();
 private:
     Ui::MainWindow ui;
     xcom::saved_game save;
     xcom::checkpoint_table* checkpoint_table_ptr;
+    xcom::array_property* m_arrSteamTiles_ptr;
     std::map<QTreeWidgetItem*, int> soldier_index_translation;
     //TODO: Get rid of the current_dir, and just store full path to the file in the save_index_translation?
     //std::map<int, QString> save_index_translation;
