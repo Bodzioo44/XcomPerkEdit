@@ -182,14 +182,14 @@ Vents</string>
             <item>
              <layout class="QHBoxLayout" name="VentLayout">
               <item>
-               <widget class="QSpinBox" name="Vent2Box">
+               <widget class="QSpinBox" name="Vent1Box">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="Vent1Box">
+               <widget class="QSpinBox" name="Vent2Box">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
