@@ -195,14 +195,26 @@ void MainWindow::onSaveSelected() {
     checkpoint_table_ptr = &checkpoint_table;
     for (const xcom::checkpoint& soldier_checkpoint : checkpoint_table) {
 
-        if (soldier_checkpoint.name.find("Command1.TheWorld:PersistentLevel.XGBase_0") != std::string::npos) {
-            //Saving pointer to steam tile array for later use.
-            const xcom::property_list* XGBase_0_properties = &soldier_checkpoint.properties;
-            m_arrSteamTiles_ptr = &static_cast<xcom::array_property&> (*XGBase_0_properties->at(2));
-            int vent1 = m_arrSteamTiles_ptr->data[0];
-            int vent2 = m_arrSteamTiles_ptr->data[4];
+        if (soldier_checkpoint.name.find("Command1.TheWorld:PersistentLevel.XGBase_") != std::string::npos) {
+            qDebug() << "Found XGBase checkpoint";
+
+            // xcomsave failed to detect specific kind of this array and applied generic array_property.
+            // we need to manually access raw data and treat it like int32_t array to get the vent values.
+            // so in this case every four bytes are a single int32_t, but we are using only every 4th byte since values are lesser than 255.
+            // failed or not??? kind_string() returns array_property, but casting it into number_array_property works fine?
+
+            // Saving pointer to steam tile array for later use.
+            number_array_SteamTiles_ptr = &static_cast<xcom::number_array_property&> (*soldier_checkpoint.properties.at(2));
+
+            // Saving pointer to tile array for later use.
+            struct_array_Tiles_ptr = &static_cast<xcom::struct_array_property&> (*soldier_checkpoint.properties.at(1));
+
+            // Updating QSpinBoxes with current vents values.
+            int vent1 = number_array_SteamTiles_ptr->elements.at(0);
+            int vent2 = number_array_SteamTiles_ptr->elements.at(1);
             ui.Vent1Box->setValue(vent1);
             ui.Vent2Box->setValue(vent2);
+
             qDebug() << "Steam vent tile checkpoint found, vent values: " << vent1 << ", " << vent2;
 
         }
@@ -386,48 +398,95 @@ void MainWindow::SaveButtonClicked() {
     }
 }
 
+int32_t MainWindow::int_property_val(xcom::int_property* prop) {
+    if (prop != nullptr) {
+        return prop->value;
+    }
+    else {
+        return 0;
+    }
+}
+
 void MainWindow::VentButtonClicked() {
     qDebug() << "Vent button clicked!";
     int32_t vent1 = ui.Vent1Box->value();
     int32_t vent2 = ui.Vent2Box->value();
-    qDebug() << "New vent values: " << vent1 << ", " << vent2;
+    qDebug() << "new vent values: " << vent1 << ", " << vent2;
 
-    // xcomsave failed to detect kind of this specific array and applied generic array_property.
-    // we need to manually access raw data and treat it like int32_t array to get the vent values.
-    // so in this case every four bytes are a single int32_t, but we are using only every 4th byte since values are lesser than 255.
-    // for now only supports double steam vent.
-    xcom::array_property& arrSteamTiles = *m_arrSteamTiles_ptr;
-    unsigned char* data = arrSteamTiles.data.get();
-    qDebug() << "Original vent values: " << (int32_t)data[0] << ", " << (int32_t)data[4];
-    data[0] = vent1;
-    data[4] = vent2;
+    // Editing m_arrSteamTiles data to match new vent location, idk if it actually does anything?
+    number_array_SteamTiles_ptr->elements.at(0) = vent1;
+    number_array_SteamTiles_ptr->elements.at(1) = vent2;
 
-    qDebug() << "Updated vent values: " << (int32_t)data[0] << ", " << (int32_t)data[4];
-    // array_property.size() is 4 bytes larger than the actual data, probably header or something?
-    qDebug() << "Raw data of the array (every 4th byte is a vent value): ";
-    QDebug dbg = qDebug();
-    for (int depth = 0; depth < arrSteamTiles.size(); depth++) {
-            dbg.nospace() << (int32_t)data[depth] << ',';
+    // qDebug() << "Updated vent values: " << number_array_SteamTiles_ptr->elements.at(0) << ", " << number_array_SteamTiles_ptr->elements.at(1);
+
+    int32_t x1, y1, x2, y2;
+    x1 = vent1 % 7; y1 = vent1 / 7;
+    x2 = vent2 % 7; y2 = vent2 / 7;
+
+    qDebug() << "new vent 1 coordinates: (" << x1 << ", " << y1 << ")";
+    qDebug() << "new vent 2 coordinates: (" << x2 << ", " << y2 << ")";
+
+    // Vent locations are also tied to iType of m_arrTiles ArrayProperty???? I'm pretty sure I moved them just by editing m_arrSteamTiles before. Whats the point of that array then?
+    // iType = 0 is unexcavated normal tile.
+    // iType = 1 is unexcavated Steam Vent.
+    // iType = 2 is manually excavated tile.
+    // iType = 3 is tile that was generated already excavated.
+    // iType = 4 is steam vent that was excavated (idk if excavated steam vents can generate, or what iType they would have).
+    // iType = 5 is tile that is currently occupied by a structure.
+
+    // iTileState is 1 for accessible? 2 for inaccessible? (you can start excavating or building something on accesible tiles)
+
+    // Editing iType values to match new vents location
+    xcom::int_property* X_prop, *Y_prop, *iTileState_prop, *iType_prop;
+    for (xcom::property_list& structs : struct_array_Tiles_ptr->elements) {
+        X_prop = nullptr; Y_prop = nullptr; iTileState_prop = nullptr; iType_prop = nullptr;
+        for (xcom::property_ptr& prop : structs) {
+            xcom::int_property* int_prop = static_cast<xcom::int_property*>(prop.get());
+            // qDebug() << "Property name: " << QString::fromStdString(int_prop->name) << ", value: " << int_prop->value;
+            if (int_prop->name == "X") {
+                X_prop = int_prop;
+            }
+            else if (int_prop->name == "Y") {
+                Y_prop = int_prop;
+            }
+            else if (int_prop->name == "iTileState") {
+                iTileState_prop = int_prop;
+            }
+            else if (int_prop->name == "iType") {
+                iType_prop = int_prop;
+            }
+        }
+        // qDebug() << "X: " << int_property_val(X_prop) << ", Y: " << int_property_val(Y_prop) << ", iTileState: " << int_property_val(iTileState_prop) << ", iType: " << int_property_val(iType_prop);
+        if ((int_property_val(X_prop) == x1 && int_property_val(Y_prop) == y1) || (int_property_val(X_prop) == x2 && int_property_val(Y_prop) == y2)) {
+            qDebug() << "Placing steam vent tile at coordinates (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+            // iType might not exist if its equal to 0. 
+            if (iType_prop == nullptr) {
+                qDebug() << "iType property not found, placing new unique_ptr<xcom::int_property> at the end of the struct vector.";
+                structs.push_back(std::make_unique<xcom::int_property>("iType", 0));
+                iType_prop = static_cast<xcom::int_property*>(structs.back().get());
+            }
+            int32_t val = iType_prop->value;
+            if (val == 0) {
+                qDebug() << "Replacing unexcavated tile with unexcavated steam vent at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+                iType_prop->value = 1;
+            }
+            else if (val == 2 ) { 
+                qDebug() << "Replacing excavated tile with excavated steam vent at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+                iType_prop->value = 4;
+            }
+        }
+        // Remove old vents.
+        // Replace unexcavated steam vent with unexcavated tile.
+        else if (int_property_val(iType_prop) == 1) {
+            qDebug() << "Replacing unexcavated steam vent with unexcavated tile at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+            iType_prop->value = 0;
+        }
+        // Replace excavated steam vent with excavated.
+        else if (int_property_val(iType_prop) == 4) {
+            qDebug() << "Replacing excavated steam vent with excavated tile at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+            iType_prop->value = 2;
+        }
     }
-    dbg << Qt::endl;
-
-    // qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5] << ", " << data[6] << ", " << data[7];
-    
-
-    // if (numberArraySteamTiles) {
-    // qDebug() << "Current SteamTiles values: " << numberArraySteamTiles->elements[0] << ", " << numberArraySteamTiles->elements[1];
-    // }
-    // else {
-    //     qDebug() << "Failed to cast to number_array_property.";
-    // }
-    // const xcom::number_array_property& NumberArraySteamTiles = static_cast<xcom::number_array_property&> (*XGBase_0_properties->at(2));
-    // int32_t Vent1 = NumberArraySteamTiles.elements[0];
-    // int32_t Vent2 = NumberArraySteamTiles.elements[1];
-    // qDebug() << "Vent1: " << Vent1;
-    // qDebug() << "Vent2: " << Vent2;
-
-
-
 }
 
 void MainWindow::ApplyAppearancePreset() {

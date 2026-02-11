@@ -58,7 +58,13 @@ private:
     Ui::MainWindow ui;
     xcom::saved_game save;
     xcom::checkpoint_table* checkpoint_table_ptr;
+    xcom::array_property* m_arrTiles_ptr;
     xcom::array_property* m_arrSteamTiles_ptr;
+
+    xcom::number_array_property* number_array_SteamTiles_ptr;
+    xcom::struct_array_property* struct_array_Tiles_ptr;
+
+
     std::map<QTreeWidgetItem*, int> soldier_index_translation;
     //TODO: Get rid of the current_dir, and just store full path to the file in the save_index_translation?
     //std::map<int, QString> save_index_translation;
@@ -73,6 +79,8 @@ private:
 
     void GenerateINIFile();
     void LoadINIFile();
+    int32_t int_property_val(xcom::int_property* prop);
+
     int backup_limit;
     QString save_dir_path;
     bool auto_load_last_path;
