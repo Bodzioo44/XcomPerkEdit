@@ -27,17 +27,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.i
         connect(button, &QToolButton::clicked, this, [this, i] { this->onPerkSelected(i); });
     }
 
-    // QPixmap pixmap(32, 32);
-    // pixmap.fill(Qt::transparent);
-    // QPainter painter(&pixmap);
-    // painter.setRenderHint(QPainter::Antialiasing);
-    // painter.setBrush(Qt::yellow);
-    // painter.drawEllipse(0, 0, 32, 32);
-    // QIcon yellowDotIcon(pixmap);
-    // header->setText(3, "Edited");
-    // header->setToolTip(3, "Sort by Edited");
-    // header->setIcon(3, QIcon(":/assets/icons/promotion_icon_transparent_fixed.png"));
-
     QTreeWidgetItem* header = new QTreeWidgetItem();
     header->setText(0, "Soldiers Name");
     header->setToolTip(0, "Sort by Name");
@@ -370,7 +359,7 @@ void MainWindow::onPerkSelected(int i) {
 }
 
 void MainWindow::SaveButtonClicked() {
-    qDebug() << "Saving...";
+    qDebug() << "\nSaving... (Save button clicked)";
     //TODO: replace with a bool that tracks if any soldier was modified.
     //check below is always active since selecting a soldier adds it to the map, even if it was not modified.
     //maybe remove the check entirely?
@@ -408,31 +397,28 @@ int32_t MainWindow::int_property_val(xcom::int_property* prop) {
 }
 
 void MainWindow::VentButtonClicked() {
-    qDebug() << "Vent button clicked!";
+
     int32_t vent1 = ui.Vent1Box->value();
     int32_t vent2 = ui.Vent2Box->value();
-    qDebug() << "new vent values: " << vent1 << ", " << vent2;
-
-    // Editing m_arrSteamTiles data to match new vent location, idk if it actually does anything?
-    number_array_SteamTiles_ptr->elements.at(0) = vent1;
-    number_array_SteamTiles_ptr->elements.at(1) = vent2;
-
-    // qDebug() << "Updated vent values: " << number_array_SteamTiles_ptr->elements.at(0) << ", " << number_array_SteamTiles_ptr->elements.at(1);
 
     int32_t x1, y1, x2, y2;
     x1 = vent1 % 7; y1 = vent1 / 7;
     x2 = vent2 % 7; y2 = vent2 / 7;
 
-    qDebug() << "new vent 1 coordinates: (" << x1 << ", " << y1 << ")";
-    qDebug() << "new vent 2 coordinates: (" << x2 << ", " << y2 << ")";
+    qDebug() << "\nNew vent values: (" << x1 << ", " << y1 << "), (" << x2 << ", " << y2 << ") (vent button clicked)";
 
-    // Vent locations are also tied to iType of m_arrTiles ArrayProperty???? I'm pretty sure I moved them just by editing m_arrSteamTiles before. Whats the point of that array then?
+    // Editing m_arrSteamTiles data to match new vent location, I'm not sure if it actually does anything?
+    number_array_SteamTiles_ptr->elements.at(0) = vent1;
+    number_array_SteamTiles_ptr->elements.at(1) = vent2;
+
+    // Vent locations are tied to iType of m_arrTiles structs? I'm pretty sure I moved them just by editing m_arrSteamTiles before. Whats the point of m_arrSteamTiles then?
     // iType = 0 is unexcavated normal tile.
     // iType = 1 is unexcavated Steam Vent.
     // iType = 2 is manually excavated tile.
     // iType = 3 is tile that was generated already excavated.
     // iType = 4 is steam vent that was excavated (idk if excavated steam vents can generate, or what iType they would have).
     // iType = 5 is tile that is currently occupied by a structure.
+    // How would tile with steam vent occupied by a structure look like?
 
     // iTileState is 1 for accessible? 2 for inaccessible? (you can start excavating or building something on accesible tiles)
 
@@ -442,7 +428,6 @@ void MainWindow::VentButtonClicked() {
         X_prop = nullptr; Y_prop = nullptr; iTileState_prop = nullptr; iType_prop = nullptr;
         for (xcom::property_ptr& prop : structs) {
             xcom::int_property* int_prop = static_cast<xcom::int_property*>(prop.get());
-            // qDebug() << "Property name: " << QString::fromStdString(int_prop->name) << ", value: " << int_prop->value;
             if (int_prop->name == "X") {
                 X_prop = int_prop;
             }
@@ -456,9 +441,8 @@ void MainWindow::VentButtonClicked() {
                 iType_prop = int_prop;
             }
         }
-        // qDebug() << "X: " << int_property_val(X_prop) << ", Y: " << int_property_val(Y_prop) << ", iTileState: " << int_property_val(iTileState_prop) << ", iType: " << int_property_val(iType_prop);
         if ((int_property_val(X_prop) == x1 && int_property_val(Y_prop) == y1) || (int_property_val(X_prop) == x2 && int_property_val(Y_prop) == y2)) {
-            qDebug() << "Placing steam vent tile at coordinates (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
+            qDebug() << "Checking location of new vent at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
             // iType might not exist if its equal to 0. 
             if (iType_prop == nullptr) {
                 qDebug() << "iType property not found, placing new unique_ptr<xcom::int_property> at the end of the struct vector.";
@@ -470,9 +454,12 @@ void MainWindow::VentButtonClicked() {
                 qDebug() << "Replacing unexcavated tile with unexcavated steam vent at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
                 iType_prop->value = 1;
             }
-            else if (val == 2 ) { 
+            else if (val == 2 || val == 3) { 
                 qDebug() << "Replacing excavated tile with excavated steam vent at: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << ")";
                 iType_prop->value = 4;
+            }
+            else {
+                qDebug() << "Unexpected iType value at vent location, or steam vent is already there: (" << int_property_val(X_prop) << ", " << int_property_val(Y_prop) << "), iType: " << val;
             }
         }
         // Remove old vents.
@@ -580,7 +567,7 @@ void MainWindow::LoadINIFile() {
     if (settings.value("FIRST_RUN", false).toBool()) {
         settings.setValue("FIRST_RUN", false);
         settings.sync();
-        QTimer::singleShot(0, this, [this] { QMessageBox::information(this, "First Launch!", "First app launch detected.\n To load available saves make sure to confirm path with the \"Load Path...\" button in the top right.\nIf you have any problems while using the app check out USAGE.md"); });
+        QTimer::singleShot(0, this, [this] { QMessageBox::information(this, "First Launch!", "First app launch detected.\n To load available saves make sure to confirm path with the \"Load Path...\" button in the top right.\nIf you have any problems while using the app check out README.md"); });
     }
     else {
         settings.setValue("AUTO_LOAD_LAST_PATH", true);

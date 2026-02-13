@@ -53,17 +53,14 @@ public slots:
     void RevertAllClicked();
     //Apply Appearance Preset
     void ApplyAppearancePreset();
+    //Move steam vent
     void VentButtonClicked();
 private:
     Ui::MainWindow ui;
     xcom::saved_game save;
     xcom::checkpoint_table* checkpoint_table_ptr;
-    xcom::array_property* m_arrTiles_ptr;
-    xcom::array_property* m_arrSteamTiles_ptr;
-
     xcom::number_array_property* number_array_SteamTiles_ptr;
     xcom::struct_array_property* struct_array_Tiles_ptr;
-
 
     std::map<QTreeWidgetItem*, int> soldier_index_translation;
     //TODO: Get rid of the current_dir, and just store full path to the file in the save_index_translation?
@@ -86,7 +83,6 @@ private:
     bool auto_load_last_path;
     bool stay_after_save;
 
-    // QIcon yellowDotIcon;
     const std::map<int,QString> rank_translation =
     {
         {2, ":/assets/icons/RANK_CORPORAL.png"},
@@ -96,8 +92,6 @@ private:
         {6, ":/assets/icons/RANK_MAJOR.png"},
         {7, ":/assets/icons/RANK_COLONEL.png"},
     };
-
 };
-
 
 #endif
