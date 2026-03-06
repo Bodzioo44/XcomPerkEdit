@@ -86,6 +86,10 @@ MEC_ADVANCED_FIRE_CONTROL.png
 Extra Conditioning
 Confers 1-4 bonus health based on which type of armor is equipped. Heavier armor increases the bonus.
 ASSAULT_EXTRACONDITIONING.png
+29
+Neural Feedback
+Causes damage to psi attackers and puts all of their psi attacks on cooldown. Does not reduce the attacks' chance of success. Applies to attacks on the psion, as well as nearby allies if the psion passes a will check. Imposes +24 hours fatigue after missions.
+ePerk_GeneMod_BrainFeedback.png
 31
 Sprinter
 Grants +4 mobility (roughly 3 tiles movement).
@@ -142,6 +146,10 @@ SUPPORT_COVERINGFIRE.png
 Field Medic
 For soldiers, grants one free use of a medikit per mission and allows additional medikit items to be used two times per battle instead of one. Also allows Restorative Mist items to be used three times per battle instead of once.
 SUPPORT_FIELDMEDIC.png
+49
+Pyrokinesis
+Ignite fires at the target location. Does not cause injuries. Imposes +12 hours postmission fatigue for psi soldiers.
+ePerk_RifleSuppression_DEPRECATED.png
 51
 Combat Drugs
 Smoke grenades confer +20 Will and +20% critical chance in addition to the original 20 defense. The area of effect is also increased by 25%.
@@ -182,6 +190,34 @@ HEAVY_HEAT_AMMO.png
 Javelin Rockets
 Your rockets now travel much further(+33%) and can hit targets beyond your visual range.
 ALIEN_DEATHBLOSSOM.png
+68
+Mindfray
+Causes the target to lose grip on reality, causing -25 aim/stack, -25 will/stack, a reduced area-of-effect attack range, reduced mobility, and doing one base damage. Robotic units are immune. Lasts 3 turns. 2 turn cooldown. Imposes +24 hours fatigue after missions.
+ePerk_MindFray.png
+69
+Psi Panic
+Cause target to panic on its following turn, if the target's Will is overcome. The duration is (caster Will / 50) turns; fractional results have a chance to be rounded up, the chance is proportional to the distance to the next integer. Robotic enemies are immune, 2 turn cooldown. Imposes +6 hours fatigue after missions.
+ePerk_PsiPanic.png
+70
+Psi Inspiration
+Removes Mindfray and panic from all allies within 3 tiles, and strengthen their Will by +30 for 3 turns, 4 turn cooldown. Imposes +6 hours fatigue after missions.
+ePerk_PsiInspiration.png
+71
+Mind Control
+Difficult psi technique that, if successful, grants control of the target for 3 turns. Does not work on robotic enemies. 5 turn cooldown. Imposes +12 hours fatigue after missions.
+ePerk_MindControl.png
+72
+Telekinetic Field
+Create an immobile telekinetic field that lasts through the enemy turn. The field distorts and deflects incoming attacks, granting +40 Defense to allies within the field, 4 turn cooldown. Imposes +12 hours fatigue after missions.
+ePerk_TelekineticField.png
+73
+Rift
+Devastate an area with a storm of psi energy. The rift does more damage against targets with low Will, and reduced damage against targets with high Will. 4 turn cooldown. Requires special armor designed for psionic beings. Imposes +12 hours fatigue after missions.
+ePerk_Rift.png
+74
+Mind Merge
+Merge minds with the target, granting the target +25% critical chance, bonus will, and temporary health (for aliens) or damage reduction (for humans: DR=caster_will/60). Imposes +6 hours postmission fatigue for psi soldiers.
+ePerk_MindMerge.png
 81
 Bombard
 Throw or launch grenades over exceptionally long distances (+50%).
@@ -226,6 +262,10 @@ ALIEN_CLUSTERBOMB.png
 Deadeye
 Confers +15 aim against flying targets.
 SENTINEL_MODULE_ICON.png
+119
+Psychokinetic Strike
+Project a bolt of pure psi force that destroys cover but does not harm units. 4 turn cooldown. Imposes 12 hours additional post-mission fatigue.
+ePerk_Foundry_SHIVSuppression.png
 126
 Light 'Em Up
 Standard shots no longer end the turn, if taken as the first action.
@@ -282,6 +322,14 @@ MEC_REACTIVE_TARGETING_SENSORS.png
 Body Shield
 The nearest visible enemy suffers -20 aim and cannot critically hit this unit
 MEC_BODY_SHIELD.png
+146
+Distorsion Field
+Nearby allies in cover receive +10 Defense. Imposes +6 hours postmission fatigue for psi soldiers. (Passive ability)
+ePerk_DistortionField.png
+149
+Regen Biofield
+Nearby allies are healed for 1 health each turn and acid effects on them are removed. This does not restore the HP provided by body armor or other hp-granting items. Imposes +24 hours postmission fatigue for psi soldiers. (Passive ability) 
+ePerk_GeneMod_RegenPheromones.png
 150
 Field Surgeon
 Reduces (or, for 1 HP flesh wounds, eliminates) Wounded timer on soldiers who sustained HP damage but were not Critically Wounded. Does not affect wound sustained by sending fatigued soldier on a mission.
