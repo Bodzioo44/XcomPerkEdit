@@ -6,6 +6,10 @@ SNIPER_HEADSHOT.png
 Squadsight
 Allows firing at targets in any ally's sight radius within weapon range, but critical chance suffers a -20% penalty. Extended range weapons (MEC primary weapons, Marksman and Strike Rifles, and LMGs) gain roughly five extra tiles range. Sniper rifles have infinite range. Overwatch fire does not extend to squadsight ranges, except with Marksman's and Strike Rifles.
 SNIPER_SQUADSIGHT.png
+4
+Secondary Heart
+Causes soldiers to bleed out instead of dying the first time they go to zero health in a mission. The bleed-out timer is extended by 2 turns. Prevents loss of Will from critical wounds.
+ePerk_GeneMod_SecondHeart.png
 5
 Low Profile
 Makes partial cover grant the defense bonus of full cover.
@@ -58,6 +62,10 @@ HEAVY_FIREROCKET.png
 Holo-Targeting
 Shooting at or suppressing enemies confers +10 Aim to allies' attacks on those enemies until end of turn.
 HEAVY_HOLO.png
+20
+Adrenal Neurosymphaty
+Overloads the soldiers adrenal glands: when a kill is confirmed the soldier emits pheromones that grant offensive benefits to all nearby squad mates. Cannot be used more than once every 5 turns. 
+ePerk_GeneMod_Adrenal.png
 21
 Suppression
 Fire a barrage that pins down a target, granting Opportunist reaction fire against it if it moves. Imposes a -30 penalty to aim and reduces range of many area-of-effect attacks, including grenades. Also negates overwatch from the target while suppression is active. Lastly, enemy AI prioritizes breaking the suppression by shooting the suppressor, so it functions as a mini-taunt. Not possible with shotguns, sniper rifles, or strike rifles.
@@ -86,10 +94,18 @@ MEC_ADVANCED_FIRE_CONTROL.png
 Extra Conditioning
 Confers 1-4 bonus health based on which type of armor is equipped. Heavier armor increases the bonus.
 ASSAULT_EXTRACONDITIONING.png
+28
+Neural Damping
+Confers +20 will when defending against Psi attacks and immunity to panic. If the soldier is mind controlled, the control is cancelled and the soldier is stunned for 1 turn instead. Neural damped soldiers cannot learn psionic skills and psionic soldiers cannot be neural damped.
+ePerk_GeneMod_BrainDamping.png
 29
 Neural Feedback
 Causes damage to psi attackers and puts all of their psi attacks on cooldown. Does not reduce the attacks' chance of success. Applies to attacks on the psion, as well as nearby allies if the psion passes a will check. Imposes +24 hours fatigue after missions.
 ePerk_GeneMod_BrainFeedback.png
+30
+Hyper-Reactive Pupils
+Confers +10 Aim on any shot after a miss.
+ePerk_GeneMod_Pupils.png
 31
 Sprinter
 Grants +4 mobility (roughly 3 tiles movement).
@@ -118,6 +134,10 @@ ASSAULT_RAPIDFIRE.png
 Flush
 Fire a shot that may cause non-flying enemies to run to new cover. The shot is easy to hit with (+30 aim), but does reduced damage (-50% base weapon damage), and consumes extra ammo (2 ammo). Hunkered units will not relocate.
 ASSAULT_FLUSH.png
+38
+Depth Perception
+Height Advantage confers an additional +5 Aim and +5 critical chance.
+ePerk_GeneMod_DepthPerception.png
 39
 Bring 'Em On
 Confers 1-4 bonus damage during critical hits (which is then multiplied by 50% due to the critical hit). The damage is higher when more enemies are in view (including squad sight vision). This results in +1.5 dmg for 1-2 enemies, +3 dmg for 3-4 enemies, +4.5 dmg for 5-6 enemies, +6 dmg for 7 or more enemies.
@@ -130,6 +150,10 @@ ASSAULT_CLOSECOMBAT.png
 Killer Instinct
 Activating Run and Gun grants +50% critical damage for the rest of the turn.
 ASSAULT_KILLERINSTINCT.png
+42
+Bioelectric Skin
+The soldier projects an electric field from his or her skin, revealing but not alerting nearby enemies, and is immune to strangulation. 
+ePerk_GeneMod_BioelectricSkin.png
 43
 Resilience
 Confers immunity to critical hits.
@@ -138,6 +162,10 @@ ASSAULT_RESILLIENCE.png
 Smoke Grenade
 Deploy a smoke grenade once per mission. The smoke confers +20 defense and prevents flanking for all enemy and allied units. Lasts 2 turns. Taking the perk on level up also allows an additional action after deploying a smoke grenade.
 SUPPORT_SMOKEGRENADE.png
+45
+Adaptive Bone Marrow
+Regenerate wounds. For humans, wound recovery time is reduced by 66% (stacks with Advanced Surgery), and unit regenerates 2 hp every turn up to the HP max without armor. 
+ePerk_GeneMod_BoneMarrow.png
 47
 Covering Fire
 Allows certain reaction shots to trigger on many enemy actions, not just movement (excludes reload, overwatch, and hunker down actions).
@@ -150,6 +178,10 @@ SUPPORT_FIELDMEDIC.png
 Pyrokinesis
 Ignite fires at the target location. Does not cause injuries. Imposes +12 hours postmission fatigue for psi soldiers.
 ePerk_RifleSuppression_DEPRECATED.png
+50
+Muscle Fiber Density
+Confers superhuman leg strength, enabling the soldier to reach high positions without the need for ladders or other climbing aids.
+ePerk_GeneMod_MuscleFiber.png
 51
 Combat Drugs
 Smoke grenades confer +20 Will and +20% critical chance in addition to the original 20 defense. The area of effect is also increased by 25%.
@@ -326,6 +358,10 @@ MEC_BODY_SHIELD.png
 Distorsion Field
 Nearby allies in cover receive +10 Defense. Imposes +6 hours postmission fatigue for psi soldiers. (Passive ability)
 ePerk_DistortionField.png
+148
+Iron Skin
+Confers 1.0 damage reduction.
+ePerk_GeneMod_IronSkin.png
 149
 Regen Biofield
 Nearby allies are healed for 1 health each turn and acid effects on them are removed. This does not restore the HP provided by body armor or other hp-granting items. Imposes +24 hours postmission fatigue for psi soldiers. (Passive ability) 
@@ -342,6 +378,10 @@ Sharpshooter
 Steadfast
 Never panic as a result of getting wounded, allies panicking, allies getting wounded or killed, or the intimidation ability.
 120px-Defenders_Medal_1_(EU2012).png
+155
+Smart Macrophages
+Medikits and Restorative Mist heal 2 HP more when used on the soldier. Confers complete immunity to poison and acid.
+ePerk_Medal_DefenderB.png
 159
 Lone Wolf
 +10 Aim and Critical Chance if not within 7 tiles of an allied unit.
