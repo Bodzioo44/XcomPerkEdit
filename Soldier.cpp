@@ -12,7 +12,9 @@ void Soldier::EnablePerk(int index) {
     if (!perk.enabled) {
         perk.enabled = true;
         perk.value++;
-        difference_stats += perk.stats;
+        if (perk.type == PerkType.Standard) {
+            difference_stats += perk.stats;
+        }
     }
 }
 
@@ -177,32 +179,45 @@ namespace GetSoldiers {
         xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
         xcom::static_array_property& aUpgrades = static_cast<xcom::static_array_property&> (*m_kChar.properties[3]);
 
-        std::string path = ":/assets/" + class_type(properties) + ".txt";
+        std::string class_path = ":/assets/" + class_type(properties) + ".txt";
+        std::string psi_path = ":/assets/PSI.txt";
+        std::string gene_path = ":/assets/GeneMods.txt";
+        std::vector<std::string> paths;
+        paths.push_back(class_path);
+        paths.push_back(psi_path);
+        paths.push_back(gene_path);
 
-        QFile file(QString::fromStdString(path));
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            throw std::runtime_error("Could not open file: " + path);
-        }
 
-        PerkSet perks;
-        QTextStream in(&file);
-        QString line;
         int i = 0;
-        //loads perks from the file in format: index, mobility, aim, will
-        //same perk can give different stats for different classes.
-        while(!in.atEnd()) {
-            line = in.readLine();
-            std::vector<std::string> row;
-            QStringList tokens = line.split(",");
-            for (const QString& token : tokens) {
-                row.push_back(token.toStdString());
+        PerkSet perks;
+        for (std::string path : paths) {
+            QFile file(QString::fromStdString(class_path));
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                throw std::runtime_error("Could not open file: " + class_path);
             }
-            //pulls index value from the save file
-            int index_value = static_cast<xcom::int_property*> (aUpgrades.properties[std::stoi(row[0])].get())->value;
-            perks[i] = Perk(std::stoi(row[0]), index_value, SoldierStats(std::stoi(row[1]), std::stoi(row[2]), std::stoi(row[3])));
-            i++;
+
+            QTextStream in(&file);
+            QString line;
+            //loads perks from the file in format: index, mobility, aim, will
+            //same perk can give different stats for different classes.
+            while(!in.atEnd()) {
+                line = in.readLine();
+                std::vector<std::string> row;
+                QStringList tokens = line.split(",");
+                for (const QString& token : tokens) {
+                    row.push_back(token.toStdString());
+                }
+                //pulls index value from the save file
+                int index_value = static_cast<xcom::int_property*> (aUpgrades.properties[std::stoi(row[0])].get())->value;
+                perks[i] = Perk(std::stoi(row[0]), std::stoi(row[1]), index_value, SoldierStats(std::stoi(row[2]), std::stoi(row[3]), std::stoi(row[4])));
+                i++;
+            }
         }
         return perks;
+    }
+
+    Perk TranslatePerk(QString line) {
+
     }
 
     SoldierStats stats(const xcom::property_list* properties) {

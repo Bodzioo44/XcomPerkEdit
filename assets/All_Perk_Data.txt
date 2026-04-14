@@ -355,7 +355,7 @@ Body Shield
 The nearest visible enemy suffers -20 aim and cannot critically hit this unit
 MEC_BODY_SHIELD.png
 146
-Distorsion Field
+Distortion Field
 Nearby allies in cover receive +10 Defense. Imposes +6 hours postmission fatigue for psi soldiers. (Passive ability)
 ePerk_DistortionField.png
 148

@@ -31,27 +31,53 @@ struct SoldierStats {
     }
 };
 
+enum class PerkType : int {
+    Standard = 0,
+    Gene = 1,
+    PSI = 2
+};
+
 struct Perk {
     int index;
+    int order;
     int value;
-    SoldierStats stats;
     bool enabled;
+    enum PerkType type;
     //TODO: confirm this.
     //sometimes perks connected to items have values greater than 1. (f.e. Smoke Grenade, Battle Scanner, Shredder Ammo)
     //from my testing, value represents number of items in the inventory*2 (+ 1 if the perk is enabled)
     //so for example value of 5 means 2 items in the inventory, and the perk is enabled.
     //and value of 2 means 1 item in the inventory, and the perk is disabled.
-    Perk(int index = 0, int value = 0, SoldierStats stats = {0, 0, 0}): index(index), value(value), stats(stats) {
+    Perk(int index, int order, int value, std::vector<int> extra_stats): index(index), order(order), value(value) {
         if (value % 2 == 1) {
             enabled = true;
         }
         else {
             enabled = false;
         }
+        SetExtraStats(extra_stats);
     }
+    virtual void SetExtraStats(std::vector<int> stats);
 };
 
-using PerkSet = std::array<Perk, 18>;
+struct StandardPerk : Perk {
+    SoldierStats stats;
+    StandardPerk(int index, int order, int value, std::vector<int> extra_stats): Perk(index, order, value, extra_stats) {}
+
+};
+
+struct PSIPerk : Perk {
+    int fatigue;
+    PSIPerk(int index, int order, int value, int fatigue): Perk(index, order, value), fatigue(fatigue) {}
+};
+
+struct GenePerk : Perk {
+    int fatigue;
+    int meld;
+    GenePerk(int index, int order, int value, int fatigue, int meld): Perk(index, order, value), fatigue(fatigue), meld(meld) {}
+};
+
+using PerkSet = std::array<Perk, 30>;
 using AppearanceSet = std::array<int, 17>;
 QDebug operator<<(QDebug, const AppearanceSet&);
 // using LabelSet = std::array<std::string, 3>;
@@ -75,6 +101,7 @@ class Soldier {
         void ApplyAppearancePreset(AppearanceSet preset);
         void UpdateSoldier();
         void RevertChanges();
+        Perk TranslatePerk(QString);
 
     private:
         xcom::property_list* properties;
