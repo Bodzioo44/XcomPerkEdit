@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.i
     connect(ui.ExitButton, &QPushButton::clicked, this, &MainWindow::ExitButtonClicked);
     connect(ui.RevertSoldierButton, &QPushButton::clicked, this, &MainWindow::RevertSoldierClicked);
     connect(ui.RevertAllButton, &QPushButton::clicked, this, &MainWindow::RevertAllClicked);
-    connect(ui.AppearanceButton, &QPushButton::clicked, this, &MainWindow::ApplyAppearancePreset);
+    // connect(ui.AppearanceButton, &QPushButton::clicked, this, &MainWindow::ApplyAppearancePreset);
     connect(ui.VentButton, &QPushButton::clicked, this, &MainWindow::VentButtonClicked);
     connect(ui.PathLineEdit, &QLineEdit::returnPressed, this, &MainWindow::SelectPathButtonClicked);
 
@@ -476,21 +476,21 @@ void MainWindow::VentButtonClicked() {
     }
 }
 
-void MainWindow::ApplyAppearancePreset() {
-    // qDebug() << "ApplyAppearancePreset";
-    if (current_soldier) {
-        QVariantList loaded = settings.value("APPEARANCE_PRESET", QVariantList()).toList();
-        AppearanceSet appearance;
-        int i = 0;
-        for (const QVariant &v : loaded) {
-            appearance[i] = v.toInt();
-            // qDebug() << "Appearance preset value " << i << ": " << appearance[i];
-            i++;
-        }
-        current_soldier->ApplyAppearancePreset(appearance);
-        onSoldierSelected();
-    }
-}
+// void MainWindow::ApplyAppearancePreset() {
+//     // qDebug() << "ApplyAppearancePreset";
+//     if (current_soldier) {
+//         QVariantList loaded = settings.value("APPEARANCE_PRESET", QVariantList()).toList();
+//         AppearanceSet appearance;
+//         int i = 0;
+//         for (const QVariant &v : loaded) {
+//             appearance[i] = v.toInt();
+//             // qDebug() << "Appearance preset value " << i << ": " << appearance[i];
+//             i++;
+//         }
+//         current_soldier->ApplyAppearancePreset(appearance);
+//         onSoldierSelected();
+//     }
+// }
 
 
 void MainWindow::RevertSoldierClicked() {

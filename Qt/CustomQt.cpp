@@ -20,7 +20,8 @@ PerkDisplayMap load_perk_display(PerkSet perks) {
         line = in.readLine();
         if (current_line % 4 == 1 && line.toInt() == perks[current_perk].index) {
             correct_perk = true;
-            current_PerkDisplay.extra_stats = "(Mobility:" + QString::number(perks[current_perk].stats.mobility) + ", Aim:" + QString::number(perks[current_perk].stats.aim) + ", Will:" + QString::number(perks[current_perk].stats.will) + ")";
+            current_PerkDisplay.extra_stats = perks[current_perk].GetDescription();
+            // current_PerkDisplay.extra_stats = "(Mobility:" + QString::number(perks[current_perk].stats.mobility) + ", Aim:" + QString::number(perks[current_perk].stats.aim) + ", Will:" + QString::number(perks[current_perk].stats.will) + ")";
         } else if (correct_perk) {
             if (current_line % 4 == 2) {
                 current_PerkDisplay.name = line;

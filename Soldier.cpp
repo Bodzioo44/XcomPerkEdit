@@ -2,7 +2,7 @@
 
 Soldier::Soldier(xcom::checkpoint* soldier = nullptr): properties(&soldier->properties) {
     starting_stats = GetSoldiers::stats(properties);
-    appearance = GetSoldiers::appearance(properties);
+    // appearance = GetSoldiers::appearance(properties);
     difference_stats = SoldierStats();
     perks = GetSoldiers::perks(properties);
 }
@@ -12,9 +12,7 @@ void Soldier::EnablePerk(int index) {
     if (!perk.enabled) {
         perk.enabled = true;
         perk.value++;
-        if (perk.type == PerkType.Standard) {
-            difference_stats += perk.stats;
-        }
+        perk.UpdateDiff(difference_stats);
     }
 }
 
@@ -23,7 +21,6 @@ void Soldier::DisablePerk(int index) {
     if (perk.enabled) {
         perk.enabled = false;
         perk.value--;
-        difference_stats -= perk.stats;
     }
 }
 
@@ -61,64 +58,64 @@ PerkSet Soldier::GetPerks() const {
     return perks;
 }
 
-AppearanceSet Soldier::GetAppearance() const {
-    return appearance;
-}
+// AppearanceSet Soldier::GetAppearance() const {
+//     return appearance;
+// }
 
 //Default values
 //Some special soldiers (The General, Freaky) dont have full set of kAppearance.properties before joining xcom.
 //however it shouldnt matter since they are not stored in XGStrategySoldier struct, thus not being detected.
 //example int_property: { "name": "iHead", "kind": "IntProperty", "value": 148 }
-void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(1, 21);
+// void Soldier::ApplyAppearancePreset(AppearanceSet preset) {
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_int_distribution<> dist(1, 21);
 
-    appearance[0] = preset[0]; //iHead 46
-    appearance[1] = preset[1]; //iGender 2
-    appearance[2] = preset[2]; //iRace 0
-    appearance[3] = preset[3]; //iHaircut 3
-    if (preset[4] == -1) {
-        appearance[4] = dist(gen); //iHairColor randomized
-    }
-    else {
-        appearance[4] = preset[4]; //iHairColor
-    }
-    appearance[5] = preset[5]; //iFacialHair 0
-    appearance[6] = preset[6]; //iBody -1
-    appearance[7] = preset[7]; //iBodyMaterial -1
-    appearance[8] = preset[8]; //iSkinColor 0
-    appearance[9] = preset[9]; //iEyeColor -1
-    // appearance[10] = preset[10]; //iFlag Keep the flag
-    appearance[11] = preset[11]; //iArmorSkin -1
-    appearance[12] = preset[12]; //iVoice 0
-    appearance[13] = preset[13]; //iLanguage 0
-    appearance[14] = preset[14]; //iAttitude 0
-    appearance[15] = preset[15]; //iArmorDeco -1
-    // appearance[16] = preset[16]; //iArmorTint Keep the tint
-}
+//     appearance[0] = preset[0]; //iHead 46
+//     appearance[1] = preset[1]; //iGender 2
+//     appearance[2] = preset[2]; //iRace 0
+//     appearance[3] = preset[3]; //iHaircut 3
+//     if (preset[4] == -1) {
+//         appearance[4] = dist(gen); //iHairColor randomized
+//     }
+//     else {
+//         appearance[4] = preset[4]; //iHairColor
+//     }
+//     appearance[5] = preset[5]; //iFacialHair 0
+//     appearance[6] = preset[6]; //iBody -1
+//     appearance[7] = preset[7]; //iBodyMaterial -1
+//     appearance[8] = preset[8]; //iSkinColor 0
+//     appearance[9] = preset[9]; //iEyeColor -1
+//     // appearance[10] = preset[10]; //iFlag Keep the flag
+//     appearance[11] = preset[11]; //iArmorSkin -1
+//     appearance[12] = preset[12]; //iVoice 0
+//     appearance[13] = preset[13]; //iLanguage 0
+//     appearance[14] = preset[14]; //iAttitude 0
+//     appearance[15] = preset[15]; //iArmorDeco -1
+//     // appearance[16] = preset[16]; //iArmorTint Keep the tint
+// }
 
-QDebug operator<<(QDebug s, const AppearanceSet& set) {
-    s << "AppearanceSet:\n";
-    s << "iHead: " << set[0] << "\n";
-    s << "iGender: " << set[1] << "\n";
-    s << "iRace: " << set[2] << "\n";
-    s << "iHaircut: " << set[3] << "\n";
-    s << "iHairColor: " << set[4] << "\n";
-    s << "iFacialHair: " << set[5] << "\n";
-    s << "iBody: " << set[6] << "\n";
-    s << "iBodyMaterial: " << set[7] << "\n";
-    s << "iSkinColor: " << set[8] << "\n";
-    s << "iEyeColor: " << set[9] << "\n";
-    s << "iFlag: " << set[10] << "\n";
-    s << "iArmorSkin: " << set[11] << "\n";
-    s << "iVoice: " << set[12] << "\n";
-    s << "iLanguage: " << set[13] << "\n";
-    s << "iAttitude: " << set[14] << "\n";
-    s << "iArmorDeco: " << set[15] << "\n";
-    s << "iArmorTint: " << set[16] << "\n";
-    return s;
-}
+// QDebug operator<<(QDebug s, const AppearanceSet& set) {
+//     s << "AppearanceSet:\n";
+//     s << "iHead: " << set[0] << "\n";
+//     s << "iGender: " << set[1] << "\n";
+//     s << "iRace: " << set[2] << "\n";
+//     s << "iHaircut: " << set[3] << "\n";
+//     s << "iHairColor: " << set[4] << "\n";
+//     s << "iFacialHair: " << set[5] << "\n";
+//     s << "iBody: " << set[6] << "\n";
+//     s << "iBodyMaterial: " << set[7] << "\n";
+//     s << "iSkinColor: " << set[8] << "\n";
+//     s << "iEyeColor: " << set[9] << "\n";
+//     s << "iFlag: " << set[10] << "\n";
+//     s << "iArmorSkin: " << set[11] << "\n";
+//     s << "iVoice: " << set[12] << "\n";
+//     s << "iLanguage: " << set[13] << "\n";
+//     s << "iAttitude: " << set[14] << "\n";
+//     s << "iArmorDeco: " << set[15] << "\n";
+//     s << "iArmorTint: " << set[16] << "\n";
+//     return s;
+// }
 
 void Soldier::UpdateSoldier() {
     //Updating Perks
@@ -135,12 +132,12 @@ void Soldier::UpdateSoldier() {
     //Updating Appearance
     //Hopefully Works, needs testing
     xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
-    xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
-    int i = 0;
-    for (const int& app_val : appearance) {
-        static_cast<xcom::int_property*> (kAppearance.properties[i].get())->value = app_val;
-        i++;
-    }
+    // xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
+    // int i = 0;
+    // for (const int& app_val : appearance) {
+    //     static_cast<xcom::int_property*> (kAppearance.properties[i].get())->value = app_val;
+    //     i++;
+    // }
 }
 
 
@@ -209,16 +206,13 @@ namespace GetSoldiers {
                 }
                 //pulls index value from the save file
                 int index_value = static_cast<xcom::int_property*> (aUpgrades.properties[std::stoi(row[0])].get())->value;
-                perks[i] = Perk(std::stoi(row[0]), std::stoi(row[1]), index_value, SoldierStats(std::stoi(row[2]), std::stoi(row[3]), std::stoi(row[4])));
+                perks[i] = StandardPerk(std::stoi(row[0]), std::stoi(row[1]), index_value, SoldierStats(std::stoi(row[2]), std::stoi(row[3]), std::stoi(row[4])));
                 i++;
             }
         }
         return perks;
     }
 
-    Perk TranslatePerk(QString line) {
-
-    }
 
     SoldierStats stats(const xcom::property_list* properties) {
         xcom::struct_property& m_kChar = static_cast<xcom::struct_property&> (*properties->at(0));
@@ -226,14 +220,14 @@ namespace GetSoldiers {
         return SoldierStats(static_cast<xcom::int_property&> (*aStats.properties[3]).value, static_cast<xcom::int_property&> (*aStats.properties[1]).value, static_cast<xcom::int_property&> (*aStats.properties[7]).value);
     }
 
-    AppearanceSet appearance(const xcom::property_list* properties) {
-        xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
-        xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
-        AppearanceSet appearance;
-        for(int i = 0; i < 17; i++) {
-            appearance[i] = static_cast<xcom::int_property&> (*kAppearance.properties[i]).value;
-        }
-        return appearance;
-    }
+    // AppearanceSet appearance(const xcom::property_list* properties) {
+    //     xcom::struct_property& m_kSoldier = static_cast<xcom::struct_property&> (*properties->at(1));
+    //     xcom::struct_property& kAppearance = static_cast<xcom::struct_property&> (*m_kSoldier.properties[10]);
+    //     AppearanceSet appearance;
+    //     for(int i = 0; i < 17; i++) {
+    //         appearance[i] = static_cast<xcom::int_property&> (*kAppearance.properties[i]).value;
+    //     }
+    //     return appearance;
+    // }
 
 }

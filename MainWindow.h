@@ -52,7 +52,7 @@ public slots:
     //Revert All Changes
     void RevertAllClicked();
     //Apply Appearance Preset
-    void ApplyAppearancePreset();
+    // void ApplyAppearancePreset();
     //Move steam vent
     void VentButtonClicked();
 private:
