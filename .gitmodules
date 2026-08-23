@@ -1,3 +1,6 @@
 [submodule "xcomsave"]
-	path = xcomsave
+	path = lib/xcomsave
+	url = https://github.com/Bodzioo44/xcomsave.git
+[submodule "lib/xcomsave"]
+	path = lib/xcomsave
 	url = https://github.com/Bodzioo44/xcomsave.git
