@@ -1,7 +1,7 @@
 #ifndef SOLDIER_H
 #define SOLDIER_H
 
-#include "xcomsave/xcom.h"
+#include "lib/xcomsave/xcom.h"
 #include <fstream>
 #include <sstream>
 #include <random>
@@ -64,8 +64,8 @@ struct Perk {
         }
     }
 
-    virtual QString GetDescription();
-    virtual void UpdateDiff(SoldierStats &Diff);
+    virtual QString GetDescription() = 0;
+    virtual void UpdateDiff(SoldierStats &Diff) = 0;
 };
 
 struct StandardPerk : Perk {
@@ -116,8 +116,6 @@ struct GenePerk : Perk {
 
 using PerkSet = std::array<Perk, 30>;
 
-// using AppearanceSet = std::array<int, 17>;
-// QDebug operator<<(QDebug, const AppearanceSet&);
 
 class Soldier {
     public:

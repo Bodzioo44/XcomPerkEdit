@@ -1,4 +1,4 @@
-#include "Soldier.h"
+#include "include/Soldier.h"
 
 Soldier::Soldier(xcom::checkpoint* soldier = nullptr): properties(&soldier->properties) {
     starting_stats = GetSoldiers::stats(properties);

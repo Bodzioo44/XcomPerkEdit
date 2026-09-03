@@ -6,7 +6,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QApplication>
-#include <Soldier.h>
+#include <include/Soldier.h>
 
 struct PerkDisplay {
     QString name;
@@ -23,7 +23,7 @@ class PerkButton : public QToolButton {
 
 public:
     PerkButton(QWidget* parent = nullptr);
-    ~PerkButton() {};
+    virtual ~PerkButton() {};
     void LoadPerk(const PerkDisplay& perk_assets);
     void GreyOut();
     void LightUp();

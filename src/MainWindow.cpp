@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+#include "include/MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), settings("config.ini", QSettings::IniFormat) {
     ui.setupUi(this);

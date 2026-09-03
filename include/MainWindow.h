@@ -21,10 +21,10 @@
 #include <string>
 #include <chrono>
 
-#include "xcomsave/xcom.h"
+#include "lib/xcomsave/xcom.h"
+#include "include/Soldier.h"
+#include "include/widgets/CustomQt.h"
 #include "ui_QtDesigner.h"
-#include "Qt/CustomQt.h"
-#include "Soldier.h"
 
 class MainWindow: public QMainWindow
 {

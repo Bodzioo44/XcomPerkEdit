@@ -11,31 +11,37 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+set(CMAKE_AUTOUIC_SEARCH_PATHS "ui")
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-add_subdirectory(xcomsave)
+add_subdirectory(lib/xcomsave)
 
 set(SOURCES
-    main.cpp
-    MainWindow.cpp
-    Soldier.cpp
-    Qt/CustomQt.cpp
+    src/main.cpp
+    src/MainWindow.cpp
+    src/Soldier.cpp
+    src/widgets/CustomQt.cpp
 )
 
 set(HEADERS
-    MainWindow.h
-    Soldier.h
-    Qt/CustomQt.h
-    xcomsave/xcom.h
+    include/MainWindow.h
+    include/Soldier.h
+    include/widgets/CustomQt.h
+    lib/xcomsave/xcom.h
 )
 
+# set(AUTOUIC_SEARCH_PATHS "ui")
+
 set(FORMS
-    QtDesigner.ui
+    ui/QtDesigner.ui
 )
 
 set(RESOURCES
-    resources.qrc
+    res/resources.qrc
 )
+
+
 
 add_executable(XcomPerkEdit
     WIN32

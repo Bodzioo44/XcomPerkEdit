@@ -1,4 +1,4 @@
-#include "CustomQt.h"
+#include "include/widgets/CustomQt.h"
 
 //TODO: switch this shit to csv like file
 PerkDisplayMap load_perk_display(PerkSet perks) {
